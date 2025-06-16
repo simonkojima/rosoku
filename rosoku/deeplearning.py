@@ -47,12 +47,14 @@ def deeplearning_cross_subject(
     func_proc_epochs: function
         def func_proc_eochs(epochs)
             return epochs
-    classifier: list of classifier, "tslr", "mdm", instance
     label_keys: dict
     compile_test_subjects: bool
         Trueにすると，テストsubjectのデータをまとめて，その精度とかを返す
         Falseにすると，各被験者ごとの精度をリストで返す
 
+    early_stopping: None or int
+        Noneの場合は無効
+        intの場合はpatience
     """
     import torch
 
@@ -163,6 +165,10 @@ def deeplearning_cross_subject(
             )
         else:
             scheduler = scheduler(optimizer=optimizer)
+
+    # setup early stopping
+    if early_stopping is not None:
+        early_stopping = utils.EarlyStopping(patience=early_stopping)
 
     # misc
 
