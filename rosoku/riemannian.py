@@ -198,7 +198,7 @@ def riemannian_cross_subject(
             df_results["labels"] = [y]
             df_results["preds"] = [preds]
             df_results["probas"] = [probas]
-            df_results["elapsed_time"] = [elapsed_time]
+            # df_results["elapsed_time"] = [elapsed_time]
             df_results["desc"] = [desc]
 
             df_list.append(df_results)
