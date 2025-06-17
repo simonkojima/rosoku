@@ -242,11 +242,18 @@ class EarlyStopping:
     def __init__(self, patience=3, min_delta=0.0):
         self.patience = patience
         self.min_delta = min_delta
-        self.best_loss = None
+        self.best_loss = float("inf")
         self.counter = 0
 
+    def initialize(self):
+        self.best_loss = float("inf")
+        self.counter = 0
+
+    def __call__(self, val_loss):
+        return self.step(val_loss)
+
     def step(self, val_loss):
-        if self.best_loss is None or val_loss < self.best_loss - self.min_delta:
+        if val_loss < (self.best_loss - self.min_delta):
             self.best_loss = val_loss
             self.counter = 0
         else:
@@ -259,12 +266,12 @@ def train_epoch(
     model,
     criterion,
     optimizer,
-    scheduler,
     dataloader_train,
     dataloader_valid,
     epoch,
     loss_best,
     history,
+    scheduler=None,
     checkpoint_fname=None,
     enable_wandb=True,
 ):
@@ -292,10 +299,13 @@ def train_epoch(
             model, dataloader_valid, criterion
         )
 
-    scheduler.step()
-    _lr = scheduler.get_last_lr()[0]
+    txt_print = f"epoch {epoch:03}, train_loss: {train_loss:06.4f}, train_acc: {train_acc:.2f}, valid_loss: {valid_loss:06.4f}, valid_acc: {valid_acc:.2f}"
 
-    txt_print = f"epoch {epoch:03}, train_loss: {train_loss:06.4f}, train_acc: {train_acc:.2f}, valid_loss: {valid_loss:06.4f}, valid_acc: {valid_acc:.2f}, lr: {_lr:.4e}"
+    if scheduler is not None:
+        scheduler.step()
+        _lr = scheduler.get_last_lr()[0]
+
+        txt_print += f", lr: {_lr:.4e}"
 
     # save history
     history["epoch"].append(epoch)
