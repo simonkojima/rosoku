@@ -28,7 +28,40 @@ def get_labels_from_epochs(epochs, label_keys={"event:left": 0, "event:right": 1
     return y
 
 
-def normalize_data(X_train_tensor, X_valid_tensor, X_test_tensor):
+def normalize(X_train, X_valid, X_test):
+    """
+    Standardization with training set stats
+
+    X.shape: (n_trials, n_channels, n_times)
+
+    X_test: list or nd.array
+
+    """
+
+    n_trials, n_channels, n_times = X_train.shape
+
+    mean = np.mean(X_train.transpose((1, 0, 2)).reshape((n_channels, -1)), axis=1)
+    std = np.std(X_train.transpose((1, 0, 2)).reshape((n_channels, -1)), axis=1)
+
+    mean = np.expand_dims(mean, axis=(1, 2)).transpose((1, 0, 2))
+    std = np.expand_dims(std, axis=(1, 2)).transpose((1, 0, 2))
+
+    X_train = (X_train - mean) / std
+    X_valid = (X_valid - mean) / std
+
+    X_test_normalized = []
+    if isinstance(X_test, list):
+        for X in X_test:
+            X = (X - mean) / std
+            X_test_normalized.append(X)
+        X_test = X_test_normalized
+    else:
+        X_test = (X_test - mean) / std
+
+    return X_train, X_valid, X_test
+
+
+def normalize_tensor(X_train_tensor, X_valid_tensor, X_test_tensor):
     """
     Standardization with training set stats
 
@@ -149,7 +182,6 @@ def nd_to_dataloader(
     y_test,
     batch_size,
     device="cpu",
-    normalize=True,
 ):
 
     (
@@ -160,13 +192,6 @@ def nd_to_dataloader(
         X_test_tensor,
         y_test_tensor,
     ) = nd_to_tensor(X_train, y_train, X_valid, y_valid, X_test, y_test, device=device)
-
-    if normalize:
-        (
-            X_train_tensor,
-            X_valid_tensor,
-            X_test_tensor,
-        ) = normalize_data(X_train_tensor, X_valid_tensor, X_test_tensor)
 
     (dataset_train, dataset_valid, dataset_test) = tensor_to_dataset(
         X_train_tensor,

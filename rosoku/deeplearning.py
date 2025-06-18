@@ -129,6 +129,8 @@ def deeplearning_cross_subject(
     history_fname=None,
     early_stopping=None,
     name_classifier=None,
+    enable_euclidean_alignment=False,
+    enable_normalization=False,
     desc=None,
 ):
     """
@@ -196,21 +198,30 @@ def deeplearning_cross_subject(
     # load data
 
     ## training data
-    epochs_train = list()
-    y_train = list()
+    X_train = []
+    y_train = []
     for subject in subjects_train:
         files = func_get_fnames(subject)
         epochs = utils.load_epochs(files, True)
         if func_proc_epochs is not None:
             epochs = func_proc_epochs(epochs)
         y_train += utils.get_labels_from_epochs(epochs, label_keys)
-        epochs_train.append(epochs)
+        # epochs_train.append(epochs)
+        X = epochs.get_data()
 
-    epochs_train = tm.concatenate_epochs(epochs_train)
-    X_train = epochs_train.get_data()
+        if enable_euclidean_alignment:
+            from . import tl
+
+            X = tl.euclidean_alignment(X)
+
+        X_train.append(X)
+
+    # epochs_train = tm.concatenate_epochs(epochs_train)
+    # X_train = epochs_train.get_data()
+    X_train = np.concatenate(X_train, axis=0)
 
     ## validation data
-    epochs_valid = list()
+    X_valid = list()
     y_valid = list()
     for subject in subjects_valid:
         files = func_get_fnames(subject)
@@ -218,13 +229,22 @@ def deeplearning_cross_subject(
         if func_proc_epochs is not None:
             epochs = func_proc_epochs(epochs)
         y_valid += utils.get_labels_from_epochs(epochs, label_keys)
-        epochs_valid.append(epochs)
 
-    epochs_valid = tm.concatenate_epochs(epochs_valid)
-    X_valid = epochs_valid.get_data()
+        X = epochs.get_data()
+
+        if enable_euclidean_alignment:
+            from . import tl
+
+            X = tl.euclidean_alignment(X)
+
+        X_valid.append(X)
+
+    # epochs_valid = tm.concatenate_epochs(epochs_valid)
+    # X_valid = epochs_valid.get_data()
+    X_valid = np.concatenate(X_valid, axis=0)
 
     ## test data
-    epochs_test = list()
+    # epochs_test = list()
     X_test = list()
     y_test = list()
     for subject in subjects_test:
@@ -233,8 +253,15 @@ def deeplearning_cross_subject(
         if func_proc_epochs is not None:
             epochs = func_proc_epochs(epochs)
         y_test.append(utils.get_labels_from_epochs(epochs, label_keys))
-        epochs_test.append(epochs)
-        X_test.append(epochs.get_data())
+        # epochs_test.append(epochs)
+        X = epochs.get_data()
+
+        if enable_euclidean_alignment:
+            from . import tl
+
+            X = tl.euclidean_alignment(X)
+
+        X_test.append(X)
 
     if compile_test_subjects:
         # compile y
@@ -351,6 +378,10 @@ def deeplearning_cross_subject(
     print(f"Elapsed Time: {elapsed_time:.2f}s")
     """
 
+    # data normalization
+    if enable_normalization:
+        X_train, X_valid, X_test = utils.normalize(X_train, X_valid, X_test)
+
     # create dataloader
 
     (dataloader_train, dataloader_valid, dataloader_test) = utils.nd_to_dataloader(
@@ -361,7 +392,6 @@ def deeplearning_cross_subject(
         X_test,
         y_test,
         device=device,
-        normalize=True,
         batch_size=batch_size,
     )
 
