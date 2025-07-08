@@ -28,7 +28,7 @@ def get_labels_from_epochs(epochs, label_keys={"event:left": 0, "event:right": 1
     return y
 
 
-def normalize(X_train, X_valid, X_test):
+def normalize(X_train, X_valid, X_test, return_params=False):
     """
     Standardization with training set stats
 
@@ -58,7 +58,10 @@ def normalize(X_train, X_valid, X_test):
     else:
         X_test = (X_test - mean) / std
 
-    return X_train, X_valid, X_test
+    if return_params:
+        return X_train, X_valid, X_test, mean, std
+    else:
+        return X_train, X_valid, X_test
 
 
 def normalize_tensor(X_train_tensor, X_valid_tensor, X_test_tensor):
@@ -294,8 +297,8 @@ def train_epoch(
     dataloader_train,
     dataloader_valid,
     epoch,
-    loss_best,
-    history,
+    loss_best=None,
+    history=None,
     scheduler=None,
     checkpoint_fname=None,
     enable_wandb=True,
@@ -333,11 +336,12 @@ def train_epoch(
         txt_print += f", lr: {_lr:.4e}"
 
     # save history
-    history["epoch"].append(epoch)
-    history["train_loss"].append(train_loss)
-    history["valid_loss"].append(valid_loss)
-    history["train_acc"].append(train_acc)
-    history["valid_acc"].append(valid_acc)
+    if history is not None:
+        history["epoch"].append(epoch)
+        history["train_loss"].append(train_loss)
+        history["valid_loss"].append(valid_loss)
+        history["train_acc"].append(train_acc)
+        history["valid_acc"].append(valid_acc)
 
     # save model if loss was the lowest
     if checkpoint_fname is not None:

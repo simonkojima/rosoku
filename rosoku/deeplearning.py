@@ -380,7 +380,9 @@ def deeplearning_cross_subject(
 
     # data normalization
     if enable_normalization:
-        X_train, X_valid, X_test = utils.normalize(X_train, X_valid, X_test)
+        X_train, X_valid, X_test, normalization_mean, normalization_std = (
+            utils.normalize(X_train, X_valid, X_test, return_params=True)
+        )
 
     # create dataloader
 
@@ -463,6 +465,9 @@ def deeplearning_cross_subject(
             df_results["logits"] = [logits]
             # df_results["elapsed_time"] = [elapsed_time]
             df_results["desc"] = [desc]
+            if enable_normalization:
+                df_results["normalization_mean"] = normalization_mean
+                df_results["normalization_std"] = normalization_std
 
             df_list.append(df_results)
 
