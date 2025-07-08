@@ -466,8 +466,8 @@ def deeplearning_cross_subject(
             # df_results["elapsed_time"] = [elapsed_time]
             df_results["desc"] = [desc]
             if enable_normalization:
-                df_results["normalization_mean"] = normalization_mean
-                df_results["normalization_std"] = normalization_std
+                df_results["normalization_mean"] = [normalization_mean.flatten()]
+                df_results["normalization_std"] = [normalization_std.flatten()]
 
             df_list.append(df_results)
 
