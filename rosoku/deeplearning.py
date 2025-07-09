@@ -34,6 +34,36 @@ def setup_scheduler(scheduler, scheduler_params, optimizer):
     return scheduler
 
 
+def load_data(
+    subjects, func_get_fnames, func_proc_epochs, label_keys, enable_euclidean_alignment
+):
+
+    X = []
+    y = []
+
+    for subject in subjects:
+
+        files = func_get_fnames(subject)
+
+        epochs = utils.load_epochs(files, True)
+
+        if func_proc_epochs is not None:
+            epochs = func_proc_epochs(epochs)
+
+        y.append(np.array(utils.get_labels_from_epochs(epochs, label_keys)))
+
+        X_single = epochs.get_data()
+
+        if enable_euclidean_alignment:
+            from . import tl
+
+            X_single = tl.euclidean_alignment(X_single)
+
+        X.append(X_single)
+
+    return X, y
+
+
 def deeplearning_train(
     dataloader_train,
     dataloader_valid,
@@ -198,185 +228,45 @@ def deeplearning_cross_subject(
     # load data
 
     ## training data
-    X_train = []
-    y_train = []
-    for subject in subjects_train:
-        files = func_get_fnames(subject)
-        epochs = utils.load_epochs(files, True)
-        if func_proc_epochs is not None:
-            epochs = func_proc_epochs(epochs)
-        y_train += utils.get_labels_from_epochs(epochs, label_keys)
-        # epochs_train.append(epochs)
-        X = epochs.get_data()
-
-        if enable_euclidean_alignment:
-            from . import tl
-
-            X = tl.euclidean_alignment(X)
-
-        X_train.append(X)
-
-    # epochs_train = tm.concatenate_epochs(epochs_train)
-    # X_train = epochs_train.get_data()
+    X_train, y_train = load_data(
+        subjects_train,
+        func_get_fnames,
+        func_proc_epochs,
+        label_keys,
+        enable_euclidean_alignment,
+    )
     X_train = np.concatenate(X_train, axis=0)
+    y_train = np.concatenate(y_train, axis=0)
 
     ## validation data
-    X_valid = list()
-    y_valid = list()
-    for subject in subjects_valid:
-        files = func_get_fnames(subject)
-        epochs = utils.load_epochs(files, True)
-        if func_proc_epochs is not None:
-            epochs = func_proc_epochs(epochs)
-        y_valid += utils.get_labels_from_epochs(epochs, label_keys)
-
-        X = epochs.get_data()
-
-        if enable_euclidean_alignment:
-            from . import tl
-
-            X = tl.euclidean_alignment(X)
-
-        X_valid.append(X)
-
-    # epochs_valid = tm.concatenate_epochs(epochs_valid)
-    # X_valid = epochs_valid.get_data()
+    X_valid, y_valid = load_data(
+        subjects_valid,
+        func_get_fnames,
+        func_proc_epochs,
+        label_keys,
+        enable_euclidean_alignment,
+    )
     X_valid = np.concatenate(X_valid, axis=0)
+    y_valid = np.concatenate(y_valid, axis=0)
 
     ## test data
-    # epochs_test = list()
-    X_test = list()
-    y_test = list()
-    for subject in subjects_test:
-        files = func_get_fnames(subject)
-        epochs = utils.load_epochs(files, True)
-        if func_proc_epochs is not None:
-            epochs = func_proc_epochs(epochs)
-        y_test.append(utils.get_labels_from_epochs(epochs, label_keys))
-        # epochs_test.append(epochs)
-        X = epochs.get_data()
-
-        if enable_euclidean_alignment:
-            from . import tl
-
-            X = tl.euclidean_alignment(X)
-
-        X_test.append(X)
+    X_test, y_test = load_data(
+        subjects_test,
+        func_get_fnames,
+        func_proc_epochs,
+        label_keys,
+        enable_euclidean_alignment,
+    )
 
     if compile_test_subjects:
         # compile y
-        y_test_compiled = list()
-        for y in y_test:
-            y_test_compiled += y
-        y_test = [y_test_compiled]
+        y_test = [np.concatenate(y_test, axis=0)]
 
         # compile X
         X_test = [np.concatenate(X_test, axis=0)]
 
         # compile subjects_test list
         subjects_test = [subjects_test]
-
-    """
-    # create dataloader
-
-    (dataloader_train, dataloader_valid, dataloader_test) = utils.nd_to_dataloader(
-        X_train,
-        y_train,
-        X_valid,
-        y_valid,
-        X_test,
-        y_test,
-        device=device,
-        normalize=True,
-        batch_size=batch_size,
-    )
-
-    # setup model
-
-    if func_get_model is not None:
-        model = func_get_model(X_train, y_train, device)
-
-    if model is None:
-        raise RuntimeError("model is None")
-
-    if name_classifier is None:
-        name_classifier = model.__class__.__name__
-
-    # setup optimizer
-
-    if optimizer_params is not None:
-        optimizer = optimizer(
-            params=model.parameters(),
-            **optimizer_params,
-        )
-    else:
-        optimizer = optimizer(params=model.parameters())
-
-    # setup scheduler
-
-    if scheduler is not None:
-        if scheduler_params is not None:
-            scheduler = scheduler(
-                optimizer=optimizer,
-                **scheduler_params,
-            )
-        else:
-            scheduler = scheduler(optimizer=optimizer)
-
-    # setup early stopping
-    if early_stopping is not None:
-        early_stopping = utils.EarlyStopping(patience=early_stopping)
-
-    # misc
-
-    history = {
-        "epoch": list(),
-        "train_loss": list(),
-        "valid_loss": list(),
-        "train_acc": list(),
-        "valid_acc": list(),
-    }
-
-    loss_best = [float("inf")]
-
-    # wandb.init(project = project, name = f"within-session_sub-{subject}_run-{run}")
-    if enable_wandb_logging:
-        wandb.init(**wandb_params)
-
-    tic = time.time()
-    for epoch in range(n_epochs):
-        valid_loss = utils.train_epoch(
-            model=model,
-            criterion=criterion,
-            optimizer=optimizer,
-            scheduler=scheduler,
-            dataloader_train=dataloader_train,
-            dataloader_valid=dataloader_valid,
-            epoch=epoch,
-            loss_best=loss_best,
-            history=history,
-            checkpoint_fname=checkpoint_fname,
-            enable_wandb=enable_wandb_logging,
-        )
-
-        if early_stopping is not None:
-            if early_stopping.step(valid_loss):
-                print(f"Early stopping was triggered: epoch #{epoch+1}")
-                break
-
-    toc = time.time()
-    elapsed_time = toc - tic
-
-    if enable_wandb_logging:
-        wandb.finish()
-
-    if history_fname is not None:
-        df_save = pd.DataFrame(history)
-        df_save.to_pickle(f"{history_fname}.pkl")
-        df_save.to_html(f"{history_fname}.html")
-
-    print(f"Elapsed Time: {elapsed_time:.2f}s")
-    """
 
     # data normalization
     if enable_normalization:

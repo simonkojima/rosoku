@@ -2,6 +2,37 @@ import numpy as np
 import tag_mne as tm
 
 
+# alies for preprocessing modules will be deprecated
+def normalize(*args, **kwargs):
+    from .. import preprocessing
+
+    import warnings
+
+    warnings.simplefilter("default", DeprecationWarning)
+
+    warnings.warn(
+        "rosoku.utils.normalize() is deprecated and will be removed in a future version. Use rosoku.preprocessing.normalize() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return preprocessing.normalize(*args, **kwargs)
+
+
+def normalize_tensor(*args, **kwargs):
+    from .. import preprocessing
+
+    import warnings
+
+    warnings.simplefilter("default", DeprecationWarning)
+
+    warnings.warn(
+        "rosoku.utils.normalize_tensor() is deprecated and will be removed in a future version. Use rosoku.preprocessing.normalize_tensor() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return preprocessing.normalize_tensor(*args, **kwargs)
+
+
 def load_epochs(files, concat=False):
     import mne
 

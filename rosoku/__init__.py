@@ -1,5 +1,6 @@
 from .riemannian import *
 from .deeplearning import *
-from .utils import *
 
+from . import preprocessing
+from . import utils
 from . import tl
