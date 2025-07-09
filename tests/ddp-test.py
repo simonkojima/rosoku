@@ -3,6 +3,8 @@ import braindecode
 
 import torch
 
+from pathlib import Path
+
 
 def func_proc_epochs(epochs):
     epochs = epochs.pick(picks="eeg").crop(tmin=0.25, tmax=5.0)
@@ -27,7 +29,6 @@ def func_get_fnames(subject):
 
 
 def func_get_model(X, y):
-    print(X.shape)
     _, n_chans, n_times = X.shape
     F1 = 4
     D = 2
@@ -47,13 +48,10 @@ def func_get_model(X, y):
 
 
 def main_cross_subject():
-    # setup mpdels
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    lr = 0.001
+    lr = 0.0001
     weight_decay = 0.0005
-    n_epochs = 10
+    n_epochs = 500
     batch_size = 64
     patience = 75
 
@@ -62,9 +60,12 @@ def main_cross_subject():
     early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 
     returns = rosoku.deeplearning_cross_subject(
-        subjects_train=["A1", "A2"],
-        subjects_valid=["A3", "A4"],
-        subjects_test=["A5", "A6"],
+        # subjects_train=["A56"],
+        # subjects_valid=["A56"],
+        # subjects_test=["A56"],
+        subjects_train=[f"A{m}" for m in range(1, 16)],
+        subjects_valid=[f"A{m}" for m in range(16, 21)],
+        subjects_test=["A56"],
         func_get_fnames=func_get_fnames,
         func_proc_epochs=func_proc_epochs,
         func_get_model=func_get_model,
@@ -72,17 +73,21 @@ def main_cross_subject():
         scheduler=scheduler,
         batch_size=batch_size,
         n_epochs=n_epochs,
-        checkpoint_fname=None,
+        checkpoint_fname=Path("~/checkpoint/debug/checkpoint.pth").expanduser(),
         early_stopping=early_stopping,
-        device=device,
+        use_cuda=True,
+        num_workers=0,
         history_fname=None,
         scheduler_params={"T_max": n_epochs, "eta_min": 1e-6},
         optimizer=torch.optim.AdamW,
         optimizer_params={"lr": lr, "weight_decay": weight_decay},
         compile_test_subjects=False,
+        enable_euclidean_alignment=True,
+        enable_normalization=True,
     )
 
     print(returns)
+    print(returns["accuracy"])
 
 
 if __name__ == "__main__":

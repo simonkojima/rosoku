@@ -27,7 +27,6 @@ def func_get_fnames(subject):
 
 
 def func_get_model(X, y):
-    print(X.shape)
     _, n_chans, n_times = X.shape
     F1 = 4
     D = 2
@@ -74,7 +73,8 @@ def main_cross_subject():
         n_epochs=n_epochs,
         checkpoint_fname=None,
         early_stopping=early_stopping,
-        device=device,
+        use_cuda=True,
+        num_workers=2,
         history_fname=None,
         scheduler_params={"T_max": n_epochs, "eta_min": 1e-6},
         optimizer=torch.optim.AdamW,
