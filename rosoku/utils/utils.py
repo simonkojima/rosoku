@@ -1,3 +1,4 @@
+import time
 import numpy as np
 import tag_mne as tm
 
@@ -40,6 +41,30 @@ def normalize_tensor(*args, **kwargs):
 
 
 ##
+
+
+class EarlyStopping:
+    def __init__(self, patience=3, min_delta=0.0):
+        self.patience = patience
+        self.min_delta = min_delta
+        self.best_loss = float("inf")
+        self.counter = 0
+
+    def initialize(self):
+        self.best_loss = float("inf")
+        self.counter = 0
+
+    def __call__(self, val_loss):
+        return self.step(val_loss)
+
+    def step(self, val_loss):
+        if val_loss < (self.best_loss - self.min_delta):
+            self.best_loss = val_loss
+            self.counter = 0
+        else:
+            self.counter += 1
+
+        return self.counter >= self.patience
 
 
 def load_epochs(files, concat=False):
@@ -133,6 +158,8 @@ def dataset_to_dataloader(
         num_workers = DS_params["num_workers"]
         rank = DS_params["rank"]
 
+        persistent_workers = num_workers > 0
+
         sampler_train = torch.utils.data.distributed.DistributedSampler(
             dataset_train, num_replicas=world_size, rank=rank, shuffle=True
         )
@@ -150,6 +177,8 @@ def dataset_to_dataloader(
             batch_size=batch_size,
             sampler=sampler_train,
             num_workers=num_workers,
+            pin_memory=True,
+            persistent_workers=persistent_workers,
         )
 
         dataloader_valid = torch.utils.data.DataLoader(
@@ -157,6 +186,8 @@ def dataset_to_dataloader(
             batch_size=batch_size,
             sampler=sampler_valid,
             num_workers=num_workers,
+            pin_memory=True,
+            persistent_workers=persistent_workers,
         )
 
         if isinstance(dataset_test, list):
@@ -166,6 +197,8 @@ def dataset_to_dataloader(
                     batch_size=batch_size,
                     sampler=sampler_test,
                     num_workers=num_workers,
+                    pin_memory=True,
+                    persistent_workers=persistent_workers,
                 )
                 for dataset in dataset_test
             ]
@@ -175,6 +208,8 @@ def dataset_to_dataloader(
                 batch_size=batch_size,
                 sampler=sampler_test,
                 num_workers=num_workers,
+                pin_memory=True,
+                persistent_workers=persistent_workers,
             )
 
         return dataloader_train, dataloader_valid, dataloader_test, sampler_train
@@ -244,7 +279,7 @@ def nd_to_dataloader(
     )
 
 
-def get_predictions(model, dataloader):
+def get_predictions(model, dataloader, device="cpu"):
     import torch
 
     model.eval()
@@ -256,6 +291,10 @@ def get_predictions(model, dataloader):
 
     with torch.no_grad():
         for X, y in dataloader:
+
+            X = X.to(device, non_blocking=True)
+            y = y.to(device, non_blocking=True)
+
             logits = model(X)
             preds = torch.argmax(logits, dim=1)
             probas = torch.nn.functional.softmax(logits, dim=1)
@@ -273,7 +312,8 @@ def get_predictions(model, dataloader):
     return preds_list, labels_list, logits_list, probas_list
 
 
-def accuracy_score_dataloader(model, dataloader, criterion=None):
+"""
+def accuracy_score_dataloader_DPP(model, dataloader, criterion=None, device="cpu"):
     import torch
 
     total_loss = 0
@@ -282,6 +322,9 @@ def accuracy_score_dataloader(model, dataloader, criterion=None):
     model.eval()
     with torch.no_grad():
         for X, y in dataloader:
+            X = X.to(device, non_blocking=True)
+            y = y.to(device, non_blocking=True)
+
             y_pred = model(X)
             preds = torch.argmax(y_pred, dim=1)
             if criterion is not None:
@@ -289,37 +332,73 @@ def accuracy_score_dataloader(model, dataloader, criterion=None):
                 total_loss += loss.item() * y.size(0)
             correct += (preds == y).sum().item()
             total += y.size(0)
-        acc = correct / total if total > 0 else 0
+
+    total_loss_tensor = torch.tensor(total_loss, device=device)
+    correct_tensor = torch.tensor(correct, device=device)
+    total_tensor = torch.tensor(total, device=device)
+
+    torch.distributed.all_reduce(total_loss_tensor, op=torch.distributed.ReduceOp.SUM)
+    torch.distributed.all_reduce(correct_tensor, op=torch.distributed.ReduceOp.SUM)
+    torch.distributed.all_reduce(total_tensor, op=torch.distributed.ReduceOp.SUM)
+
+    loss_avg = total_loss_tensor.item() / total_tensor.item()
+    acc = correct_tensor.item() / total_tensor.item()
 
     if criterion is not None:
-        avg_loss = total_loss / total if total > 0 else 0
-        return acc, avg_loss
+        return acc, loss_avg
     else:
         return acc
+"""
 
 
-class EarlyStopping:
-    def __init__(self, patience=3, min_delta=0.0):
-        self.patience = patience
-        self.min_delta = min_delta
-        self.best_loss = float("inf")
-        self.counter = 0
+def evaluation_dataloader(
+    model, dataloader, criterion=None, device="cpu", enable_ddp=False
+):
+    import torch
 
-    def initialize(self):
-        self.best_loss = float("inf")
-        self.counter = 0
+    total_loss = 0
+    correct = 0
+    total = 0
+    model.eval()
+    with torch.no_grad():
+        for X, y in dataloader:
+            X = X.to(device, non_blocking=True)
+            y = y.to(device, non_blocking=True)
 
-    def __call__(self, val_loss):
-        return self.step(val_loss)
+            y_pred = model(X)
+            preds = torch.argmax(y_pred, dim=1)
+            if criterion is not None:
+                loss = criterion(y_pred, y)
+                total_loss += loss.item() * y.size(0)
+            correct += (preds == y).sum().item()
+            total += y.size(0)
 
-    def step(self, val_loss):
-        if val_loss < (self.best_loss - self.min_delta):
-            self.best_loss = val_loss
-            self.counter = 0
+    if enable_ddp:
+        total_loss_tensor = torch.tensor(total_loss, device=device)
+        correct_tensor = torch.tensor(correct, device=device)
+        total_tensor = torch.tensor(total, device=device)
+
+        torch.distributed.all_reduce(
+            total_loss_tensor, op=torch.distributed.ReduceOp.SUM
+        )
+        torch.distributed.all_reduce(correct_tensor, op=torch.distributed.ReduceOp.SUM)
+        torch.distributed.all_reduce(total_tensor, op=torch.distributed.ReduceOp.SUM)
+
+        loss_avg = total_loss_tensor.item() / total_tensor.item()
+        acc = correct_tensor.item() / total_tensor.item()
+
+        if criterion is not None:
+            return acc, loss_avg
         else:
-            self.counter += 1
+            return acc
+    else:
+        acc = correct / total
 
-        return self.counter >= self.patience
+        if criterion is not None:
+            loss_avg = total_loss / total
+            return acc, loss_avg
+        else:
+            return acc
 
 
 def train_epoch(
@@ -329,22 +408,28 @@ def train_epoch(
     dataloader_train,
     dataloader_valid,
     epoch,
+    device="cpu",
     loss_best=None,
     history=None,
     scheduler=None,
     checkpoint_fname=None,
     enable_wandb=True,
+    enable_ddp=False,
     rank=0,
 ):
     import torch
 
+    tic = time.time()
+
     # train
     model.train()
-    train_loss = 0
     for X, y in dataloader_train:
+        X = X.to(device, non_blocking=True)
+        y = y.to(device, non_blocking=True)
+
         y_pred = model(X)
         loss = criterion(y_pred, y)
-        train_loss += loss.item()
+        # train_loss += loss.item()
 
         optimizer.zero_grad()
         loss.backward()
@@ -353,11 +438,19 @@ def train_epoch(
     # valid
     model.eval()
     with torch.no_grad():
-        train_acc, train_loss = accuracy_score_dataloader(
-            model, dataloader_train, criterion
+        train_acc, train_loss = evaluation_dataloader(
+            model=model,
+            dataloader=dataloader_train,
+            criterion=criterion,
+            device=device,
+            enable_ddp=enable_ddp,
         )
-        valid_acc, valid_loss = accuracy_score_dataloader(
-            model, dataloader_valid, criterion
+        valid_acc, valid_loss = evaluation_dataloader(
+            model=model,
+            dataloader=dataloader_valid,
+            criterion=criterion,
+            device=device,
+            enable_ddp=enable_ddp,
         )
 
     txt_print = f"epoch {epoch:03}, train_loss: {train_loss:06.4f}, train_acc: {train_acc:.2f}, valid_loss: {valid_loss:06.4f}, valid_acc: {valid_acc:.2f}"
@@ -367,6 +460,9 @@ def train_epoch(
         _lr = scheduler.get_last_lr()[0]
 
         txt_print += f", lr: {_lr:.4e}"
+
+    toc = time.time()
+    txt_print += f", et: {toc-tic:.4f}"
 
     # save history
     if history is not None and rank == 0:
@@ -378,15 +474,18 @@ def train_epoch(
 
     # save model if loss was the lowest
     if checkpoint_fname is not None and rank == 0:
-        if valid_loss < loss_best[0]:
+        if valid_loss < loss_best["value"]:
             checkpoint = dict()
             checkpoint["epoch"] = epoch
-            checkpoint["model_state_dict"] = model.state_dict()
+            checkpoint["model_state_dict"] = (
+                model.module.state_dict() if enable_ddp else model.state_dict()
+            )
             checkpoint["optimizer_state_dict"] = optimizer.state_dict()
-            checkpoint["loss"] = loss
-            torch.save(checkpoint, f"{checkpoint_fname}.pth")
+            checkpoint["valid_loss"] = valid_loss
+            # torch.save(checkpoint, f"{checkpoint_fname}.pth")
+            torch.save(checkpoint, checkpoint_fname)
 
-            loss_best[0] = valid_loss
+            loss_best["value"] = valid_loss
 
             txt_print += ", checkpoint saved"
 

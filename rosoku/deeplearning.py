@@ -1,3 +1,4 @@
+import os
 import time
 
 import numpy as np
@@ -7,6 +8,7 @@ import tag_mne as tm
 import pandas as pd
 
 from . import utils
+from . import preprocessing
 
 
 def setup_optimizer(optimizer, optimizer_params, model):
@@ -37,10 +39,10 @@ def setup_scheduler(scheduler, scheduler_params, optimizer):
 def deeplearning_train(
     dataloader_train,
     dataloader_valid,
-    sampler_train,
     n_epochs,
     model,
     criterion,
+    device,
     optimizer=None,
     scheduler=None,
     early_stopping=None,
@@ -48,6 +50,8 @@ def deeplearning_train(
     wandb_params=None,
     checkpoint_fname=None,
     history_fname=None,
+    enable_ddp=False,
+    sampler_train=None,
 ):
 
     if enable_wandb_logging:
@@ -64,15 +68,15 @@ def deeplearning_train(
         "valid_acc": list(),
     }
 
-    loss_best = [float("inf")]
+    loss_best = {"value": float("inf")}
 
-    # wandb.init(project = project, name = f"within-session_sub-{subject}_run-{run}")
     if enable_wandb_logging:
         wandb.init(**wandb_params)
 
     tic = time.time()
     for epoch in range(n_epochs):
-        sampler_train.set_epoch(epoch)
+        if enable_ddp:
+            sampler_train.set_epoch(epoch)
         valid_loss = utils.train_epoch(
             model=model,
             criterion=criterion,
@@ -81,10 +85,12 @@ def deeplearning_train(
             dataloader_train=dataloader_train,
             dataloader_valid=dataloader_valid,
             epoch=epoch,
+            device=device,
             loss_best=loss_best,
             history=history,
             checkpoint_fname=checkpoint_fname,
             enable_wandb=enable_wandb_logging,
+            enable_ddp=enable_ddp,
         )
 
         if early_stopping is not None:
@@ -140,7 +146,9 @@ def load_data(
 def main_cross_subject(
     rank,
     world_size,
-    use_cuda,
+    enable_ddp,
+    num_workers,
+    device,
     X_train,
     y_train,
     X_valid,
@@ -163,42 +171,57 @@ def main_cross_subject(
     func_get_model = kwargs.get("func_get_model", None)
     scheduler = kwargs.get("scheduler", None)
     scheduler_params = kwargs.get("scheduler_params", None)
-    func_proc_epochs = kwargs.get("func_proc_epochs", None)
-    label_keys = kwargs.get("label_keys", {"event:left": 0, "event:right": 1})
-    compile_test_subjects = kwargs.get("compile_test_subjects", False)
     enable_wandb_logging = kwargs.get("enable_wandb_logging", False)
     wandb_params = kwargs.get("wandb_params", None)
     checkpoint_fname = kwargs.get("checkpoint_fname", None)
     history_fname = kwargs.get("history_fname", None)
     early_stopping = kwargs.get("early_stopping", None)
     name_classifier = kwargs.get("name_classifier", None)
-    enable_euclidean_alignment = kwargs.get("enable_euclidean_alignment", False)
-    enable_normalization = kwargs.get("enable_normalization", False)
-    desc = kwargs.get("desc", None)
 
     # setup DDP
-    backend = "nccl" if use_cuda else "gloo"
-    torch.distributed.init_process_group(
-        backend=backend, rank=rank, world_size=world_size
-    )
-    device = torch.device(f"cuda:{rank}" if use_cuda else "cpu")
+    if enable_ddp:
+
+        os.environ["MASTER_ADDR"] = "127.0.0.1"
+        os.environ["MASTER_PORT"] = "29500"
+
+        backend = "nccl"
+        torch.distributed.init_process_group(
+            backend=backend, rank=rank, world_size=world_size
+        )
+        device = torch.device(f"cuda:{rank}")
 
     # create dataloader
 
-    (dataloader_train, dataloader_valid, dataloader_test, sampler_train) = (
-        utils.nd_to_dataloader(
+    if enable_ddp:
+        (dataloader_train, dataloader_valid, _, sampler_train) = utils.nd_to_dataloader(
             X_train,
             y_train,
             X_valid,
             y_valid,
             X_test,
             y_test,
-            device=device,
+            device="cpu",
             batch_size=batch_size,
             enable_DS=True,
-            DS_params={"world_size": world_size, "num_workers": 2, "rank": rank},
+            DS_params={
+                "world_size": world_size,
+                "num_workers": num_workers,
+                "rank": rank,
+            },
         )
-    )
+    else:
+        (dataloader_train, dataloader_valid, _) = utils.nd_to_dataloader(
+            X_train,
+            y_train,
+            X_valid,
+            y_valid,
+            X_test,
+            y_test,
+            device="cpu",
+            batch_size=batch_size,
+            enable_DS=False,
+        )
+        sampler_train = None
 
     # setup model
 
@@ -209,9 +232,8 @@ def main_cross_subject(
         raise RuntimeError("model is None")
 
     model.to(device)
-    model = torch.nn.parallel.DistributedDataParallel(
-        model, device_ids=[rank] if use_cuda else None
-    )
+    if enable_ddp:
+        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[rank])
 
     if name_classifier is None:
         name_classifier = model.__class__.__name__
@@ -224,23 +246,29 @@ def main_cross_subject(
 
     # setup early stopping
     if isinstance(early_stopping, int):
-        early_stopping = utils.EarlyStopping(patience=early_stopping)
+        early_stopping = preprocessing.EarlyStopping(patience=early_stopping)
 
-    model = deeplearning_train(
-        dataloader_train=dataloader_train,
-        dataloader_valid=dataloader_valid,
-        sampler_train=sampler_train,
-        n_epochs=n_epochs,
-        model=model,
-        criterion=criterion,
-        optimizer=optimizer,
-        scheduler=scheduler,
-        enable_wandb_logging=enable_wandb_logging,
-        wandb_params=wandb_params,
-        checkpoint_fname=checkpoint_fname,
-        history_fname=history_fname,
-        early_stopping=early_stopping,
-    )
+    try:
+        model = deeplearning_train(
+            dataloader_train=dataloader_train,
+            dataloader_valid=dataloader_valid,
+            n_epochs=n_epochs,
+            model=model,
+            criterion=criterion,
+            device=device,
+            optimizer=optimizer,
+            scheduler=scheduler,
+            enable_wandb_logging=enable_wandb_logging,
+            wandb_params=wandb_params,
+            checkpoint_fname=checkpoint_fname,
+            history_fname=history_fname,
+            early_stopping=early_stopping,
+            enable_ddp=enable_ddp,
+            sampler_train=sampler_train,
+        )
+    finally:
+        if enable_ddp:
+            torch.distributed.destroy_process_group()
 
 
 def deeplearning_cross_subject(
@@ -258,8 +286,9 @@ def deeplearning_cross_subject(
     func_get_model=None,
     scheduler=None,
     scheduler_params=None,
-    # device="cpu",
-    use_cuda=True,
+    device="cpu",
+    enable_ddp=False,
+    num_workers=0,
     func_proc_epochs=None,
     label_keys={"event:left": 0, "event:right": 1},
     compile_test_subjects=False,
@@ -272,7 +301,6 @@ def deeplearning_cross_subject(
     enable_euclidean_alignment=False,
     enable_normalization=False,
     desc=None,
-    **kwargs,
 ):
     """
     subjects_train: list
@@ -303,6 +331,11 @@ def deeplearning_cross_subject(
         schedulerへ渡す**kwargs
     device: str
         "cpu", "cuda"...etc
+    enable_ddp: bool
+        DDP(Distributed Data Parallel)を使うか否か．Trueの場合はdevice = "cuda"じゃないといけないので注意
+    num_workers: int
+        各GPUごとにいくつのプロセスを使ってデータ読み込みを行うか
+        enable_ddp = Trueのときのみこの変更が有効になる
     func_proc_epochs: callable
         mne.epochsを引数として，mne.epochsを返す
         チャネルを脳波のみにする，cropする...などで使う
@@ -336,9 +369,14 @@ def deeplearning_cross_subject(
     if not isinstance(subjects_train, list) or not isinstance(subjects_test, list):
         raise ValueError("type of subjects_train and subjects_test have to be list")
 
+    if enable_ddp and device != "cuda":
+        raise ValueError("device have to be 'cuda' when enable_ddp = True.")
+
     # setup DDP
-    if use_cuda:
+    if enable_ddp:
         world_size = torch.cuda.device_count()
+    # else:
+    # world_size = None
 
     # load data
 
@@ -386,7 +424,7 @@ def deeplearning_cross_subject(
     # data normalization
     if enable_normalization:
         X_train, X_valid, X_test, normalization_mean, normalization_std = (
-            utils.normalize(X_train, X_valid, X_test, return_params=True)
+            preprocessing.normalize(X_train, X_valid, X_test, return_params=True)
         )
 
     kwargs = {
@@ -409,49 +447,70 @@ def deeplearning_cross_subject(
         "desc": desc,
     }
 
-    args = (
-        world_size,
-        use_cuda,
-        X_train,
-        y_train,
-        X_valid,
-        y_valid,
-        X_test,
-        y_test,
-        criterion,
-        batch_size,
-        n_epochs,
-        optimizer,
-        kwargs,
-    )
-
-    torch.multiprocessing.spawn(
-        main_cross_subject, args=args, nprocs=world_size, join=True
-    )
-
-    if model is None:
-        model = func_get_model()
-
-    device = "cuda" if use_cuda else "cpu"
-    model.to(device)
-
-    # classify test data
-    if checkpoint_fname is not None:
-        checkpoint = torch.load(f"{checkpoint_fname}.pth")
-        model.load_state_dict(checkpoint["model_state_dict"])
-
-    (dataloader_train, dataloader_valid, dataloader_test, sampler_train) = (
-        utils.nd_to_dataloader(
+    if enable_ddp:
+        args = (
+            world_size,
+            enable_ddp,
+            num_workers,
+            device,
             X_train,
             y_train,
             X_valid,
             y_valid,
             X_test,
             y_test,
-            device=device,
-            batch_size=batch_size,
-            enable_DS=False,
+            criterion,
+            batch_size,
+            n_epochs,
+            optimizer,
+            kwargs,
         )
+
+        torch.multiprocessing.spawn(
+            main_cross_subject, args=args, nprocs=world_size, join=True
+        )
+    else:
+        main_cross_subject(
+            rank=None,
+            world_size=None,
+            enable_ddp=enable_ddp,
+            num_workers=0,
+            device=device,
+            X_train=X_train,
+            y_train=y_train,
+            X_valid=X_valid,
+            y_valid=y_valid,
+            X_test=X_test,
+            y_test=y_test,
+            criterion=criterion,
+            batch_size=batch_size,
+            n_epochs=n_epochs,
+            optimizer=optimizer,
+            kwargs=kwargs,
+        )
+
+    if model is None:
+        model = func_get_model(X_train, y_train)
+
+    # device = "cuda" if enable_ddp else "cpu"
+    model.to(device)
+
+    # classify test data
+    if checkpoint_fname is not None:
+        # checkpoint = torch.load(f"{checkpoint_fname}")
+        checkpoint = torch.load(checkpoint_fname, map_location=torch.device(device))
+        model.load_state_dict(checkpoint["model_state_dict"])
+
+    (dataloader_train, dataloader_valid, dataloader_test) = utils.nd_to_dataloader(
+        X_train,
+        y_train,
+        X_valid,
+        y_valid,
+        X_test,
+        y_test,
+        device="cpu",
+        batch_size=batch_size,
+        enable_DS=False,
     )
 
     df_list = list()
@@ -463,6 +522,7 @@ def deeplearning_cross_subject(
             preds, labels, logits, probas = utils.get_predictions(
                 model,
                 dataloader,
+                device=device,
             )
 
             accuracy = sklearn.metrics.accuracy_score(labels, preds)
@@ -528,7 +588,7 @@ if __name__ == "__main__":
             F1=F1,
             D=D,
             F2=F2,
-            drop_prob=0.5,
+            drop_prob=0.25,
         )
         model.to(device)
 
@@ -540,7 +600,7 @@ if __name__ == "__main__":
 
     lr = 0.001
     weight_decay = 0.0005
-    n_epochs = 10
+    n_epochs = 100
     batch_size = 64
     patience = 75
 
@@ -550,9 +610,12 @@ if __name__ == "__main__":
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR
 
     returns = deeplearning_cross_subject(
-        subjects_train=["A1", "A2"],
-        subjects_valid=["A3", "A4"],
-        subjects_test=["A5", "A6"],
+        # subjects_train=["A1", "A2"],
+        # subjects_valid=["A3", "A4"],
+        # subjects_test=["A5", "A6"],
+        subjects_train=[f"A{m}" for m in range(1, 16)] + ["A56"],
+        subjects_valid=[f"A{m}" for m in range(17, 19)] + ["A56"],
+        subjects_test=["A56"],
         func_get_fnames=_func_get_fnames,
         func_proc_epochs=_func_proc_epochs,
         func_get_model=_func_get_model,
@@ -561,8 +624,9 @@ if __name__ == "__main__":
         batch_size=batch_size,
         n_epochs=n_epochs,
         checkpoint_fname=None,
-        early_stopping=early_stopping,
-        device=device,
+        early_stopping=None,
+        use_cuda=True,
+        num_workers=2,
         history_fname=None,
         scheduler_params={"T_max": n_epochs, "eta_min": 1e-6},
         optimizer=torch.optim.AdamW,

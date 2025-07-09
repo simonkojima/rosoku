@@ -51,7 +51,7 @@ def main_cross_subject():
 
     lr = 0.0001
     weight_decay = 0.0005
-    n_epochs = 500
+    n_epochs = 10
     batch_size = 64
     patience = 75
 
@@ -76,8 +76,6 @@ def main_cross_subject():
         checkpoint_fname=Path("~/checkpoint/debug/checkpoint.pth").expanduser(),
         early_stopping=early_stopping,
         enable_ddp=False,
-        device="cuda",
-        # num_workers=0,
         history_fname=None,
         scheduler_params={"T_max": n_epochs, "eta_min": 1e-6},
         optimizer=torch.optim.AdamW,
