@@ -501,7 +501,7 @@ def deeplearning_cross_subject(
         checkpoint = torch.load(checkpoint_fname, map_location=torch.device(device))
         model.load_state_dict(checkpoint["model_state_dict"])
 
-    (dataloader_train, dataloader_valid, dataloader_test) = utils.nd_to_dataloader(
+    (_, _, dataloader_test) = utils.nd_to_dataloader(
         X_train,
         y_train,
         X_valid,
