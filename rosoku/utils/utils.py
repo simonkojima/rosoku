@@ -2,6 +2,46 @@ import numpy as np
 import tag_mne as tm
 
 
+##
+# alies for preprocessing modules will be deprecated
+
+
+# def normalize(X_train, X_valid, X_test, return_params=False):
+def normalize(*args, **kwargs):
+    from .. import preprocessing
+
+    import warnings
+
+    warnings.simplefilter("default", DeprecationWarning)
+
+    warnings.warn(
+        "rosoku.utils.normalize() is deprecated and will be removed in a future version. Use rosoku.preprocessing.normalize() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    # return preprocessing.normalize(X_train, X_valid, X_test, return_params)
+    return preprocessing.normalize(*args, **kwargs)
+
+
+def normalize_tensor(*args, **kwargs):
+    from .. import preprocessing
+
+    import warnings
+
+    warnings.simplefilter("default", DeprecationWarning)
+
+    warnings.warn(
+        "rosoku.utils.normalize_tensor() is deprecated and will be removed in a future version. Use rosoku.preprocessing.normalize_tensor() instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    # return preprocessing.normalize(X_train, X_valid, X_test, return_params)
+    return preprocessing.normalize_tensor(*args, **kwargs)
+
+
+##
+
+
 def load_epochs(files, concat=False):
     import mne
 
@@ -26,81 +66,6 @@ def get_labels_from_epochs(epochs, label_keys={"event:left": 0, "event:right": 1
                 y.append(val)
 
     return y
-
-
-def normalize(X_train, X_valid, X_test, return_params=False):
-    """
-    Standardization with training set stats
-
-    X.shape: (n_trials, n_channels, n_times)
-
-    X_test: list or nd.array
-
-    """
-
-    n_trials, n_channels, n_times = X_train.shape
-
-    mean = np.mean(X_train.transpose((1, 0, 2)).reshape((n_channels, -1)), axis=1)
-    std = np.std(X_train.transpose((1, 0, 2)).reshape((n_channels, -1)), axis=1)
-
-    mean = np.expand_dims(mean, axis=(1, 2)).transpose((1, 0, 2))
-    std = np.expand_dims(std, axis=(1, 2)).transpose((1, 0, 2))
-
-    X_train = (X_train - mean) / std
-    X_valid = (X_valid - mean) / std
-
-    X_test_normalized = []
-    if isinstance(X_test, list):
-        for X in X_test:
-            X = (X - mean) / std
-            X_test_normalized.append(X)
-        X_test = X_test_normalized
-    else:
-        X_test = (X_test - mean) / std
-
-    if return_params:
-        return X_train, X_valid, X_test, mean, std
-    else:
-        return X_train, X_valid, X_test
-
-
-def normalize_tensor(X_train_tensor, X_valid_tensor, X_test_tensor):
-    """
-    Standardization with training set stats
-
-    X.shape: (n_trials, n_channels, n_times)
-
-    X_test_tensor: list
-
-    """
-
-    n_trials, n_channels, n_times = X_train_tensor.shape
-
-    mean = X_train_tensor.transpose(1, 2).reshape(-1, n_channels).mean(dim=0)
-    std = X_train_tensor.transpose(1, 2).reshape(-1, n_channels).std(dim=0)
-
-    print("mean", mean.size(), mean)
-    print("std", std.size(), std)
-
-    X_train_tensor = (X_train_tensor - mean.unsqueeze(0).unsqueeze(2)) / std.unsqueeze(
-        0
-    ).unsqueeze(2)
-    X_valid_tensor = (X_valid_tensor - mean.unsqueeze(0).unsqueeze(2)) / std.unsqueeze(
-        0
-    ).unsqueeze(2)
-
-    X_test_tensor_normalized = list()
-    if isinstance(X_test_tensor, list):
-        for X in X_test_tensor:
-            X = (X - mean.unsqueeze(0).unsqueeze(2)) / std.unsqueeze(0).unsqueeze(2)
-            X_test_tensor_normalized.append(X)
-        X_test_tensor = X_test_tensor_normalized
-    else:
-        X_test_tensor = (
-            X_test_tensor - mean.unsqueeze(0).unsqueeze(2)
-        ) / std.unsqueeze(0).unsqueeze(2)
-
-    return X_train_tensor, X_valid_tensor, X_test_tensor
 
 
 def nd_to_tensor(X_train, y_train, X_valid, y_valid, X_test, y_test, device="cpu"):
@@ -153,27 +118,89 @@ def tensor_to_dataset(
     return dataset_train, dataset_valid, dataset_test
 
 
-def dataset_to_dataloader(dataset_train, dataset_valid, dataset_test, batch_size):
+def dataset_to_dataloader(
+    dataset_train,
+    dataset_valid,
+    dataset_test,
+    batch_size,
+    enable_DS=False,
+    DS_params=None,
+):
     import torch
 
-    dataloader_train = torch.utils.data.DataLoader(
-        dataset_train, batch_size=batch_size, shuffle=True
-    )
-    dataloader_valid = torch.utils.data.DataLoader(
-        dataset_valid, batch_size=batch_size, shuffle=False
-    )
+    if enable_DS:
+        world_size = DS_params["world_size"]
+        num_workers = DS_params["num_workers"]
+        rank = DS_params["rank"]
 
-    if isinstance(dataset_test, list):
-        dataloader_test = [
-            torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False)
-            for dataset in dataset_test
-        ]
-    else:
-        dataloader_test = torch.utils.data.DataLoader(
-            dataset_test, batch_size=batch_size, shuffle=False
+        sampler_train = torch.utils.data.distributed.DistributedSampler(
+            dataset_train, num_replicas=world_size, rank=rank, shuffle=True
         )
 
-    return dataloader_train, dataloader_valid, dataloader_test
+        sampler_valid = torch.utils.data.distributed.DistributedSampler(
+            dataset_valid, num_replicas=world_size, rank=rank, shuffle=False
+        )
+
+        sampler_test = torch.utils.data.distributed.DistributedSampler(
+            dataset_test, num_replicas=world_size, rank=rank, shuffle=False
+        )
+
+        dataloader_train = torch.utils.data.DataLoader(
+            dataset_train,
+            batch_size=batch_size,
+            sampler=sampler_train,
+            num_workers=num_workers,
+        )
+
+        dataloader_valid = torch.utils.data.DataLoader(
+            dataset_valid,
+            batch_size=batch_size,
+            sampler=sampler_valid,
+            num_workers=num_workers,
+        )
+
+        if isinstance(dataset_test, list):
+            dataloader_test = [
+                torch.utils.data.DataLoader(
+                    dataset,
+                    batch_size=batch_size,
+                    sampler=sampler_test,
+                    num_workers=num_workers,
+                )
+                for dataset in dataset_test
+            ]
+        else:
+            dataloader_test = torch.utils.data.DataLoader(
+                dataset_test,
+                batch_size=batch_size,
+                sampler=sampler_test,
+                num_workers=num_workers,
+            )
+
+        return dataloader_train, dataloader_valid, dataloader_test, sampler_train
+
+    else:
+
+        dataloader_train = torch.utils.data.DataLoader(
+            dataset_train, batch_size=batch_size, shuffle=True
+        )
+        dataloader_valid = torch.utils.data.DataLoader(
+            dataset_valid, batch_size=batch_size, shuffle=False
+        )
+
+        if isinstance(dataset_test, list):
+            dataloader_test = [
+                torch.utils.data.DataLoader(
+                    dataset, batch_size=batch_size, shuffle=False
+                )
+                for dataset in dataset_test
+            ]
+        else:
+            dataloader_test = torch.utils.data.DataLoader(
+                dataset_test, batch_size=batch_size, shuffle=False
+            )
+
+        return dataloader_train, dataloader_valid, dataloader_test
 
 
 def nd_to_dataloader(
@@ -185,6 +212,8 @@ def nd_to_dataloader(
     y_test,
     batch_size,
     device="cpu",
+    enable_DS=False,
+    DS_params=None,
 ):
 
     (
@@ -205,11 +234,14 @@ def nd_to_dataloader(
         y_test_tensor,
     )
 
-    (dataloader_train, dataloader_valid, dataloader_test) = dataset_to_dataloader(
-        dataset_train, dataset_valid, dataset_test, batch_size=batch_size
+    return dataset_to_dataloader(
+        dataset_train,
+        dataset_valid,
+        dataset_test,
+        batch_size=batch_size,
+        enable_DS=enable_DS,
+        DS_params=DS_params,
     )
-
-    return dataloader_train, dataloader_valid, dataloader_test
 
 
 def get_predictions(model, dataloader):
@@ -302,6 +334,7 @@ def train_epoch(
     scheduler=None,
     checkpoint_fname=None,
     enable_wandb=True,
+    rank=0,
 ):
     import torch
 
@@ -336,7 +369,7 @@ def train_epoch(
         txt_print += f", lr: {_lr:.4e}"
 
     # save history
-    if history is not None:
+    if history is not None and rank == 0:
         history["epoch"].append(epoch)
         history["train_loss"].append(train_loss)
         history["valid_loss"].append(valid_loss)
@@ -344,7 +377,7 @@ def train_epoch(
         history["valid_acc"].append(valid_acc)
 
     # save model if loss was the lowest
-    if checkpoint_fname is not None:
+    if checkpoint_fname is not None and rank == 0:
         if valid_loss < loss_best[0]:
             checkpoint = dict()
             checkpoint["epoch"] = epoch
@@ -358,7 +391,7 @@ def train_epoch(
             txt_print += ", checkpoint saved"
 
     # send log to wandb
-    if enable_wandb:
+    if enable_wandb and rank == 0:
         import wandb
 
         wandb.log(
@@ -371,6 +404,7 @@ def train_epoch(
         )
 
     # print log
-    print(txt_print)
+    if rank == 0:
+        print(txt_print)
 
     return valid_loss
