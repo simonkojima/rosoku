@@ -295,6 +295,9 @@ def deeplearning_cross_subject(
     if model is None:
         raise RuntimeError("model is None")
 
+    if torch.cuda.device_count > 1:
+        model = torch.nn.DataParallel(model)
+
     model.to(device)
 
     if name_classifier is None:
