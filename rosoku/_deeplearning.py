@@ -144,8 +144,8 @@ def load_data(
 
 
 def main_cross_subject(
-    # rank,
-    # world_size,
+    rank,
+    world_size,
     enable_ddp,
     num_workers,
     device,
@@ -200,20 +200,9 @@ def main_cross_subject(
             backend=backend, rank=rank, world_size=world_size, init_method=init_method
         )
         """
-        try:
-            rank = int(os.environ["RANK"])
-            world_size = int(os.environ["WORLD_SIZE"])
-            local_rank = int(os.environ["LOCAL_RANK"])
-        except:
-            raise RuntimeError(
-                "rank, world_size, local_rank was not parsed from os.environ. Run script with torchrun when enable_ddp = True."
-            )
-
-        device = torch.device(f"cuda:{local_rank}")
-
-        print(f"rank: {rank}, world_size: {world_size}, local_rank: {local_rank}")
-
         torch.distributed.init_process_group("nccl")
+
+        device = torch.device(f"cuda:{rank}")
 
         if torch.distributed.is_initialized():
             print(f"[Rank {rank}] Distributed initialized: OK")
@@ -263,11 +252,8 @@ def main_cross_subject(
         raise RuntimeError("model is None")
 
     model.to(device)
-
     if enable_ddp:
-        model = torch.nn.parallel.DistributedDataParallel(
-            model, device_ids=[local_rank]
-        )
+        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[rank])
 
     if name_classifier is None:
         name_classifier = model.__class__.__name__
@@ -461,15 +447,6 @@ def deeplearning_cross_subject(
             preprocessing.normalize(X_train, X_valid, X_test, return_params=True)
         )
 
-    """
-    X_train = np.zeros((40, 27, 128 * 4))
-    y_train = 0
-    X_valid = 0
-    y_valid = 0
-    X_test = 0
-    y_test = 0
-    """
-
     kwargs = {
         "optimizer_params": optimizer_params,
         "model": model,
@@ -491,7 +468,6 @@ def deeplearning_cross_subject(
     }
 
     if enable_ddp:
-        """
         args = (
             world_size,
             enable_ddp,
@@ -513,29 +489,12 @@ def deeplearning_cross_subject(
         torch.multiprocessing.spawn(
             main_cross_subject, args=args, nprocs=world_size, join=True
         )
-        """
-        main_cross_subject(
-            enable_ddp=enable_ddp,
-            num_workers=num_workers,
-            device=None,
-            X_train=X_train,
-            y_train=y_train,
-            X_valid=X_valid,
-            y_valid=y_valid,
-            X_test=X_test,
-            y_test=y_test,
-            criterion=criterion,
-            batch_size=batch_size,
-            n_epochs=n_epochs,
-            optimizer=optimizer,
-            kwargs=kwargs,
-        )
     else:
         main_cross_subject(
-            # rank=None,
-            # world_size=None,
+            rank=None,
+            world_size=None,
             enable_ddp=enable_ddp,
-            num_workers=num_workers,
+            num_workers=0,
             device=device,
             X_train=X_train,
             y_train=y_train,

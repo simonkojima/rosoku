@@ -1,3 +1,4 @@
+import os
 import time
 import numpy as np
 import tag_mne as tm
@@ -415,9 +416,14 @@ def train_epoch(
     checkpoint_fname=None,
     enable_wandb=True,
     enable_ddp=False,
-    rank=0,
+    # rank=0,
 ):
     import torch
+
+    if enable_ddp:
+        rank = int(os.environ["RANK"])
+    else:
+        rank = 0
 
     tic = time.time()
 
