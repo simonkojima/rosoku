@@ -147,6 +147,7 @@ def main_cross_subject(
     # rank,
     # world_size,
     enable_ddp,
+    enable_dp,
     num_workers,
     device,
     X_train,
@@ -210,6 +211,7 @@ def main_cross_subject(
             )
 
         device = torch.device(f"cuda:{local_rank}")
+        # device = torch.device("cuda:0")
 
         print(f"rank: {rank}, world_size: {world_size}, local_rank: {local_rank}")
 
@@ -263,6 +265,14 @@ def main_cross_subject(
         raise RuntimeError("model is None")
 
     model.to(device)
+
+    if enable_dp:
+        if torch.cuda.device_count() > 1:
+            model = torch.nn.DataParallel(model)
+        else:
+            raise RuntimeError(
+                "You need to have more than one GPU when enable_dp = True."
+            )
 
     if enable_ddp:
         model = torch.nn.parallel.DistributedDataParallel(
@@ -322,6 +332,7 @@ def deeplearning_cross_subject(
     scheduler_params=None,
     device="cpu",
     enable_ddp=False,
+    enable_dp=False,
     num_workers=0,
     func_proc_epochs=None,
     label_keys={"event:left": 0, "event:right": 1},
@@ -403,14 +414,15 @@ def deeplearning_cross_subject(
     if not isinstance(subjects_train, list) or not isinstance(subjects_test, list):
         raise ValueError("type of subjects_train and subjects_test have to be list")
 
-    if enable_ddp and device != "cuda":
-        raise ValueError("device have to be 'cuda' when enable_ddp = True.")
+    if enable_ddp and enable_dp:
+        raise ValueError(
+            "enable_ddp and enable_dp cannot be True at the same time. Choose one."
+        )
 
-    # setup DDP
-    if enable_ddp:
-        world_size = torch.cuda.device_count()
-    # else:
-    # world_size = None
+    if (enable_ddp and device != "cuda") or (enable_dp and device != "cuda"):
+        raise ValueError(
+            "device have to be 'cuda' when enable_ddp = True or enable_dp = True."
+        )
 
     # load data
 
@@ -516,6 +528,7 @@ def deeplearning_cross_subject(
         """
         main_cross_subject(
             enable_ddp=enable_ddp,
+            enable_dp=enable_dp,
             num_workers=num_workers,
             device=None,
             X_train=X_train,
@@ -535,6 +548,7 @@ def deeplearning_cross_subject(
             # rank=None,
             # world_size=None,
             enable_ddp=enable_ddp,
+            enable_dp=enable_dp,
             num_workers=num_workers,
             device=device,
             X_train=X_train,
