@@ -4,6 +4,8 @@ import time
 import numpy as np
 import sklearn
 
+import torch
+
 import tag_mne as tm
 import pandas as pd
 
@@ -56,7 +58,8 @@ def deeplearning_train(
 ):
 
     if enable_wandb_logging:
-        import wandb
+        if (enable_ddp and rank == 0) or (enable_ddp is False):
+            import wandb
 
     if early_stopping is not None:
         early_stopping.initialize()
@@ -72,7 +75,8 @@ def deeplearning_train(
     loss_best = {"value": float("inf")}
 
     if enable_wandb_logging:
-        wandb.init(**wandb_params)
+        if (enable_ddp and rank == 0) or (enable_ddp is False):
+            wandb.init(**wandb_params)
 
     tic = time.time()
     for epoch in range(n_epochs):
@@ -96,18 +100,34 @@ def deeplearning_train(
         )
 
         if early_stopping is not None:
-            if early_stopping(valid_loss):
+            if enable_ddp is False and early_stopping(valid_loss):
                 print(f"Early stopping was triggered: epoch #{epoch+1}")
                 break
+            elif enable_ddp:
+                should_stop = False
+                if rank == 0:
+                    should_stop = early_stopping(valid_loss)
+                should_stop_tensor = torch.tensor(
+                    should_stop, dtype=torch.uint8, device=device
+                )
+                torch.distributed.broadcast(should_stop_tensor, src=0)
+                should_stop = bool(should_stop_tensor.item())
+
+                if should_stop:
+                    if rank == 0:
+                        print(f"Early stopping was triggered: epoch #{epoch+1}")
+                    break
 
     toc = time.time()
     elapsed_time = toc - tic
-    print(f"Elapsed Time: {elapsed_time:.2f}s")
+    if rank == 0:
+        print(f"Elapsed Time: {elapsed_time:.2f}s")
 
     if enable_wandb_logging:
-        wandb.finish()
+        if (enable_ddp and rank == 0) or (enable_ddp is False):
+            wandb.finish()
 
-    if history_fname is not None:
+    if history_fname is not None and rank == 0:
         df_save = pd.DataFrame(history)
         df_save.to_pickle(f"{history_fname}.pkl")
         df_save.to_html(f"{history_fname}.html")
@@ -326,6 +346,7 @@ def main_cross_subject(
             early_stopping=early_stopping,
             enable_ddp=enable_ddp,
             sampler_train=sampler_train,
+            rank=rank,
         )
     finally:
         if enable_ddp:
@@ -425,8 +446,12 @@ def deeplearning_cross_subject(
     """
     import torch
 
+    if enable_ddp:
+        params = utils.get_ddp_params()
+
     if enable_wandb_logging:
-        import wandb
+        if (enable_ddp and params["rank"] == 0) or (enable_ddp is False):
+            import wandb
 
     if not isinstance(subjects_train, list) or not isinstance(subjects_test, list):
         raise ValueError("type of subjects_train and subjects_test have to be list")
