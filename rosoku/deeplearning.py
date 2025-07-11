@@ -352,7 +352,7 @@ def main_cross_subject(
 
     # setup early stopping
     if isinstance(early_stopping, int):
-        early_stopping = preprocessing.EarlyStopping(patience=early_stopping)
+        early_stopping = utils.EarlyStopping(patience=early_stopping)
 
     try:
         model = deeplearning_train(
