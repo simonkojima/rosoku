@@ -52,6 +52,7 @@ def deeplearning_train(
     history_fname=None,
     enable_ddp=False,
     sampler_train=None,
+    rank=0,
 ):
 
     if enable_wandb_logging:
@@ -91,6 +92,7 @@ def deeplearning_train(
             checkpoint_fname=checkpoint_fname,
             enable_wandb=enable_wandb_logging,
             enable_ddp=enable_ddp,
+            rank=rank,
         )
 
         if early_stopping is not None:
@@ -201,27 +203,42 @@ def main_cross_subject(
             backend=backend, rank=rank, world_size=world_size, init_method=init_method
         )
         """
+
         try:
-            rank = int(os.environ["RANK"])
             world_size = int(os.environ["WORLD_SIZE"])
-            local_rank = int(os.environ["LOCAL_RANK"])
+            master_addr = os.environ["MASTER_ADDR"]
+            master_port = os.environ["MASTER_PORT"]
         except:
             raise RuntimeError(
                 "rank, world_size, local_rank was not parsed from os.environ. Run script with torchrun when enable_ddp = True."
             )
 
-        device = torch.device(f"cuda:{local_rank}")
-        # device = torch.device("cuda:0")
+        # try:
+        rank = int(os.environ["SLURM_PROCID"])
+        local_rank = int(os.environ["SLURM_LOCALID"])
+        # world_size = int(os.environ["SLURM_NTASKS"])
+        # except:
+        #    rank = int(os.environ["RANK"])
+        #    local_rank = int(os.environ["LOCAL_RANK"])
 
         print(f"rank: {rank}, world_size: {world_size}, local_rank: {local_rank}")
+        print(f"MASTER_ADDR: {master_addr}, MASTER_PORT: {master_port}")
 
-        torch.distributed.init_process_group("nccl")
+        torch.distributed.init_process_group(
+            backend="nccl",
+            init_method=f"tcp://{master_addr}:{master_port}",
+            rank=rank,
+            world_size=world_size,
+        )
 
         if torch.distributed.is_initialized():
             print(f"[Rank {rank}] Distributed initialized: OK")
         else:
             print(f"[Rank {rank}] Distributed not initialized: NG")
             raise RuntimeError(f"[Rank {rank}] Distributed not initialized: NG")
+
+        device = torch.device(f"cuda:{local_rank}")
+        # device = torch.device("cuda:0")
 
     # create dataloader
 
