@@ -4,8 +4,6 @@ import time
 import numpy as np
 import sklearn
 
-import torch
-
 import tag_mne as tm
 import pandas as pd
 
@@ -38,36 +36,6 @@ def setup_scheduler(scheduler, scheduler_params, optimizer):
     return scheduler
 
 
-def load_data(
-    subjects, func_get_fnames, func_proc_epochs, label_keys, enable_euclidean_alignment
-):
-
-    X = []
-    y = []
-
-    for subject in subjects:
-
-        files = func_get_fnames(subject)
-
-        epochs = utils.load_epochs(files, True)
-
-        if func_proc_epochs is not None:
-            epochs = func_proc_epochs(epochs)
-
-        y.append(np.array(utils.get_labels_from_epochs(epochs, label_keys)))
-
-        X_single = epochs.get_data()
-
-        if enable_euclidean_alignment:
-            from . import tl
-
-            X_single = tl.euclidean_alignment(X_single)
-
-        X.append(X_single)
-
-    return X, y
-
-
 def deeplearning_train(
     dataloader_train,
     dataloader_valid,
@@ -83,14 +51,11 @@ def deeplearning_train(
     checkpoint_fname=None,
     history_fname=None,
     enable_ddp=False,
-    enable_dp=False,
     sampler_train=None,
-    rank=0,
 ):
 
     if enable_wandb_logging:
-        if (enable_ddp and rank == 0) or (enable_ddp is False):
-            import wandb
+        import wandb
 
     if early_stopping is not None:
         early_stopping.initialize()
@@ -106,8 +71,7 @@ def deeplearning_train(
     loss_best = {"value": float("inf")}
 
     if enable_wandb_logging:
-        if (enable_ddp and rank == 0) or (enable_ddp is False):
-            wandb.init(**wandb_params)
+        wandb.init(**wandb_params)
 
     tic = time.time()
     for epoch in range(n_epochs):
@@ -126,40 +90,22 @@ def deeplearning_train(
             history=history,
             checkpoint_fname=checkpoint_fname,
             enable_wandb=enable_wandb_logging,
-            enable_dp=enable_dp,
             enable_ddp=enable_ddp,
-            rank=rank,
         )
 
         if early_stopping is not None:
-            if enable_ddp is False and early_stopping(valid_loss):
+            if early_stopping(valid_loss):
                 print(f"Early stopping was triggered: epoch #{epoch+1}")
                 break
-            elif enable_ddp:
-                should_stop = False
-                if rank == 0:
-                    should_stop = early_stopping(valid_loss)
-                should_stop_tensor = torch.tensor(
-                    should_stop, dtype=torch.uint8, device=device
-                )
-                torch.distributed.broadcast(should_stop_tensor, src=0)
-                should_stop = bool(should_stop_tensor.item())
-
-                if should_stop:
-                    if rank == 0:
-                        print(f"Early stopping was triggered: epoch #{epoch+1}")
-                    break
 
     toc = time.time()
     elapsed_time = toc - tic
-    if rank == 0:
-        print(f"Elapsed Time: {elapsed_time:.2f}s")
+    print(f"Elapsed Time: {elapsed_time:.2f}s")
 
     if enable_wandb_logging:
-        if (enable_ddp and rank == 0) or (enable_ddp is False):
-            wandb.finish()
+        wandb.finish()
 
-    if history_fname is not None and rank == 0:
+    if history_fname is not None:
         df_save = pd.DataFrame(history)
         df_save.to_pickle(f"{history_fname}.pkl")
         df_save.to_html(f"{history_fname}.html")
@@ -198,10 +144,9 @@ def load_data(
 
 
 def main_cross_subject(
-    # rank,
-    # world_size,
+    rank,
+    world_size,
     enable_ddp,
-    enable_dp,
     num_workers,
     device,
     X_train,
@@ -255,35 +200,15 @@ def main_cross_subject(
             backend=backend, rank=rank, world_size=world_size, init_method=init_method
         )
         """
-        params = utils.get_ddp_params()
+        torch.distributed.init_process_group("nccl")
 
-        rank = params["rank"]
-        local_rank = params["local_rank"]
-        world_size = params["world_size"]
-        master_addr = params["master_addr"]
-        master_port = params["master_port"]
-
-        print(f"rank: {rank}, world_size: {world_size}, local_rank: {local_rank}")
-        print(f"MASTER_ADDR: {master_addr}, MASTER_PORT: {master_port}")
-
-        torch.distributed.init_process_group(
-            backend="nccl",
-            init_method=f"tcp://{master_addr}:{master_port}",
-            rank=rank,
-            world_size=world_size,
-        )
+        device = torch.device(f"cuda:{rank}")
 
         if torch.distributed.is_initialized():
             print(f"[Rank {rank}] Distributed initialized: OK")
         else:
             print(f"[Rank {rank}] Distributed not initialized: NG")
             raise RuntimeError(f"[Rank {rank}] Distributed not initialized: NG")
-
-        device = torch.device(f"cuda:{local_rank}")
-        # device = torch.device("cuda:0")
-    else:
-        # non DDP
-        rank = 0
 
     # create dataloader
 
@@ -327,19 +252,8 @@ def main_cross_subject(
         raise RuntimeError("model is None")
 
     model.to(device)
-
-    if enable_dp:
-        if torch.cuda.device_count() > 1:
-            model = torch.nn.DataParallel(model)
-        else:
-            raise RuntimeError(
-                "You need to have more than one GPU when enable_dp = True."
-            )
-
     if enable_ddp:
-        model = torch.nn.parallel.DistributedDataParallel(
-            model, device_ids=[local_rank]
-        )
+        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[rank])
 
     if name_classifier is None:
         name_classifier = model.__class__.__name__
@@ -370,9 +284,7 @@ def main_cross_subject(
             history_fname=history_fname,
             early_stopping=early_stopping,
             enable_ddp=enable_ddp,
-            enable_dp=enable_dp,
             sampler_train=sampler_train,
-            rank=rank,
         )
     finally:
         if enable_ddp:
@@ -396,7 +308,6 @@ def deeplearning_cross_subject(
     scheduler_params=None,
     device="cpu",
     enable_ddp=False,
-    enable_dp=False,
     num_workers=0,
     func_proc_epochs=None,
     label_keys={"event:left": 0, "event:right": 1},
@@ -472,25 +383,20 @@ def deeplearning_cross_subject(
     """
     import torch
 
-    if enable_ddp:
-        params = utils.get_ddp_params()
-
     if enable_wandb_logging:
-        if (enable_ddp and params["rank"] == 0) or (enable_ddp is False):
-            import wandb
+        import wandb
 
     if not isinstance(subjects_train, list) or not isinstance(subjects_test, list):
         raise ValueError("type of subjects_train and subjects_test have to be list")
 
-    if enable_ddp and enable_dp:
-        raise ValueError(
-            "enable_ddp and enable_dp cannot be True at the same time. Choose one."
-        )
+    if enable_ddp and device != "cuda":
+        raise ValueError("device have to be 'cuda' when enable_ddp = True.")
 
-    if (enable_ddp and device != "cuda") or (enable_dp and device != "cuda"):
-        raise ValueError(
-            "device have to be 'cuda' when enable_ddp = True or enable_dp = True."
-        )
+    # setup DDP
+    if enable_ddp:
+        world_size = torch.cuda.device_count()
+    # else:
+    # world_size = None
 
     # load data
 
@@ -541,15 +447,6 @@ def deeplearning_cross_subject(
             preprocessing.normalize(X_train, X_valid, X_test, return_params=True)
         )
 
-    """
-    X_train = np.zeros((40, 27, 128 * 4))
-    y_train = 0
-    X_valid = 0
-    y_valid = 0
-    X_test = 0
-    y_test = 0
-    """
-
     kwargs = {
         "optimizer_params": optimizer_params,
         "model": model,
@@ -571,7 +468,6 @@ def deeplearning_cross_subject(
     }
 
     if enable_ddp:
-        """
         args = (
             world_size,
             enable_ddp,
@@ -593,31 +489,12 @@ def deeplearning_cross_subject(
         torch.multiprocessing.spawn(
             main_cross_subject, args=args, nprocs=world_size, join=True
         )
-        """
-        main_cross_subject(
-            enable_ddp=enable_ddp,
-            enable_dp=enable_dp,
-            num_workers=num_workers,
-            device=None,
-            X_train=X_train,
-            y_train=y_train,
-            X_valid=X_valid,
-            y_valid=y_valid,
-            X_test=X_test,
-            y_test=y_test,
-            criterion=criterion,
-            batch_size=batch_size,
-            n_epochs=n_epochs,
-            optimizer=optimizer,
-            kwargs=kwargs,
-        )
     else:
         main_cross_subject(
-            # rank=None,
-            # world_size=None,
+            rank=None,
+            world_size=None,
             enable_ddp=enable_ddp,
-            enable_dp=enable_dp,
-            num_workers=num_workers,
+            num_workers=0,
             device=device,
             X_train=X_train,
             y_train=y_train,
@@ -656,55 +533,6 @@ def deeplearning_cross_subject(
         enable_DS=False,
     )
 
-<<<<<<< HEAD
-    # setup model
-
-    if func_get_model is not None:
-        model = func_get_model(X_train, y_train)
-
-    if model is None:
-        raise RuntimeError("model is None")
-
-    if torch.cuda.device_count() > 1:
-        model = torch.nn.DataParallel(model)
-
-    model.to(device)
-
-    if name_classifier is None:
-        name_classifier = model.__class__.__name__
-
-    # setup optimizer
-    optimizer = setup_optimizer(optimizer, optimizer_params, model)
-
-    # setup scheduler
-    scheduler = setup_scheduler(scheduler, scheduler_params, optimizer)
-
-    # setup early stopping
-    if isinstance(early_stopping, int):
-        early_stopping = utils.EarlyStopping(patience=early_stopping)
-
-    model = deeplearning_train(
-        dataloader_train=dataloader_train,
-        dataloader_valid=dataloader_valid,
-        n_epochs=n_epochs,
-        model=model,
-        criterion=criterion,
-        optimizer=optimizer,
-        scheduler=scheduler,
-        enable_wandb_logging=enable_wandb_logging,
-        wandb_params=wandb_params,
-        checkpoint_fname=checkpoint_fname,
-        history_fname=history_fname,
-        early_stopping=early_stopping,
-    )
-
-    # classify test data
-    if checkpoint_fname is not None:
-        checkpoint = torch.load(f"{checkpoint_fname}.pth")
-        model.load_state_dict(checkpoint["model_state_dict"])
-
-=======
->>>>>>> ddp
     df_list = list()
     model.eval()
     with torch.no_grad():
