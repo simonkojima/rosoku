@@ -44,6 +44,41 @@ def normalize_tensor(*args, **kwargs):
 ##
 
 
+def get_ddp_params():
+    import os
+
+    try:
+        world_size = int(os.environ["WORLD_SIZE"])
+        master_addr = os.environ["MASTER_ADDR"]
+        master_port = os.environ["MASTER_PORT"]
+    except:
+        raise RuntimeError(
+            "WORLD_SIZE, MASTER_ADDR, MASTER_PORT was not parsed from os.environ."
+        )
+
+    try:
+        rank = int(os.environ["SLURM_PROCID"])
+        local_rank = int(os.environ["SLURM_LOCALID"])
+    except:
+        try:
+            rank = int(os.environ["RANK"])
+            local_rank = int(os.environ["LOCAL_RANK"])
+        except:
+            raise RuntimeError(
+                "SLURM_PROCID, SLURM_LOCALID or RANK, LOCAL_RANK was not parsed from os.environ."
+            )
+
+    params = {
+        "world_size": world_size,
+        "master_addr": master_addr,
+        "master_port": master_port,
+        "rank": rank,
+        "local_rank": local_rank,
+    }
+
+    return params
+
+
 class EarlyStopping:
     def __init__(self, patience=3, min_delta=0.0):
         self.patience = patience
