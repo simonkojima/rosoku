@@ -53,6 +53,7 @@ def deeplearning_train(
     checkpoint_fname=None,
     history_fname=None,
     enable_ddp=False,
+    enable_dp=False,
     sampler_train=None,
     rank=0,
 ):
@@ -95,6 +96,7 @@ def deeplearning_train(
             history=history,
             checkpoint_fname=checkpoint_fname,
             enable_wandb=enable_wandb_logging,
+            enable_dp=enable_dp,
             enable_ddp=enable_ddp,
             rank=rank,
         )
@@ -223,23 +225,13 @@ def main_cross_subject(
             backend=backend, rank=rank, world_size=world_size, init_method=init_method
         )
         """
+        params = utils.get_ddp_params()
 
-        try:
-            world_size = int(os.environ["WORLD_SIZE"])
-            master_addr = os.environ["MASTER_ADDR"]
-            master_port = os.environ["MASTER_PORT"]
-        except:
-            raise RuntimeError(
-                "rank, world_size, local_rank was not parsed from os.environ. Run script with torchrun when enable_ddp = True."
-            )
-
-        # try:
-        rank = int(os.environ["SLURM_PROCID"])
-        local_rank = int(os.environ["SLURM_LOCALID"])
-        # world_size = int(os.environ["SLURM_NTASKS"])
-        # except:
-        #    rank = int(os.environ["RANK"])
-        #    local_rank = int(os.environ["LOCAL_RANK"])
+        rank = params["rank"]
+        local_rank = params["local_rank"]
+        world_size = params["world_size"]
+        master_addr = params["master_addr"]
+        master_port = params["master_port"]
 
         print(f"rank: {rank}, world_size: {world_size}, local_rank: {local_rank}")
         print(f"MASTER_ADDR: {master_addr}, MASTER_PORT: {master_port}")
@@ -259,6 +251,9 @@ def main_cross_subject(
 
         device = torch.device(f"cuda:{local_rank}")
         # device = torch.device("cuda:0")
+    else:
+        # non DDP
+        rank = 0
 
     # create dataloader
 
@@ -345,6 +340,7 @@ def main_cross_subject(
             history_fname=history_fname,
             early_stopping=early_stopping,
             enable_ddp=enable_ddp,
+            enable_dp=enable_dp,
             sampler_train=sampler_train,
             rank=rank,
         )

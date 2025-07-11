@@ -57,12 +57,12 @@ def get_ddp_params():
         )
 
     try:
-        rank = int(os.environ["SLURM_PROCID"])
-        local_rank = int(os.environ["SLURM_LOCALID"])
+        rank = int(os.environ["RANK"])
+        local_rank = int(os.environ["LOCAL_RANK"])
     except:
         try:
-            rank = int(os.environ["RANK"])
-            local_rank = int(os.environ["LOCAL_RANK"])
+            rank = int(os.environ["SLURM_PROCID"])
+            local_rank = int(os.environ["SLURM_LOCALID"])
         except:
             raise RuntimeError(
                 "SLURM_PROCID, SLURM_LOCALID or RANK, LOCAL_RANK was not parsed from os.environ."
@@ -451,6 +451,7 @@ def train_epoch(
     checkpoint_fname=None,
     enable_wandb=True,
     enable_ddp=False,
+    enable_dp=False,
     rank=0,
 ):
     import torch
@@ -519,7 +520,9 @@ def train_epoch(
             checkpoint = dict()
             checkpoint["epoch"] = epoch
             checkpoint["model_state_dict"] = (
-                model.module.state_dict() if enable_ddp else model.state_dict()
+                model.module.state_dict()
+                if enable_ddp or enable_dp
+                else model.state_dict()
             )
             checkpoint["optimizer_state_dict"] = optimizer.state_dict()
             checkpoint["valid_loss"] = valid_loss
