@@ -656,55 +656,6 @@ def deeplearning_cross_subject(
         enable_DS=False,
     )
 
-<<<<<<< HEAD
-    # setup model
-
-    if func_get_model is not None:
-        model = func_get_model(X_train, y_train)
-
-    if model is None:
-        raise RuntimeError("model is None")
-
-    if torch.cuda.device_count() > 1:
-        model = torch.nn.DataParallel(model)
-
-    model.to(device)
-
-    if name_classifier is None:
-        name_classifier = model.__class__.__name__
-
-    # setup optimizer
-    optimizer = setup_optimizer(optimizer, optimizer_params, model)
-
-    # setup scheduler
-    scheduler = setup_scheduler(scheduler, scheduler_params, optimizer)
-
-    # setup early stopping
-    if isinstance(early_stopping, int):
-        early_stopping = utils.EarlyStopping(patience=early_stopping)
-
-    model = deeplearning_train(
-        dataloader_train=dataloader_train,
-        dataloader_valid=dataloader_valid,
-        n_epochs=n_epochs,
-        model=model,
-        criterion=criterion,
-        optimizer=optimizer,
-        scheduler=scheduler,
-        enable_wandb_logging=enable_wandb_logging,
-        wandb_params=wandb_params,
-        checkpoint_fname=checkpoint_fname,
-        history_fname=history_fname,
-        early_stopping=early_stopping,
-    )
-
-    # classify test data
-    if checkpoint_fname is not None:
-        checkpoint = torch.load(f"{checkpoint_fname}.pth")
-        model.load_state_dict(checkpoint["model_state_dict"])
-
-=======
->>>>>>> ddp
     df_list = list()
     model.eval()
     with torch.no_grad():
