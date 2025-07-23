@@ -64,10 +64,14 @@ html_theme_options = {
         "name": "Version",
         "current_version": release,
     },
+    "navbar_end": ["theme-switcher", "version-switcher"],
     "switcher": {
         "json_url": "https://simonkojima.github.io/rosoku/versions.json",
         "version_match": release,
     },
+}
+html_context = {
+    "version_match": release,
 }
 
 sphinx_gallery_conf = {
