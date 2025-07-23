@@ -3,11 +3,28 @@ import numpy as np
 
 def normalize(X_train, X_valid, X_test, return_params=False):
     """
-    Standardization with training set stats
+    Normalization
 
+    Parameters
+    ----------
+    X_train: np.ndarray
+    X_valid: np.ndarray
+    X_test: np.ndarray or list of np.ndarray
+    return_params: bool
+        If true, return mean and std value used for normalization.
+
+    Notes
+    -----
     X.shape: (n_trials, n_channels, n_times)
 
-    X_test: list or nd.array
+    Returns
+    -------
+    X_train_norm, X_valid_norm, X_test_norm : same shape as inputs
+        Normalized versions of the input arrays.
+    mean : np.ndarray, optional
+        Returned if `return_params=True`.
+    std : np.ndarray, optional
+        Returned if `return_params=True`.
 
     """
 
@@ -39,7 +56,7 @@ def normalize(X_train, X_valid, X_test, return_params=False):
 
 def normalize_tensor(X_train_tensor, X_valid_tensor, X_test_tensor):
     """
-    Standardization with training set stats
+    Normalization
 
     X.shape: (n_trials, n_channels, n_times)
 

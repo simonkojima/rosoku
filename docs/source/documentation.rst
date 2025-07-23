@@ -1,6 +1,5 @@
-
 Documentation
-====================
+=============
 
 rosoku
 ------
@@ -14,7 +13,7 @@ rosoku
    rosoku.riemannian_cross_subject
 
 rosoku.preprocessing
-----------
+--------------------
 
 .. autosummary::
    :toctree:
@@ -28,7 +27,7 @@ rosoku.preprocessing
    .. rosoku.tl
 
 rosoku.tl
-----------
+---------
 
 .. autosummary::
    :toctree:
@@ -40,7 +39,7 @@ rosoku.tl
 
 
 rosoku.utils
-----------
+------------
 
 .. autosummary::
    :toctree:
@@ -48,9 +47,9 @@ rosoku.utils
    :recursive:
 
    rosoku.utils.EarlyStopping
-   rosoku.get_labels_from_epochs
-   rosoku.get_predictions
-   rosoku.get_ddp_params
+   rosoku.utils.get_labels_from_epochs
+   rosoku.utils.get_predictions
+   rosoku.utils.get_ddp_params
    rosoku.utils.nd_to_dataloader
    rosoku.utils.nd_to_tensor
    rosoku.utils.tensor_to_dataset

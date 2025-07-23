@@ -12,5 +12,6 @@ rosoku documentation
    
    documentation 
    auto_examples/index
+   install
    .. modules
 

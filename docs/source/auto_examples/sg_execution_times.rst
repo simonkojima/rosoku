@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**00:00.002** total execution time for 1 file **from auto_examples**:
+**00:00.042** total execution time for 1 file **from auto_examples**:
 
 .. container::
 
@@ -33,5 +33,5 @@ Computation times
      - Time
      - Mem (MB)
    * - :ref:`sphx_glr_auto_examples_example_cross-subject-classification.py` (``example_cross-subject-classification.py``)
-     - 00:00.002
+     - 00:00.042
      - 0.0

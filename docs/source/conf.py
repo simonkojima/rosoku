@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "rosoku"
+project = "Rosoku"
 copyright = "2025, Simon Kojima"
 author = "Simon Kojima"
 release = "0.0.1"

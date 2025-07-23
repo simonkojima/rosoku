@@ -23,9 +23,14 @@ Example: cross subject classification
 
 example
 
-.. GENERATED FROM PYTHON SOURCE LINES 7-20
+.. GENERATED FROM PYTHON SOURCE LINES 7-22
 
 
+
+.. image-sg:: /auto_examples/images/sphx_glr_example_cross-subject-classification_001.png
+   :alt: example cross subject classification
+   :srcset: /auto_examples/images/sphx_glr_example_cross-subject-classification_001.png
+   :class: sphx-glr-single-img
 
 
 .. rst-class:: sphx-glr-script-out
@@ -33,7 +38,11 @@ example
  .. code-block:: none
 
     [1 2 3]
+    [1 2 3]
+    [1 2 3]
+    [1 2 3]
 
+    [<matplotlib.lines.Line2D object at 0x73f7c9a07450>]
 
 
 
@@ -47,20 +56,22 @@ example
     # import rosoku
 
     import numpy as np
-
+    import matplotlib.pyplot as plt
 
     a = np.array([1, 2, 3])
 
-    b = np.array([123445])
-    b = np.array([123445])
-    b = np.array([123445])
 
     print(a)
+    print(a)
+    print(a)
+    print(a)
+
+    plt.plot(np.arange(1, 32))
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.002 seconds)
+   **Total running time of the script:** (0 minutes 0.042 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_cross-subject-classification.py:
