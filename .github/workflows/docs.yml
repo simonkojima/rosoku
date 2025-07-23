@@ -25,7 +25,7 @@ jobs:
 
       - name: Generate .rst files from rosoku (sphinx-apidoc)
         run: |
-          sphinx-apidoc -o docs/source rosoku
+          sphinx-apidoc -f -o docs/source/generated rosoku
 
       - name: Build documentation
         run: |

@@ -8,6 +8,15 @@
    "name": "ndarray"
   }
  ],
+ "b": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "numpy",
+   "module_short": "numpy",
+   "name": "ndarray"
+  }
+ ],
  "np.array": [
   {
    "is_class": false,

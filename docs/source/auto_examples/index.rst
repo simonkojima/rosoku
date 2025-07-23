@@ -1,7 +1,7 @@
 :orphan:
 
-Examples for rosoku
-===================
+Examples
+========
 
 hogehoge
 

@@ -23,7 +23,7 @@ Example: cross subject classification
 
 example
 
-.. GENERATED FROM PYTHON SOURCE LINES 7-16
+.. GENERATED FROM PYTHON SOURCE LINES 7-20
 
 
 
@@ -51,12 +51,16 @@ example
 
     a = np.array([1, 2, 3])
 
+    b = np.array([123445])
+    b = np.array([123445])
+    b = np.array([123445])
+
     print(a)
 
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.001 seconds)
+   **Total running time of the script:** (0 minutes 0.002 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_cross-subject-classification.py:

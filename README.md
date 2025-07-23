@@ -15,3 +15,10 @@ torchrun --nproc_per_node=2 --master_addr=127.0.0.1  --master_port=29627  ./main
 ```
 srunで実行
 ```
+
+# sphinx
+`docs`内で以下を実行
+
+```
+sphinx-apidoc -o ../docs/source ../rosoku && make html
+```

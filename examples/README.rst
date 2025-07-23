@@ -1,4 +1,4 @@
-Examples for rosoku
-===================
+Examples
+========
 
 hogehoge

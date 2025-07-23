@@ -35,15 +35,21 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.napoleon",
     "sphinx.ext.viewcode",
+    "sphinx.ext.autosummary",
     "sphinx_gallery.gen_gallery",
     "numpydoc",
 ]
+
+autosummary_generate = True
 
 # import sphinx_rtd_theme
 
 html_theme = "pydata_sphinx_theme"
 # html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 # html_static_path = ["_static"]
+html_theme_options = {
+    "default_mode": "light",
+}
 
 sphinx_gallery_conf = {
     "examples_dirs": "../../examples",
