@@ -35,6 +35,15 @@ jobs:
           cd docs
           sphinx-multiversion source _build/html
 
+      - name: Rename main to latest
+        run: |
+          cd docs/_build/html
+          cp -r main latest
+
+      - name: Add redirect index.html
+        run: |
+          echo '<!DOCTYPE html><html><head><meta http-equiv="Refresh" content="0; url=latest/"></head></html>' > docs/_build/html/index.html
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
