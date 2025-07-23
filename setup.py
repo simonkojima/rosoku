@@ -1,6 +1,17 @@
 import io
 import os
 import setuptools
+import re
+
+
+def get_version():
+    version_file = os.path.join(os.path.dirname(__file__), "rosoku", "__init__.py")
+    with open(version_file, "r", encoding="utf-8") as f:
+        content = f.read()
+    match = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', content, re.MULTILINE)
+    if match:
+        return match.group(1)
+    raise RuntimeError("Cannot find __version__ in rosoku/__init__.py")
 
 
 def read(*paths, **kwargs):
@@ -30,7 +41,7 @@ def read_requirements(path):
 
 setuptools.setup(
     name="rosoku",
-    version="0.0.1",
+    version=get_version(),
     author="Simon Kojima",
     description="python library for classification",
     long_description=read("README.md"),

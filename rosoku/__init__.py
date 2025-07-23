@@ -1,3 +1,5 @@
+__version__ = "0.0.1"
+
 from .riemannian import *
 from .deeplearning import *
 

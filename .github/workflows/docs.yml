@@ -1,16 +1,19 @@
-name: Build and Deploy Docs
+name: Build and Deploy Multi-version Docs
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout full history
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # sphinx-multiversion requires full history
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -25,17 +28,15 @@ jobs:
 
       - name: Generate .rst files from rosoku (sphinx-apidoc)
         run: |
-          sphinx-apidoc -f -o docs/source/generated rosoku
+          sphinx-apidoc -f -o docs/source rosoku
 
-      - name: Build documentation
+      - name: Build documentation with sphinx-multiversion
         run: |
           cd docs
-          make html
-          touch build/html/.nojekyll
+          sphinx-multiversion source _build/html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/build/html
-          force_orphan: true
+          publish_dir: docs/_build/html

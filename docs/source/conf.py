@@ -6,10 +6,12 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
+import rosoku
+
 project = "Rosoku"
 copyright = "2025, Simon Kojima"
 author = "Simon Kojima"
-release = "0.0.1"
+release = rosoku.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -37,19 +39,25 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
     "sphinx_gallery.gen_gallery",
+    "sphinx_multiversion",
     "numpydoc",
 ]
 
 autosummary_generate = True
 
+smv_tag_whitelist = r"^v\d+\.\d+.*$"
+smv_branch_whitelist = r"^main$"
+smv_remote_whitelist = r"^origin$"
+
+smv_rename_latest_version = True
+smv_branch_labels = {
+    "main": "latest",
+}
+
 # import sphinx_rtd_theme
 
 html_theme = "pydata_sphinx_theme"
-# html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-# html_static_path = ["_static"]
-html_theme_options = {
-    "default_mode": "light",
-}
+html_sidebars = {"**": ["sidebar-nav-bs", "versions.html"]}
 
 sphinx_gallery_conf = {
     "examples_dirs": "../../examples",
