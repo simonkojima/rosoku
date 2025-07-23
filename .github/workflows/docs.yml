@@ -39,6 +39,7 @@ jobs:
         run: |
           cd docs/_build/html
           cp -r main latest
+          rm -R main
 
       - name: Add redirect index.html
         run: |
