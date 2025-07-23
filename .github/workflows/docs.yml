@@ -45,6 +45,12 @@ jobs:
         run: |
           echo '<!DOCTYPE html><html><head><meta http-equiv="Refresh" content="0; url=latest/"></head></html>' > docs/_build/html/index.html
 
+
+      - name: Generate versions.json
+        run: |
+          VERSIONS=$(git tag --list 'v*' | sort -Vr | awk '{print "{\"version\": \""$1"\", \"url\": \"/rosoku/"$1"/\"},"}')
+          echo "[{\"version\": \"latest\", \"url\": \"/rosoku/latest/\"},"${VERSIONS::-1}"]" > docs/_build/html/versions.json
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:

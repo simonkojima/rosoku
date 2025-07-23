@@ -49,15 +49,26 @@ smv_tag_whitelist = r"^v\d+\.\d+.*$"
 smv_branch_whitelist = r"^main$"
 smv_remote_whitelist = r"^origin$"
 
-smv_rename_latest_version = True
-smv_branch_labels = {
-    "main": "latest",
-}
+# smv_rename_latest_version = True
+# smv_branch_labels = {
+#    "main": "latest",
+# }
 
 # import sphinx_rtd_theme
 
 html_theme = "pydata_sphinx_theme"
-html_sidebars = {"**": ["sidebar-nav-bs", "versions.html"]}
+html_theme_options = {
+    "default_mode": "light",
+    "version_dropdown": True,
+    "version_info": {
+        "name": "Version",
+        "current_version": release,
+    },
+    "switcher": {
+        "json_url": "https://simonkojima.github.io/rosoku/versions.json",
+        "version_match": release,
+    },
+}
 
 sphinx_gallery_conf = {
     "examples_dirs": "../../examples",
