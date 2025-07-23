@@ -1,0 +1,10 @@
+sphinx
+sphinx-gallery
+numpydoc
+mne
+matplotlib
+furo
+torch
+pyriemann
+tag-mne
+pandas

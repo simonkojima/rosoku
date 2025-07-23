@@ -412,6 +412,10 @@ def deeplearning_cross_subject(
     desc=None,
 ):
     """
+    cross-subjectのDLを行う
+
+    Parameters
+    ==========
     subjects_train: list
     subjects_valid: list
     subjects_test: list
@@ -469,6 +473,11 @@ def deeplearning_cross_subject(
     early_stopping: int or callable
         early_stopping = rosoku.EarlyStopping(patience = 75)
         early_stopping = 75
+
+    Returns
+    =======
+    df: pandas DataFrame()
+        結果が入っている
     """
     import torch
 
