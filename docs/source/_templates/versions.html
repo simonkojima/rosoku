@@ -1,0 +1,13 @@
+{# This template displays version selector using sphinx-multiversion data #}
+{% if smv_versions|length > 1 %}
+<div class="version-switcher">
+  <label for="version-select">Version:</label>
+  <select id="version-select" onchange="window.location.href=this.value;">
+    {% for version in smv_versions %}
+    <option value="{{ version.url }}" {% if version.name == smv_current_version %}selected{% endif %}>
+      {{ version.name }}
+    </option>
+    {% endfor %}
+  </select>
+</div>
+{% endif %}
