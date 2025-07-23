@@ -8,3 +8,4 @@ torch
 pyriemann
 tag-mne
 pandas
+pydata-sphinx-theme
