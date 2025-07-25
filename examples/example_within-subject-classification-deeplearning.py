@@ -56,7 +56,7 @@ def func_load_epochs(keywords, mode, tmin=-1, tmax=2.5, runs=[4, 8, 12]):
 
     subject = keywords[0]
 
-    fnames = mne.datasets.eegbci.load_data(subject, runs)
+    fnames = mne.datasets.eegbci.load_data(subject, runs, update_path=True)
 
     epochs_list = []
     for fname, run in zip(fnames, runs):
