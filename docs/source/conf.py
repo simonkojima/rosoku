@@ -59,6 +59,7 @@ smv_remote_whitelist = r"^origin$"
 html_theme = "pydata_sphinx_theme"
 html_theme_options = {
     "default_mode": "light",
+    "logo": {"image_light": "logo-light.png", "image_dark": "logo-dark.png"},
     "version_dropdown": True,
     "version_info": {
         "name": "Version",
