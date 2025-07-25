@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**00:00.042** total execution time for 1 file **from auto_examples**:
+**00:28.814** total execution time for 2 files **from auto_examples**:
 
 .. container::
 
@@ -32,6 +32,9 @@ Computation times
    * - Example
      - Time
      - Mem (MB)
+   * - :ref:`sphx_glr_auto_examples_example_within-subject-classification-deeplearning.py` (``example_within-subject-classification-deeplearning.py``)
+     - 00:28.814
+     - 0.0
    * - :ref:`sphx_glr_auto_examples_example_cross-subject-classification.py` (``example_cross-subject-classification.py``)
-     - 00:00.042
+     - 00:00.000
      - 0.0

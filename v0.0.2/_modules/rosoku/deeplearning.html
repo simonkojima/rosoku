@@ -688,6 +688,7 @@
             <span class="p">},</span>
         <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
+
         <span class="p">(</span><span class="n">dataloader_train</span><span class="p">,</span> <span class="n">dataloader_valid</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">nd_to_dataloader</span><span class="p">(</span>
             <span class="n">X_train</span><span class="p">,</span>
             <span class="n">y_train</span><span class="p">,</span>
@@ -1173,25 +1174,37 @@
 <span class="sd">    subjects_test: list</span>
 <span class="sd">    func_get_fnames: callable</span>
 <span class="sd">        subject名を引数とし，-epo.fifのファイル名リストを返す関数</span>
-<span class="sd">        def fuc_get_fnames(subject):</span>
-<span class="sd">            return [f&quot;{subject-R1-epo.fif}&quot;, f&quot;{subject-R2}-epo.fif&quot;]</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            def fuc_get_fnames(subject):</span>
+<span class="sd">                return [f&quot;{subject-R1-epo.fif}&quot;, f&quot;{subject-R2}-epo.fif&quot;]</span>
+
 <span class="sd">    criterion: instance of loss function</span>
 <span class="sd">    batch_size: int</span>
 <span class="sd">    n_epochs: int</span>
 <span class="sd">    optimizer: reference to class</span>
-<span class="sd">        e.g., torch.optim.AdamW</span>
-<span class="sd">        インスタンスではなく，クラスへの参照を渡す</span>
+<span class="sd">        - インスタンスではなく，クラスへの参照を渡す</span>
+
+<span class="sd">        e.g.,</span>
+
+<span class="sd">        &gt;&gt;&gt; optimizer = torch.optim.AdamW</span>
+
 <span class="sd">    optimizer_params: dict</span>
 <span class="sd">        optimizerへ渡す**kwargs</span>
 <span class="sd">    model: instance of pytorch model</span>
 <span class="sd">        func_get_modelを使う場合はNoneでOK</span>
 <span class="sd">    func_get_model: callable</span>
-<span class="sd">        X_train, y_trainを引数として，modelを返す関数</span>
-<span class="sd">        X_trainのshape依存のmodel等で便利</span>
-<span class="sd">        modelに直接渡す場合はNoneでOK</span>
+<span class="sd">        - X_train, y_trainを引数として，modelを返す関数</span>
+<span class="sd">        - X_trainのshape依存のmodel等で便利</span>
+<span class="sd">        - modelに直接渡す場合はNoneでOK</span>
 <span class="sd">    scheduler:</span>
-<span class="sd">        e.g., scheduler = torch.optim.lr_scheduler.CosineAnnealingLR</span>
 <span class="sd">        インスタンスではなく，クラスへの参照を渡す</span>
+
+<span class="sd">        e.g.,</span>
+
+<span class="sd">        &gt;&gt;&gt; scheduler = torch.optim.lr_scheduler.CosineAnnealingLR</span>
+
 <span class="sd">    scheduler_params: dict</span>
 <span class="sd">        schedulerへ渡す**kwargs</span>
 <span class="sd">    device: str</span>
@@ -1199,32 +1212,37 @@
 <span class="sd">    enable_ddp: bool</span>
 <span class="sd">        DDP(Distributed Data Parallel)を使うか否か．Trueの場合はdevice = &quot;cuda&quot;じゃないといけないので注意</span>
 <span class="sd">    num_workers: int</span>
-<span class="sd">        各GPUごとにいくつのプロセスを使ってデータ読み込みを行うか</span>
-<span class="sd">        enable_ddp = Trueのときのみこの変更が有効になる</span>
+<span class="sd">        - 各GPUごとにいくつのプロセスを使ってデータ読み込みを行うか</span>
+<span class="sd">        - enable_ddp = Trueのときのみこの変更が有効になる</span>
 <span class="sd">    func_proc_epochs: callable</span>
-<span class="sd">        mne.epochsを引数として，mne.epochsを返す</span>
-<span class="sd">        チャネルを脳波のみにする，cropする...などで使う</span>
+<span class="sd">        - mne.epochsを引数として，mne.epochsを返す</span>
+<span class="sd">        - チャネルを脳波のみにする，cropする...などで使う</span>
 <span class="sd">    label_keys: dict</span>
 <span class="sd">        epochsからクラス情報を抜き出すのに使う</span>
-<span class="sd">        e.g., label_keys={&quot;event:left&quot;: 0, &quot;event:right&quot;: 1}</span>
+
+<span class="sd">        e.g.,</span>
+
+<span class="sd">        &gt;&gt;&gt; label_keys={&quot;event:left&quot;: 0, &quot;event:right&quot;: 1}</span>
+
 <span class="sd">        この場合，&quot;event:left&quot;のエポックが0で，&quot;event:right&quot;が1になる</span>
 <span class="sd">    compile_test_subjects: bool</span>
-<span class="sd">        Trueのとき，複数のテストサブジェクトのデータを結合し，精度等を計算する</span>
-<span class="sd">        Falseの場合は，被験者ごとの結果を返す</span>
+<span class="sd">        - Trueのとき，複数のテストサブジェクトのデータを結合し，精度等を計算する</span>
+<span class="sd">        - Falseの場合は，被験者ごとの結果を返す</span>
 <span class="sd">    enable_wandb_logging: bool</span>
 <span class="sd">        wandbでのログ保存を有効化するか</span>
 <span class="sd">    wandb_params: dict</span>
-<span class="sd">        wandb.init()に渡すkwargs</span>
-<span class="sd">        project, name, などを入れておくと良い</span>
+<span class="sd">        - wandb.init()に渡すkwargs</span>
+<span class="sd">        - project, name, などを入れておくと良い</span>
 <span class="sd">    checkpoint_fname: path-like</span>
-<span class="sd">        checkpoint保存用ファイル名</span>
-<span class="sd">        pthで保存される</span>
+<span class="sd">        - checkpoint保存用ファイル名</span>
+<span class="sd">        - pthで保存される</span>
 <span class="sd">    history_fname: path-like</span>
-<span class="sd">        history保存用ファイル名</span>
-<span class="sd">        pkl, htmlでpandas DataFrameが保存される</span>
+<span class="sd">        - history保存用ファイル名</span>
+<span class="sd">        - pkl, htmlでpandas DataFrameが保存される</span>
 <span class="sd">    early_stopping: int or callable</span>
-<span class="sd">        early_stopping = rosoku.EarlyStopping(patience = 75)</span>
-<span class="sd">        early_stopping = 75</span>
+
+<span class="sd">        &gt;&gt;&gt; early_stopping = rosoku.EarlyStopping(patience = 75)</span>
+<span class="sd">        &gt;&gt;&gt; early_stopping = 75</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
