@@ -21,4 +21,7 @@ srunで実行
 
 ```
 sphinx-apidoc -o ../docs/source ../rosoku && make html
+
+
+sphinx-apidoc -o ../docs/source ../rosoku && sphinx-multiversion source build/html
 ```

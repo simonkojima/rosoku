@@ -305,6 +305,7 @@ def main(
             },
         )
     else:
+
         (dataloader_train, dataloader_valid, _) = utils.nd_to_dataloader(
             X_train,
             y_train,
@@ -781,25 +782,37 @@ def deeplearning(
     subjects_test: list
     func_get_fnames: callable
         subject名を引数とし，-epo.fifのファイル名リストを返す関数
-        def fuc_get_fnames(subject):
-            return [f"{subject-R1-epo.fif}", f"{subject-R2}-epo.fif"]
+
+        .. code-block:: python
+
+            def fuc_get_fnames(subject):
+                return [f"{subject-R1-epo.fif}", f"{subject-R2}-epo.fif"]
+
     criterion: instance of loss function
     batch_size: int
     n_epochs: int
     optimizer: reference to class
-        e.g., torch.optim.AdamW
-        インスタンスではなく，クラスへの参照を渡す
+        - インスタンスではなく，クラスへの参照を渡す
+
+        e.g.,
+
+        >>> optimizer = torch.optim.AdamW
+
     optimizer_params: dict
         optimizerへ渡す**kwargs
     model: instance of pytorch model
         func_get_modelを使う場合はNoneでOK
     func_get_model: callable
-        X_train, y_trainを引数として，modelを返す関数
-        X_trainのshape依存のmodel等で便利
-        modelに直接渡す場合はNoneでOK
+        - X_train, y_trainを引数として，modelを返す関数
+        - X_trainのshape依存のmodel等で便利
+        - modelに直接渡す場合はNoneでOK
     scheduler:
-        e.g., scheduler = torch.optim.lr_scheduler.CosineAnnealingLR
         インスタンスではなく，クラスへの参照を渡す
+
+        e.g.,
+
+        >>> scheduler = torch.optim.lr_scheduler.CosineAnnealingLR
+
     scheduler_params: dict
         schedulerへ渡す**kwargs
     device: str
@@ -807,32 +820,37 @@ def deeplearning(
     enable_ddp: bool
         DDP(Distributed Data Parallel)を使うか否か．Trueの場合はdevice = "cuda"じゃないといけないので注意
     num_workers: int
-        各GPUごとにいくつのプロセスを使ってデータ読み込みを行うか
-        enable_ddp = Trueのときのみこの変更が有効になる
+        - 各GPUごとにいくつのプロセスを使ってデータ読み込みを行うか
+        - enable_ddp = Trueのときのみこの変更が有効になる
     func_proc_epochs: callable
-        mne.epochsを引数として，mne.epochsを返す
-        チャネルを脳波のみにする，cropする...などで使う
+        - mne.epochsを引数として，mne.epochsを返す
+        - チャネルを脳波のみにする，cropする...などで使う
     label_keys: dict
         epochsからクラス情報を抜き出すのに使う
-        e.g., label_keys={"event:left": 0, "event:right": 1}
+
+        e.g.,
+
+        >>> label_keys={"event:left": 0, "event:right": 1}
+
         この場合，"event:left"のエポックが0で，"event:right"が1になる
     compile_test_subjects: bool
-        Trueのとき，複数のテストサブジェクトのデータを結合し，精度等を計算する
-        Falseの場合は，被験者ごとの結果を返す
+        - Trueのとき，複数のテストサブジェクトのデータを結合し，精度等を計算する
+        - Falseの場合は，被験者ごとの結果を返す
     enable_wandb_logging: bool
         wandbでのログ保存を有効化するか
     wandb_params: dict
-        wandb.init()に渡すkwargs
-        project, name, などを入れておくと良い
+        - wandb.init()に渡すkwargs
+        - project, name, などを入れておくと良い
     checkpoint_fname: path-like
-        checkpoint保存用ファイル名
-        pthで保存される
+        - checkpoint保存用ファイル名
+        - pthで保存される
     history_fname: path-like
-        history保存用ファイル名
-        pkl, htmlでpandas DataFrameが保存される
+        - history保存用ファイル名
+        - pkl, htmlでpandas DataFrameが保存される
     early_stopping: int or callable
-        early_stopping = rosoku.EarlyStopping(patience = 75)
-        early_stopping = 75
+
+        >>> early_stopping = rosoku.EarlyStopping(patience = 75)
+        >>> early_stopping = 75
 
     Returns
     -------
