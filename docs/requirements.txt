@@ -10,3 +10,4 @@ tag-mne
 pandas
 pydata-sphinx-theme
 sphinx-multiversion
+braindecode
