@@ -1,5 +1,6 @@
 import os
 import time
+import random
 
 import numpy as np
 import sklearn
@@ -232,6 +233,7 @@ def main(
     history_fname = kwargs.get("history_fname", None)
     early_stopping = kwargs.get("early_stopping", None)
     name_classifier = kwargs.get("name_classifier", None)
+    seed = kwargs.get("seed", None)
 
     # setup DDP
     if enable_ddp:
@@ -303,6 +305,7 @@ def main(
                 "num_workers": num_workers,
                 "rank": rank,
             },
+            generator=seed,
         )
     else:
 
@@ -316,6 +319,7 @@ def main(
             device="cpu",
             batch_size=batch_size,
             enable_DS=False,
+            generator=seed,
         )
         sampler_train = None
 
@@ -770,6 +774,7 @@ def deeplearning(
     name_classifier=None,
     # enable_euclidean_alignment=False,
     enable_normalization=False,
+    seed=None,
     desc=None,
 ):
     """
@@ -876,6 +881,19 @@ def deeplearning(
             "device have to be 'cuda' when enable_ddp = True or enable_dp = True."
         )
 
+    if seed is not None:
+        np.random.seed(seed)
+        random.seed(seed)
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+
+        g = torch.Generator()
+        g.manual_seed(seed)
+
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+
     # load data
 
     ## training data
@@ -959,6 +977,7 @@ def deeplearning(
         "history_fname": history_fname,
         "early_stopping": early_stopping,
         "name_classifier": name_classifier,
+        "seed": seed,
         "desc": desc,
     }
 
@@ -1021,6 +1040,7 @@ def deeplearning(
         device="cpu",
         batch_size=batch_size,
         enable_DS=False,
+        generator=seed,
     )
 
     if isinstance(dataloader_test, list) is False:

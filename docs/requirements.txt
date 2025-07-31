@@ -11,3 +11,4 @@ pandas
 pydata-sphinx-theme
 sphinx-multiversion
 braindecode
+git+https://github.com/NeuroTechX/moabb.git#egg=moabb

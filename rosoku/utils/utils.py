@@ -1,4 +1,5 @@
 import os
+import random
 import time
 import numpy as np
 import tag_mne as tm
@@ -186,8 +187,40 @@ def dataset_to_dataloader(
     batch_size,
     enable_DS=False,
     DS_params=None,
+    generator=None,
 ):
+    """
+    Convert dataset to Dataloader
+
+    Parameters
+    ----------
+    generator: None, instance of torch.Generator(), or int
+        if None, no generator is set. if instance of torch.Genetator(), it will be used. If int, torch.Generator.manual_seed(generator) will be used.
+    enable_DS: bool
+        if True, DistributedSampler will be used. Note that you must call sampler_train.set_epoch(epoch) every epoch.
+
+    """
     import torch
+
+    if generator is not None:
+        if enable_DS:
+            if isinstance(generator, int) is False:
+                raise ValueError("When enable_DS = True, generator must be int.")
+            else:
+
+                def func_worker_init(worker_id):
+                    worker_seed = generator + worker_id
+                    np.random.seed(worker_seed)
+                    random.seed(worker_seed)
+
+        if isinstance(generator, int):
+            g = torch.Generator()
+            g.manual_seed(generator)
+        else:
+            g = generator
+
+    else:
+        g = generator
 
     if enable_DS:
         world_size = DS_params["world_size"]
@@ -197,7 +230,11 @@ def dataset_to_dataloader(
         persistent_workers = num_workers > 0
 
         sampler_train = torch.utils.data.distributed.DistributedSampler(
-            dataset_train, num_replicas=world_size, rank=rank, shuffle=True
+            dataset_train,
+            num_replicas=world_size,
+            rank=rank,
+            shuffle=True,
+            seed=generator,
         )
 
         sampler_valid = torch.utils.data.distributed.DistributedSampler(
@@ -215,6 +252,8 @@ def dataset_to_dataloader(
             num_workers=num_workers,
             pin_memory=True,
             persistent_workers=persistent_workers,
+            generator=g,
+            worker_init_fn=func_worker_init,
         )
 
         dataloader_valid = torch.utils.data.DataLoader(
@@ -253,7 +292,7 @@ def dataset_to_dataloader(
     else:
 
         dataloader_train = torch.utils.data.DataLoader(
-            dataset_train, batch_size=batch_size, shuffle=True
+            dataset_train, batch_size=batch_size, shuffle=True, generator=g
         )
         dataloader_valid = torch.utils.data.DataLoader(
             dataset_valid, batch_size=batch_size, shuffle=False
@@ -285,6 +324,7 @@ def nd_to_dataloader(
     device="cpu",
     enable_DS=False,
     DS_params=None,
+    generator=None,
 ):
 
     (
@@ -312,6 +352,7 @@ def nd_to_dataloader(
         batch_size=batch_size,
         enable_DS=enable_DS,
         DS_params=DS_params,
+        generator=generator,
     )
 
 
