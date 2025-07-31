@@ -31,10 +31,6 @@
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -370,31 +366,6 @@
                   
   <section id="rosoku-riemannian-riemannian-cross-subject">
 <h1>rosoku.riemannian.riemannian_cross_subject<a class="headerlink" href="#rosoku-riemannian-riemannian-cross-subject" title="Link to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="rosoku.riemannian.riemannian_cross_subject">
-<span class="sig-prename descclassname"><span class="pre">rosoku.riemannian.</span></span><span class="sig-name descname"><span class="pre">riemannian_cross_subject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subjects_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subjects_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_get_fnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_proc_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['tslr']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_classifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'event:left':</span> <span class="pre">0,</span> <span class="pre">'event:right':</span> <span class="pre">1}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_cov_recentering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_cov_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_test_subjects</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/riemannian.html#riemannian_cross_subject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.riemannian.riemannian_cross_subject" title="Link to this definition">#</a></dt>
-<dd><p>subjects_train: list
-subjects_test: list
-files: callable</p>
-<blockquote>
-<div><p>subject名を引数とし，ファイル名を返す関数</p>
-</div></blockquote>
-<dl class="simple">
-<dt>func_proc_epochs: function</dt><dd><dl class="simple">
-<dt>def func_proc_eochs(epochs)</dt><dd><p>return epochs</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>classifier: list of classifier, “tslr”, “mdm”, instance
-label_keys: dict
-compile_test_subjects: bool</p>
-<blockquote>
-<div><p>Trueにすると，テストsubjectのデータをまとめて，その精度とかを返す
-Falseにすると，各被験者ごとの精度をリストで返す</p>
-</div></blockquote>
-</dd></dl>
-
 </section>
 
 
@@ -417,18 +388,6 @@ Falseにすると，各被験者ごとの精度をリストで返す</p>
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-
-  <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.riemannian.riemannian_cross_subject"><code class="docutils literal notranslate"><span class="pre">riemannian_cross_subject()</span></code></a></li>
-</ul>
-  </nav></div>
 
   <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">

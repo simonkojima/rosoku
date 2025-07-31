@@ -31,10 +31,6 @@
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -55,7 +51,7 @@
         </script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="rosoku.deeplearning_cross_subject" href="rosoku.deeplearning_cross_subject.html" />
+    <link rel="next" title="rosoku.conventional" href="rosoku.conventional.html" />
     <link rel="prev" title="Documentation" href="documentation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -144,13 +140,6 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="documentation.html">
     Documentation
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="auto_examples/index.html">
-    Examples
   </a>
 </li>
 
@@ -262,13 +251,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="auto_examples/index.html">
-    Examples
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="install.html">
     How to Install
   </a>
@@ -324,6 +306,7 @@
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">rosoku modules</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">rosoku.deeplearning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.conventional.html">rosoku.conventional</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rosoku.deeplearning_cross_subject.html">rosoku.deeplearning_cross_subject</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rosoku.riemannian_cross_subject.html">rosoku.riemannian_cross_subject</a></li>
 </ul>
@@ -411,7 +394,7 @@
 <h1>rosoku.deeplearning<a class="headerlink" href="#rosoku-deeplearning" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="rosoku.deeplearning">
-<span class="sig-prename descclassname"><span class="pre">rosoku.</span></span><span class="sig-name descname"><span class="pre">deeplearning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keywords_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords_valid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_load_epochs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_load_ndarray=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion=CrossEntropyLoss()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size=64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_epochs=500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer=&lt;class</span> <span class="pre">'torch.optim.adamw.AdamW'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_func_proc_per_obj=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_proc_epochs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_proc_ndarray=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_convert_epochs_to_ndarray=&lt;function</span> <span class="pre">convert_epochs_to_ndarray&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_get_model=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device='cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_ddp=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_dp=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_keys={'event:left':</span> <span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'event:right':</span> <span class="pre">1}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_test_subjects=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_wandb_logging=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wandb_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_fname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history_fname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">early_stopping=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_classifier=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_normalization=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/deeplearning.html#deeplearning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.deeplearning" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">rosoku.</span></span><span class="sig-name descname"><span class="pre">deeplearning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keywords_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords_valid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_load_epochs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_load_ndarray=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion=CrossEntropyLoss()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size=64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_epochs=500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer=&lt;class</span> <span class="pre">'torch.optim.adamw.AdamW'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_func_proc_per_obj=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_proc_epochs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_proc_ndarray=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_convert_epochs_to_ndarray=&lt;function</span> <span class="pre">convert_epochs_to_ndarray&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_get_model=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scheduler_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device='cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_ddp=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_dp=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers=0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_test=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_wandb_logging=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wandb_params=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkpoint_fname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">history_fname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">early_stopping=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_classifier=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_normalization=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/deeplearning.html#deeplearning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.deeplearning" title="Link to this definition">#</a></dt>
 <dd><p>汎用的なdeeplearning用関数</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -470,7 +453,7 @@
 </div>
 <p>この場合，”event:left”のエポックが0で，”event:right”が1になる</p>
 </p></li>
-<li><p><strong>compile_test_subjects</strong> (<em>bool</em>) – <ul>
+<li><p><strong>compile_test</strong> (<em>bool</em>) – <ul>
 <li><p>Trueのとき，複数のテストサブジェクトのデータを結合し，精度等を計算する</p></li>
 <li><p>Falseの場合は，被験者ごとの結果を返す</p></li>
 </ul>
@@ -529,11 +512,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="rosoku.deeplearning_cross_subject.html"
+       href="rosoku.conventional.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">rosoku.deeplearning_cross_subject</p>
+        <p class="prev-next-title">rosoku.conventional</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

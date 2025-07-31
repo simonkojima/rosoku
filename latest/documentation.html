@@ -31,10 +31,6 @@
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -149,13 +145,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="auto_examples/index.html">
-    Examples
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="install.html">
     How to Install
   </a>
@@ -262,13 +251,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="auto_examples/index.html">
-    Examples
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="install.html">
     How to Install
   </a>
@@ -324,6 +306,7 @@
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">rosoku modules</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="rosoku.deeplearning.html">rosoku.deeplearning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.conventional.html">rosoku.conventional</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rosoku.deeplearning_cross_subject.html">rosoku.deeplearning_cross_subject</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rosoku.riemannian_cross_subject.html">rosoku.riemannian_cross_subject</a></li>
 </ul>
@@ -413,10 +396,13 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="rosoku.deeplearning.html#rosoku.deeplearning" title="rosoku.deeplearning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rosoku.deeplearning</span></code></a>(keywords_train, ...[, ...])</p></td>
 <td><p>汎用的なdeeplearning用関数</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="rosoku.deeplearning_cross_subject.html#rosoku.deeplearning_cross_subject" title="rosoku.deeplearning_cross_subject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rosoku.deeplearning_cross_subject</span></code></a>(...[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="rosoku.conventional.html#rosoku.conventional" title="rosoku.conventional"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rosoku.conventional</span></code></a>(keywords_train, ...[, ...])</p></td>
+<td><p>汎用的なriemannian用関数</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="rosoku.deeplearning_cross_subject.html#rosoku.deeplearning_cross_subject" title="rosoku.deeplearning_cross_subject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rosoku.deeplearning_cross_subject</span></code></a>(...[, ...])</p></td>
 <td><p>cross-subjectのDLを行う</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="rosoku.riemannian_cross_subject.html#rosoku.riemannian_cross_subject" title="rosoku.riemannian_cross_subject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rosoku.riemannian_cross_subject</span></code></a>(...[, ...])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="rosoku.riemannian_cross_subject.html#rosoku.riemannian_cross_subject" title="rosoku.riemannian_cross_subject"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rosoku.riemannian_cross_subject</span></code></a>(...[, ...])</p></td>
 <td><p>subjects_train: list subjects_test: list files: callable     subject名を引数とし，ファイル名を返す関数 func_proc_epochs: function     def func_proc_eochs(epochs)         return epochs classifier: list of classifier, &quot;tslr&quot;, &quot;mdm&quot;, instance label_keys: dict compile_test_subjects: bool     Trueにすると，テストsubjectのデータをまとめて，その精度とかを返す     Falseにすると，各被験者ごとの精度をリストで返す</p></td>
 </tr>
 </tbody>
@@ -477,7 +463,7 @@
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="rosoku.utils.dataset_to_dataloader.html#rosoku.utils.dataset_to_dataloader" title="rosoku.utils.dataset_to_dataloader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rosoku.utils.dataset_to_dataloader</span></code></a>(...[, ...])</p></td>
-<td><p></p></td>
+<td><p>Convert dataset to Dataloader</p></td>
 </tr>
 </tbody>
 </table>

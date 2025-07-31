@@ -31,10 +31,6 @@
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -149,13 +145,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="auto_examples/index.html">
-    Examples
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="install.html">
     How to Install
   </a>
@@ -262,13 +251,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="auto_examples/index.html">
-    Examples
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="install.html">
     How to Install
   </a>
@@ -324,6 +306,7 @@
   <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">rosoku modules</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="rosoku.deeplearning.html">rosoku.deeplearning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.conventional.html">rosoku.conventional</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rosoku.deeplearning_cross_subject.html">rosoku.deeplearning_cross_subject</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">rosoku.riemannian_cross_subject</a></li>
 </ul>
@@ -411,7 +394,7 @@
 <h1>rosoku.riemannian_cross_subject<a class="headerlink" href="#rosoku-riemannian-cross-subject" title="Link to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="rosoku.riemannian_cross_subject">
-<span class="sig-prename descclassname"><span class="pre">rosoku.</span></span><span class="sig-name descname"><span class="pre">riemannian_cross_subject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subjects_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subjects_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_get_fnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_proc_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['tslr']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_classifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'event:left':</span> <span class="pre">0,</span> <span class="pre">'event:right':</span> <span class="pre">1}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_cov_recentering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_cov_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_test_subjects</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/riemannian.html#riemannian_cross_subject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.riemannian_cross_subject" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">rosoku.</span></span><span class="sig-name descname"><span class="pre">riemannian_cross_subject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subjects_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subjects_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_get_fnames</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_proc_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['tslr']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_classifiers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'event:left':</span> <span class="pre">0,</span> <span class="pre">'event:right':</span> <span class="pre">1}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_cov_recentering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_cov_scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_test_subjects</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/conventional.html#riemannian_cross_subject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.riemannian_cross_subject" title="Link to this definition">#</a></dt>
 <dd><p>subjects_train: list
 subjects_test: list
 files: callable</p>

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Computation times &#8212; Rosoku 0.0.3 documentation</title>
+    <title>rosoku.conventional &#8212; Rosoku 0.0.3 documentation</title>
   
   
   
@@ -31,10 +31,6 @@
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -45,7 +41,7 @@
     <script src="_static/documentation_options.js?v=47de8214"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'sg_execution_times';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'rosoku.conventional';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.16.1';
         DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://simonkojima.github.io/rosoku/versions.json';
@@ -55,6 +51,8 @@
         </script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="rosoku.deeplearning_cross_subject" href="rosoku.deeplearning_cross_subject.html" />
+    <link rel="prev" title="rosoku.deeplearning" href="rosoku.deeplearning.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -139,16 +137,9 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-<li class="nav-item ">
+<li class="nav-item current active">
   <a class="nav-link nav-internal" href="documentation.html">
     Documentation
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="auto_examples/index.html">
-    Examples
   </a>
 </li>
 
@@ -236,10 +227,8 @@
       
       
       
-        
-      
       <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -254,16 +243,9 @@
 <nav>
   <ul class="bd-navbar-elements navbar-nav">
     
-<li class="nav-item ">
+<li class="nav-item current active">
   <a class="nav-link nav-internal" href="documentation.html">
     Documentation
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="auto_examples/index.html">
-    Examples
   </a>
 </li>
 
@@ -316,6 +298,43 @@
     
   </div>
   
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">rosoku modules</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="rosoku.deeplearning.html">rosoku.deeplearning</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">rosoku.conventional</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.deeplearning_cross_subject.html">rosoku.deeplearning_cross_subject</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.riemannian_cross_subject.html">rosoku.riemannian_cross_subject</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">rosoku.preprocessing</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="rosoku.preprocessing.normalize.html">rosoku.preprocessing.normalize</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.preprocessing.normalize_tensor.html">rosoku.preprocessing.normalize_tensor</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">rosoku.tl</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="rosoku.tl.euclidean_alignment.html">rosoku.tl.euclidean_alignment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.tl.riemannian_alignment.html">rosoku.tl.riemannian_alignment</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">rosoku.utils</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="rosoku.utils.EarlyStopping.html">rosoku.utils.EarlyStopping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.utils.get_labels_from_epochs.html">rosoku.utils.get_labels_from_epochs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.utils.get_predictions.html">rosoku.utils.get_predictions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.utils.get_ddp_params.html">rosoku.utils.get_ddp_params</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.utils.nd_to_dataloader.html">rosoku.utils.nd_to_dataloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.utils.nd_to_tensor.html">rosoku.utils.nd_to_tensor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.utils.tensor_to_dataset.html">rosoku.utils.tensor_to_dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rosoku.utils.dataset_to_dataloader.html">rosoku.utils.dataset_to_dataloader</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
       <div class="sidebar-primary-item">
@@ -351,7 +370,10 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Computation times</span></li>
+    
+    <li class="breadcrumb-item"><a href="documentation.html" class="nav-link">Documentation</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">rosoku.conventional</span></li>
   </ul>
 </nav>
 </div>
@@ -368,41 +390,55 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="computation-times">
-<span id="sphx-glr-sg-execution-times"></span><h1>Computation times<a class="headerlink" href="#computation-times" title="Link to this heading">#</a></h1>
-<p><strong>00:28.814</strong> total execution time for 2 files <strong>from all galleries</strong>:</p>
-<div class="docutils container">
-<style scoped>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
-<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
-</style>
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script type="text/javascript" class="init">
-$(document).ready( function () {
-    $('table.sg-datatable').DataTable({order: [[1, 'desc']]});
-} );
-</script><div class="pst-scrollable-table-container"><table class="table table-striped sg-datatable">
-<thead>
-<tr class="row-odd"><th class="head"><p>Example</p></th>
-<th class="head"><p>Time</p></th>
-<th class="head"><p>Mem (MB)</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="auto_examples/example_within-subject-classification-deeplearning.html#sphx-glr-auto-examples-example-within-subject-classification-deeplearning-py"><span class="std std-ref">Example: Within-subject classification with deep learning</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/example_within-subject-classification-deeplearning.py</span></code>)</p></td>
-<td><p>00:28.814</p></td>
-<td><p>0.0</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="auto_examples/example_cross-subject-classification.html#sphx-glr-auto-examples-example-cross-subject-classification-py"><span class="std std-ref">Example: cross subject classification</span></a> (<code class="docutils literal notranslate"><span class="pre">../../examples/example_cross-subject-classification.py</span></code>)</p></td>
-<td><p>00:00.000</p></td>
-<td><p>0.0</p></td>
-</tr>
-</tbody>
-</table>
+  <section id="rosoku-conventional">
+<h1>rosoku.conventional<a class="headerlink" href="#rosoku-conventional" title="Link to this heading">#</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="rosoku.conventional">
+<span class="sig-prename descclassname"><span class="pre">rosoku.</span></span><span class="sig-name descname"><span class="pre">conventional</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">keywords_train,</span> <span class="pre">keywords_test,</span> <span class="pre">func_load_epochs=None,</span> <span class="pre">func_load_ndarray=None,</span> <span class="pre">func_proc_epochs=None,</span> <span class="pre">func_proc_ndarray=None,</span> <span class="pre">apply_func_proc_per_obj=True,</span> <span class="pre">classifiers=[TSClassifier(),</span> <span class="pre">MDM()],</span> <span class="pre">classifier_names=['tslr',</span> <span class="pre">'mdm'],</span> <span class="pre">name_classifiers=None,</span> <span class="pre">func_convert_epochs_to_ndarray=&lt;function</span> <span class="pre">convert_epochs_to_ndarray&gt;,</span> <span class="pre">compile_test=False,</span> <span class="pre">desc=None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/conventional.html#conventional"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.conventional" title="Link to this definition">#</a></dt>
+<dd><p>汎用的なriemannian用関数</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kewords_train</strong> (<em>list</em>)</p></li>
+<li><p><strong>kewords_test</strong> (<em>list</em>)</p></li>
+<li><p><strong>func_load_epochs</strong> (<em>callable</em>) – <p>第一引数がkeywords, 第二引数がmodeの，mne.Epochsオブジェクトを返す関数．
+keywordsはkeywords_trainやkeywords_testで渡されたlistオブジェクトが渡される．
+modeは，train, testのstrが渡される．</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">func_load_epochs</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+    <span class="c1"># keywords: keywords_train or keywords_test</span>
+    <span class="c1"># mode: &quot;train&quot; or &quot;test&quot;</span>
+
+    <span class="c1"># load epochs here...</span>
+
+    <span class="k">return</span> <span class="n">epochs</span>
+</pre></div>
 </div>
+</p></li>
+<li><p><strong>func_load_ndarray</strong> (<em>callable</em>) – <p>第一引数がkeywords, 第二引数がmodeの，np.ndarrayオブジェクトを返す関数．
+keywordsはkeywords_trainやkeywords_testで渡されたlistオブジェクトが渡される．
+modeは，train, testのstrが渡される．</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">func_load_ndarray</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+    <span class="c1"># keywords: keywords_train or keywords_test</span>
+    <span class="c1"># mode: &quot;train&quot; or &quot;test&quot;</span>
+
+    <span class="c1"># load data here...</span>
+
+    <span class="k">return</span> <span class="n">ndarray</span>
+</pre></div>
 </div>
+</p></li>
+</ul>
+</dd>
+</dl>
+<p>classifier: list of classifier, “tslr”, “mdm”, instance
+label_keys: dict
+compile_test_subjects: bool</p>
+<blockquote>
+<div><p>Trueにすると，テストsubjectのデータをまとめて，その精度とかを返す
+Falseにすると，各被験者ごとの精度をリストで返す</p>
+</div></blockquote>
+</dd></dl>
+
 </section>
 
 
@@ -415,6 +451,24 @@ $(document).ready( function () {
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="rosoku.deeplearning.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">rosoku.deeplearning</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="rosoku.deeplearning_cross_subject.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">rosoku.deeplearning_cross_subject</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
@@ -427,10 +481,22 @@ $(document).ready( function () {
 
 
   <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.conventional"><code class="docutils literal notranslate"><span class="pre">conventional()</span></code></a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/sg_execution_times.rst.txt"
+      <li><a href="_sources/rosoku.conventional.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div></div>

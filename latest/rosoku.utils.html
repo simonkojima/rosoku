@@ -31,10 +31,6 @@
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-binder.css?v=f4aeca0c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-dataframe.css?v=2082cf3c" />
-    <link rel="stylesheet" type="text/css" href="_static/sg_gallery-rendered-html.css?v=1277b6f3" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -147,13 +143,6 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="auto_examples/index.html">
-    Examples
-  </a>
-</li>
-
-
-<li class="nav-item ">
   <a class="nav-link nav-internal" href="install.html">
     How to Install
   </a>
@@ -255,13 +244,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="documentation.html">
     Documentation
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="auto_examples/index.html">
-    Examples
   </a>
 </li>
 
@@ -424,9 +406,23 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="rosoku.utils.utils.dataset_to_dataloader">
-<span class="sig-prename descclassname"><span class="pre">rosoku.utils.utils.</span></span><span class="sig-name descname"><span class="pre">dataset_to_dataloader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_valid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_DS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DS_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/utils/utils.html#dataset_to_dataloader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.utils.utils.dataset_to_dataloader" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="rosoku.utils.utils.convert_epochs_to_ndarray">
+<span class="sig-prename descclassname"><span class="pre">rosoku.utils.utils.</span></span><span class="sig-name descname"><span class="pre">convert_epochs_to_ndarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epochs_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochs_valid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'event:left':</span> <span class="pre">0,</span> <span class="pre">'event:right':</span> <span class="pre">1}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/utils/utils.html#convert_epochs_to_ndarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.utils.utils.convert_epochs_to_ndarray" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rosoku.utils.utils.dataset_to_dataloader">
+<span class="sig-prename descclassname"><span class="pre">rosoku.utils.utils.</span></span><span class="sig-name descname"><span class="pre">dataset_to_dataloader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_valid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_DS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DS_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/utils/utils.html#dataset_to_dataloader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.utils.utils.dataset_to_dataloader" title="Link to this definition">#</a></dt>
+<dd><p>Convert dataset to Dataloader</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>generator</strong> (<em>None</em><em>, </em><em>instance</em><em> of </em><em>torch.Generator</em><em>(</em><em>)</em><em>, or </em><em>int</em>) – if None, no generator is set. if instance of torch.Genetator(), it will be used. If int, torch.Generator.manual_seed(generator) will be used.</p></li>
+<li><p><strong>enable_DS</strong> (<em>bool</em>) – if True, DistributedSampler will be used. Note that you must call sampler_train.set_epoch(epoch) every epoch.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="rosoku.utils.utils.evaluation_dataloader">
@@ -449,13 +445,18 @@
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="rosoku.utils.utils.load_data">
+<span class="sig-prename descclassname"><span class="pre">rosoku.utils.utils.</span></span><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keywords_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keywords_valid=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_load_epochs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_load_ndarray=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_proc_epochs=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_proc_ndarray=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">apply_func_proc_per_obj=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_convert_epochs_to_ndarray=&lt;function</span> <span class="pre">convert_epochs_to_ndarray&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_test=False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/utils/utils.html#load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.utils.utils.load_data" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="rosoku.utils.utils.load_epochs">
 <span class="sig-prename descclassname"><span class="pre">rosoku.utils.utils.</span></span><span class="sig-name descname"><span class="pre">load_epochs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">concat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/utils/utils.html#load_epochs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.utils.utils.load_epochs" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="rosoku.utils.utils.nd_to_dataloader">
-<span class="sig-prename descclassname"><span class="pre">rosoku.utils.utils.</span></span><span class="sig-name descname"><span class="pre">nd_to_dataloader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_valid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_valid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_DS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DS_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/utils/utils.html#nd_to_dataloader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.utils.utils.nd_to_dataloader" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">rosoku.utils.utils.</span></span><span class="sig-name descname"><span class="pre">nd_to_dataloader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_valid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_valid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_DS</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DS_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rosoku/utils/utils.html#nd_to_dataloader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rosoku.utils.utils.nd_to_dataloader" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -525,11 +526,13 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.utils.utils.EarlyStopping.step"><code class="docutils literal notranslate"><span class="pre">EarlyStopping.step()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.utils.utils.convert_epochs_to_ndarray"><code class="docutils literal notranslate"><span class="pre">convert_epochs_to_ndarray()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.utils.utils.dataset_to_dataloader"><code class="docutils literal notranslate"><span class="pre">dataset_to_dataloader()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.utils.utils.evaluation_dataloader"><code class="docutils literal notranslate"><span class="pre">evaluation_dataloader()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.utils.utils.get_ddp_params"><code class="docutils literal notranslate"><span class="pre">get_ddp_params()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.utils.utils.get_labels_from_epochs"><code class="docutils literal notranslate"><span class="pre">get_labels_from_epochs()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.utils.utils.get_predictions"><code class="docutils literal notranslate"><span class="pre">get_predictions()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.utils.utils.load_data"><code class="docutils literal notranslate"><span class="pre">load_data()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.utils.utils.load_epochs"><code class="docutils literal notranslate"><span class="pre">load_epochs()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.utils.utils.nd_to_dataloader"><code class="docutils literal notranslate"><span class="pre">nd_to_dataloader()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rosoku.utils.utils.nd_to_tensor"><code class="docutils literal notranslate"><span class="pre">nd_to_tensor()</span></code></a></li>
