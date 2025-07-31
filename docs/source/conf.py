@@ -65,6 +65,24 @@ sphinx_gallery_conf = {
     "filename_pattern": r"example_",
 }
 
+html_theme_options = {
+    "default_mode": "light",
+    "logo": {"image_light": "logo-light.png", "image_dark": "logo-dark.png"},
+    "version_dropdown": True,
+    "version_info": {
+        "name": "Version",
+        "current_version": release,
+    },
+    "navbar_end": ["theme-switcher", "version-switcher"],
+    "switcher": {
+        "json_url": f"https://simonkojima.github.io/rosoku-docs/versions.json",
+        "version_match": release,
+    },
+}
+html_context = {
+    "version_match": release,
+}
+
 
 source_suffix = {
     ".rst": "restructuredtext",
