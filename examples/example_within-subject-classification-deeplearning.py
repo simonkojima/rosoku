@@ -163,8 +163,6 @@ def func_get_model(X, y):
 
 
 # %%
-label_keys = {"event:left": 0, "event:right": 1}
-
 criterion = torch.nn.CrossEntropyLoss()
 scheduler = torch.optim.lr_scheduler.CosineAnnealingLR
 scheduler_params = {"T_max": n_epochs, "eta_min": 1e-6}
@@ -189,7 +187,6 @@ results = rosoku.deeplearning(
     device=device,
     enable_ddp=enable_ddp,
     func_proc_epochs=func_proc_epochs,
-    label_keys=label_keys,
     early_stopping=early_stopping,
     enable_normalization=enable_normalization,
     name_classifier="eegnet4.2",

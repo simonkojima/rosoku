@@ -22,18 +22,18 @@ rosoku.alias module
    :show-inheritance:
    :undoc-members:
 
-rosoku.deeplearning module
+rosoku.conventional module
 --------------------------
 
-.. automodule:: rosoku.deeplearning
+.. automodule:: rosoku.conventional
    :members:
    :show-inheritance:
    :undoc-members:
 
-rosoku.riemannian module
-------------------------
+rosoku.deeplearning module
+--------------------------
 
-.. automodule:: rosoku.riemannian
+.. automodule:: rosoku.deeplearning
    :members:
    :show-inheritance:
    :undoc-members:

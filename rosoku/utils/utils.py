@@ -592,3 +592,113 @@ def train_epoch(
         print(txt_print)
 
     return valid_loss
+
+
+def convert_epochs_to_ndarray(
+    epochs_train,
+    epochs_test,
+    epochs_valid=None,
+    label_keys={"event:left": 0, "event:right": 1},
+):
+
+    X_train = epochs_train.get_data()
+    if epochs_valid is not None:
+        X_valid = epochs_valid.get_data()
+    X_test = epochs_test.get_data()
+
+    y_train = get_labels_from_epochs(epochs_train, label_keys)
+
+    if epochs_valid is not None:
+        y_valid = get_labels_from_epochs(epochs_valid, label_keys)
+    y_test = get_labels_from_epochs(epochs_test, label_keys)
+
+    if epochs_valid is not None:
+        return X_train, X_valid, X_test, y_train, y_valid, y_test
+    else:
+        return X_train, X_test, y_train, y_test
+
+
+def load_data(
+    keywords_train,
+    keywords_test,
+    keywords_valid=None,
+    func_load_epochs=None,
+    func_load_ndarray=None,
+    func_proc_epochs=None,
+    func_proc_ndarray=None,
+    apply_func_proc_per_obj=False,
+    func_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
+    compile_test=False,
+):
+    ## training data
+    if func_load_epochs is not None:
+        epochs_train = func_load_epochs(keywords_train, "train")
+        if keywords_valid is not None:
+            epochs_valid = func_load_epochs(keywords_valid, "valid")
+        epochs_test = func_load_epochs(keywords_test, "test")
+
+        if func_proc_epochs is not None:
+            if apply_func_proc_per_obj:
+                epochs_train = func_proc_epochs(epochs_train, "train")
+                if keywords_valid is not None:
+                    epochs_valid = func_proc_epochs(epochs_valid, "valid")
+                epochs_test = func_proc_epochs(epochs_test, "test")
+            else:
+                if keywords_valid is not None:
+                    epochs_train, epochs_valid, epochs_test = func_proc_epochs(
+                        epochs_train,
+                        epochs_valid,
+                        epochs_test,
+                    )
+                else:
+                    epochs_train, epochs_test = func_proc_epochs(
+                        epochs_train,
+                        epochs_test,
+                    )
+
+        if keywords_valid is not None:
+            X_train, X_valid, X_test, y_train, y_valid, y_test = (
+                func_convert_epochs_to_ndarray(epochs_train, epochs_valid, epochs_test)
+            )
+        else:
+            X_train, X_test, y_train, y_test = func_convert_epochs_to_ndarray(
+                epochs_train, epochs_test
+            )
+
+    elif func_load_ndarray is not None:
+        X_train, y_train = func_load_ndarray(keywords_train, "train")
+        if keywords_valid is not None:
+            X_valid, y_valid = func_load_ndarray(keywords_valid, "valid")
+        X_test, y_test = func_load_ndarray(keywords_test, "test")
+    else:
+        raise ValueError(
+            "either func_load_epochs or func_load_ndarray should not be None"
+        )
+
+    if compile_test:
+        # compile y
+        y_test = [np.concatenate(y_test, axis=0)]
+
+        # compile X
+        X_test = [np.concatenate(X_test, axis=0)]
+
+    if func_proc_ndarray is not None:
+        if apply_func_proc_per_obj:
+            X_train, y_train = func_proc_ndarray(X_train, y_train, "train")
+            if keywords_valid is not None:
+                X_valid, y_valid = func_proc_ndarray(X_valid, y_valid, "valid")
+            X_test, y_test = func_proc_ndarray(X_test, y_test, "test")
+        else:
+            if keywords_valid is not None:
+                X_train, X_valid, X_test, y_train, y_valid, y_test = func_proc_ndarray(
+                    X_train, X_valid, X_test, y_train, y_valid, y_test
+                )
+            else:
+                X_train, X_test, y_train, y_test = func_proc_ndarray(
+                    X_train, X_test, y_train, y_test
+                )
+    else:
+        if keywords_valid is not None:
+            return X_train, X_valid, X_test, y_train, y_valid, y_test
+        else:
+            return X_train, X_test, y_train, y_test

@@ -1,6 +1,6 @@
 __version__ = "0.0.3"
 
-from .riemannian import *
+from .conventional import *
 from .deeplearning import *
 
 from .alias import *

@@ -764,8 +764,8 @@ def deeplearning(
     enable_ddp=False,
     enable_dp=False,
     num_workers=0,
-    label_keys={"event:left": 0, "event:right": 1},
-    compile_test_subjects=False,
+    # label_keys={"event:left": 0, "event:right": 1},
+    compile_test=False,
     enable_wandb_logging=False,
     wandb_params=None,
     checkpoint_fname=None,
@@ -838,7 +838,7 @@ def deeplearning(
         >>> label_keys={"event:left": 0, "event:right": 1}
 
         この場合，"event:left"のエポックが0で，"event:right"が1になる
-    compile_test_subjects: bool
+    compile_test: bool
         - Trueのとき，複数のテストサブジェクトのデータを結合し，精度等を計算する
         - Falseの場合は，被験者ごとの結果を返す
     enable_wandb_logging: bool
@@ -896,6 +896,7 @@ def deeplearning(
 
     # load data
 
+    """
     ## training data
     if func_load_epochs is not None:
         epochs_train = func_load_epochs(keywords_train, "train")
@@ -946,6 +947,20 @@ def deeplearning(
             X_train, X_valid, X_test, y_train, y_valid, y_test = func_proc_ndarray(
                 X_train, X_valid, X_test, y_train, y_valid, y_test
             )
+    """
+
+    X_train, X_valid, X_test, y_train, y_valid, y_test = utils.load_data(
+        keywords_train=keywords_train,
+        keywords_valid=keywords_valid,
+        keywords_test=keywords_test,
+        func_load_epochs=func_load_epochs,
+        func_load_ndarray=func_load_ndarray,
+        func_proc_epochs=func_proc_epochs,
+        func_proc_ndarray=func_proc_ndarray,
+        apply_func_proc_per_obj=apply_func_proc_per_obj,
+        func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
+        compile_test=compile_test,
+    )
 
     # data normalization
     if enable_normalization:
@@ -969,8 +984,8 @@ def deeplearning(
         "scheduler": scheduler,
         "scheduler_params": scheduler_params,
         "func_proc_epochs": func_proc_epochs,
-        "label_keys": label_keys,
-        "compile_test_subjects": compile_test_subjects,
+        # "label_keys": label_keys,
+        "compile_test": compile_test,
         "enable_wandb_logging": enable_wandb_logging,
         "wandb_params": wandb_params,
         "checkpoint_fname": checkpoint_fname,

@@ -9,6 +9,7 @@ rosoku
    :recursive:
 
    rosoku.deeplearning
+   rosoku.conventional
    rosoku.deeplearning_cross_subject
    rosoku.riemannian_cross_subject
 

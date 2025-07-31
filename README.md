@@ -20,8 +20,8 @@ srunで実行
 `docs`内で以下を実行
 
 ```
-sphinx-apidoc -o ../docs/source ../rosoku && make html
+sphinx-apidoc -f -o ../docs/source ../rosoku && make html
 
 
-sphinx-apidoc -o ../docs/source ../rosoku && sphinx-multiversion source build/html
+sphinx-apidoc -f -o ../docs/source ../rosoku && sphinx-multiversion source build/html
 ```

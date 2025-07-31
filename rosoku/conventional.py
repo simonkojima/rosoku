@@ -208,6 +208,119 @@ def riemannian_cross_subject(
     return df
 
 
+def conventional(
+    keywords_train,
+    keywords_test,
+    func_load_epochs=None,
+    func_load_ndarray=None,
+    func_proc_epochs=None,
+    func_proc_ndarray=None,
+    apply_func_proc_per_obj=True,
+    classifiers=[
+        pyriemann.classification.TSClassifier(),
+        pyriemann.classification.MDM(),
+    ],
+    classifier_names=["tslr", "mdm"],
+    name_classifiers=None,
+    func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
+    compile_test=False,
+    desc=None,
+):
+    """
+    汎用的なriemannian用関数
+
+    Parameters
+    ----------
+    kewords_train: list
+    kewords_test: list
+    func_load_epochs: callable
+            第一引数がkeywords, 第二引数がmodeの，mne.Epochsオブジェクトを返す関数．
+            keywordsはkeywords_trainやkeywords_testで渡されたlistオブジェクトが渡される．
+            modeは，train, testのstrが渡される．
+
+            .. code-block:: python
+
+                def func_load_epochs(keywords, mode):
+                    # keywords: keywords_train or keywords_test
+                    # mode: "train" or "test"
+
+                    # load epochs here...
+
+                    return epochs
+    func_load_ndarray: callable
+            第一引数がkeywords, 第二引数がmodeの，np.ndarrayオブジェクトを返す関数．
+            keywordsはkeywords_trainやkeywords_testで渡されたlistオブジェクトが渡される．
+            modeは，train, testのstrが渡される．
+
+            .. code-block:: python
+
+                def func_load_ndarray(keywords, mode):
+                    # keywords: keywords_train or keywords_test
+                    # mode: "train" or "test"
+
+                    # load data here...
+
+                    return ndarray
+
+
+    classifier: list of classifier, "tslr", "mdm", instance
+    label_keys: dict
+    compile_test_subjects: bool
+        Trueにすると，テストsubjectのデータをまとめて，その精度とかを返す
+        Falseにすると，各被験者ごとの精度をリストで返す
+
+    """
+
+    # load data
+
+    X_train, X_test, y_train, y_test = utils.load_data(
+        keywords_train=keywords_train,
+        keywords_test=keywords_test,
+        func_load_epochs=func_load_epochs,
+        func_load_ndarray=func_load_ndarray,
+        func_proc_epochs=func_proc_epochs,
+        func_proc_ndarray=func_proc_ndarray,
+        apply_func_proc_per_obj=apply_func_proc_per_obj,
+        func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
+        compile_test=compile_test,
+    )
+
+    # train classifiers
+    for clf in classifiers:
+        clf.fit(X_train, y_train)
+
+    # classify test data and evaluate results
+
+    if isinstance(X_test, list) is False:
+        X_test = [X_test]
+        y_test = [y_test]
+
+    df_list = list()
+    for X, y, keywords in zip(X_test, y_test, keywords_test):
+        for clf, name in zip(classifiers, classifier_names):
+
+            df_results = pd.DataFrame()
+
+            preds = clf.predict(X)
+            probas = clf.predict_proba(X)
+            accuracy = sklearn.metrics.accuracy_score(y, preds)
+
+            df_results["keywords_train"] = [keywords_train]
+            df_results["keywords_test"] = [keywords]
+            df_results["classifier"] = [name]
+            df_results["accuracy"] = [accuracy]
+            df_results["labels"] = [y]
+            df_results["preds"] = [preds]
+            df_results["probas"] = [probas]
+            df_results["desc"] = [desc]
+
+            df_list.append(df_results)
+
+    df = pd.concat(df_list, axis=0, ignore_index=True)
+
+    return df
+
+
 if __name__ == "__main__":
     debug = True
     import sys
