@@ -1,0 +1,1215 @@
+{
+ "convert_epochs_to_ndarray": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  }
+ ],
+ "dataset": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb.datasets.dreyer2023",
+   "module_short": "moabb.datasets",
+   "name": "Dreyer2023"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb.datasets",
+   "module_short": "moabb.datasets",
+   "name": "Dreyer2023"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb",
+   "module_short": "moabb",
+   "name": "Dreyer2023"
+  }
+ ],
+ "dataset.get_data": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb.datasets.dreyer2023",
+   "module_short": "moabb.datasets",
+   "name": "Dreyer2023.get_data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb.datasets",
+   "module_short": "moabb.datasets",
+   "name": "Dreyer2023.get_data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb",
+   "module_short": "moabb",
+   "name": "Dreyer2023.get_data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb.datasets.dreyer2023",
+   "module_short": "moabb.datasets.dreyer2023",
+   "name": "_Dreyer2023Base.get_data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb.datasets",
+   "module_short": "moabb.datasets",
+   "name": "_Dreyer2023Base.get_data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb",
+   "module_short": "moabb",
+   "name": "_Dreyer2023Base.get_data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb.datasets.base",
+   "module_short": "moabb.datasets.base",
+   "name": "BaseDataset.get_data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb.datasets",
+   "module_short": "moabb.datasets",
+   "name": "BaseDataset.get_data"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb",
+   "module_short": "moabb",
+   "name": "BaseDataset.get_data"
+  }
+ ],
+ "epochs": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.epochs",
+   "module_short": "mne",
+   "name": "EpochsArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "EpochsArray"
+  }
+ ],
+ "epochs.pick": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.epochs",
+   "module_short": "mne",
+   "name": "EpochsArray.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "EpochsArray.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.epochs",
+   "module_short": "mne",
+   "name": "BaseEpochs.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "BaseEpochs.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne._fiff.proj",
+   "module_short": "mne._fiff.proj",
+   "name": "ProjMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne._fiff",
+   "module_short": "mne._fiff",
+   "name": "ProjMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "ProjMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne._fiff.meas_info",
+   "module_short": "mne._fiff.meas_info",
+   "name": "ContainsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne._fiff",
+   "module_short": "mne._fiff",
+   "name": "ContainsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "ContainsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.channels.channels",
+   "module_short": "mne.channels.channels",
+   "name": "UpdateChannelsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.channels",
+   "module_short": "mne.channels",
+   "name": "UpdateChannelsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "UpdateChannelsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.channels.channels",
+   "module_short": "mne.channels.channels",
+   "name": "ReferenceMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.channels",
+   "module_short": "mne.channels",
+   "name": "ReferenceMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "ReferenceMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne._fiff.meas_info",
+   "module_short": "mne._fiff.meas_info",
+   "name": "SetChannelsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne._fiff",
+   "module_short": "mne._fiff",
+   "name": "SetChannelsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "SetChannelsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.channels.channels",
+   "module_short": "mne.channels.channels",
+   "name": "InterpolationMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.channels",
+   "module_short": "mne.channels",
+   "name": "InterpolationMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "InterpolationMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.filter",
+   "module_short": "mne.filter",
+   "name": "FilterMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "FilterMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.utils.mixin",
+   "module_short": "mne.utils.mixin",
+   "name": "ExtendedTimeMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.utils",
+   "module_short": "mne.utils",
+   "name": "ExtendedTimeMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "ExtendedTimeMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.utils.mixin",
+   "module_short": "mne.utils.mixin",
+   "name": "SizeMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.utils",
+   "module_short": "mne.utils",
+   "name": "SizeMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "SizeMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.utils.mixin",
+   "module_short": "mne.utils.mixin",
+   "name": "GetEpochsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.utils",
+   "module_short": "mne.utils",
+   "name": "GetEpochsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "GetEpochsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.annotations",
+   "module_short": "mne.annotations",
+   "name": "EpochAnnotationsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "EpochAnnotationsMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.time_frequency.spectrum",
+   "module_short": "mne.time_frequency.spectrum",
+   "name": "SpectrumMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.time_frequency",
+   "module_short": "mne.time_frequency",
+   "name": "SpectrumMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "SpectrumMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne._fiff.meas_info",
+   "module_short": "mne._fiff.meas_info",
+   "name": "MontageMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne._fiff",
+   "module_short": "mne._fiff",
+   "name": "MontageMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "MontageMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.utils.mixin",
+   "module_short": "mne.utils.mixin",
+   "name": "TimeMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.utils",
+   "module_short": "mne.utils",
+   "name": "TimeMixin.pick"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "TimeMixin.pick"
+  }
+ ],
+ "epochs_acquisition": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.epochs",
+   "module_short": "mne",
+   "name": "EpochsArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "EpochsArray"
+  }
+ ],
+ "epochs_from_raws": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  }
+ ],
+ "epochs_online": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne.epochs",
+   "module_short": "mne",
+   "name": "EpochsArray"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "EpochsArray"
+  }
+ ],
+ "func_load_epochs": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  }
+ ],
+ "func_proc_epochs": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  }
+ ],
+ "functools.partial": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "functools",
+   "module_short": "functools",
+   "name": "partial"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "functools",
+   "module_short": "functools",
+   "name": "partial"
+  }
+ ],
+ "label_keys": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "mne.Epochs": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.epochs",
+   "module_short": "mne",
+   "name": "Epochs"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "Epochs"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.epochs",
+   "module_short": "mne",
+   "name": "BaseEpochs"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "BaseEpochs"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne._fiff.proj",
+   "module_short": "mne._fiff.proj",
+   "name": "ProjMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne._fiff",
+   "module_short": "mne._fiff",
+   "name": "ProjMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "ProjMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne._fiff.meas_info",
+   "module_short": "mne._fiff.meas_info",
+   "name": "ContainsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne._fiff",
+   "module_short": "mne._fiff",
+   "name": "ContainsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "ContainsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.channels.channels",
+   "module_short": "mne.channels.channels",
+   "name": "UpdateChannelsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.channels",
+   "module_short": "mne.channels",
+   "name": "UpdateChannelsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "UpdateChannelsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.channels.channels",
+   "module_short": "mne.channels.channels",
+   "name": "ReferenceMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.channels",
+   "module_short": "mne.channels",
+   "name": "ReferenceMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "ReferenceMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne._fiff.meas_info",
+   "module_short": "mne._fiff.meas_info",
+   "name": "SetChannelsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne._fiff",
+   "module_short": "mne._fiff",
+   "name": "SetChannelsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "SetChannelsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.channels.channels",
+   "module_short": "mne.channels.channels",
+   "name": "InterpolationMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.channels",
+   "module_short": "mne.channels",
+   "name": "InterpolationMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "InterpolationMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.filter",
+   "module_short": "mne.filter",
+   "name": "FilterMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "FilterMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.utils.mixin",
+   "module_short": "mne.utils",
+   "name": "ExtendedTimeMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.utils",
+   "module_short": "mne.utils",
+   "name": "ExtendedTimeMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "ExtendedTimeMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.utils.mixin",
+   "module_short": "mne.utils",
+   "name": "SizeMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.utils",
+   "module_short": "mne.utils",
+   "name": "SizeMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "SizeMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.utils.mixin",
+   "module_short": "mne.utils",
+   "name": "GetEpochsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.utils",
+   "module_short": "mne.utils",
+   "name": "GetEpochsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "GetEpochsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.annotations",
+   "module_short": "mne.annotations",
+   "name": "EpochAnnotationsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "EpochAnnotationsMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.time_frequency.spectrum",
+   "module_short": "mne.time_frequency.spectrum",
+   "name": "SpectrumMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.time_frequency",
+   "module_short": "mne.time_frequency",
+   "name": "SpectrumMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "SpectrumMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne._fiff.meas_info",
+   "module_short": "mne._fiff.meas_info",
+   "name": "MontageMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne._fiff",
+   "module_short": "mne._fiff",
+   "name": "MontageMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "MontageMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.utils.mixin",
+   "module_short": "mne.utils",
+   "name": "TimeMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne.utils",
+   "module_short": "mne.utils",
+   "name": "TimeMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "TimeMixin"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "Epochs"
+  }
+ ],
+ "mne.events_from_annotations": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "mne",
+   "module_short": "mne",
+   "name": "events_from_annotations"
+  }
+ ],
+ "moabb.datasets.Dreyer2023": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "moabb.datasets.dreyer2023",
+   "module_short": "moabb.datasets",
+   "name": "Dreyer2023"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "moabb.datasets",
+   "module_short": "moabb.datasets",
+   "name": "Dreyer2023"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "moabb",
+   "module_short": "moabb",
+   "name": "Dreyer2023"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "moabb.datasets.dreyer2023",
+   "module_short": "moabb.datasets.dreyer2023",
+   "name": "_Dreyer2023Base"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "moabb.datasets",
+   "module_short": "moabb.datasets",
+   "name": "_Dreyer2023Base"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "moabb",
+   "module_short": "moabb",
+   "name": "_Dreyer2023Base"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "moabb.datasets.base",
+   "module_short": "moabb.datasets.base",
+   "name": "BaseDataset"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "moabb.datasets",
+   "module_short": "moabb.datasets",
+   "name": "BaseDataset"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "moabb",
+   "module_short": "moabb",
+   "name": "BaseDataset"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "moabb.datasets",
+   "module_short": "moabb.datasets",
+   "name": "Dreyer2023"
+  }
+ ],
+ "pyriemann.estimation.Covariances": [
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyriemann.estimation",
+   "module_short": "pyriemann.estimation",
+   "name": "Covariances"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "pyriemann",
+   "module_short": "pyriemann",
+   "name": "Covariances"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn.base",
+   "module_short": "sklearn.base",
+   "name": "TransformerMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn",
+   "module_short": "sklearn",
+   "name": "TransformerMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn.base",
+   "module_short": "sklearn.base",
+   "name": "BaseEstimator"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn",
+   "module_short": "sklearn",
+   "name": "BaseEstimator"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn.utils._set_output",
+   "module_short": "sklearn.utils._set_output",
+   "name": "_SetOutputMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn.utils",
+   "module_short": "sklearn.utils",
+   "name": "_SetOutputMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn",
+   "module_short": "sklearn",
+   "name": "_SetOutputMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn.utils._estimator_html_repr",
+   "module_short": "sklearn.utils._estimator_html_repr",
+   "name": "_HTMLDocumentationLinkMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn.utils",
+   "module_short": "sklearn.utils",
+   "name": "_HTMLDocumentationLinkMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn",
+   "module_short": "sklearn",
+   "name": "_HTMLDocumentationLinkMixin"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn.utils._metadata_requests",
+   "module_short": "sklearn.utils._metadata_requests",
+   "name": "_MetadataRequester"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn.utils",
+   "module_short": "sklearn.utils",
+   "name": "_MetadataRequester"
+  },
+  {
+   "is_class": true,
+   "is_explicit": false,
+   "module": "sklearn",
+   "module_short": "sklearn",
+   "name": "_MetadataRequester"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pyriemann.estimation",
+   "module_short": "pyriemann.estimation",
+   "name": "Covariances"
+  }
+ ],
+ "raws": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "resample": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "results": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pandas.core.frame",
+   "module_short": "pandas.core.frame",
+   "name": "DataFrame"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pandas.core",
+   "module_short": "pandas.core",
+   "name": "DataFrame"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "pandas",
+   "module_short": "pandas",
+   "name": "DataFrame"
+  }
+ ],
+ "rosoku.conventional": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "rosoku",
+   "module_short": "rosoku",
+   "name": "conventional"
+  }
+ ],
+ "rosoku.utils.get_labels_from_epochs": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "rosoku.utils",
+   "module_short": "rosoku.utils",
+   "name": "get_labels_from_epochs"
+  }
+ ],
+ "sessions": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "dict"
+  }
+ ],
+ "subject": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "int"
+  }
+ ],
+ "tm.add_event_names": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "tag_mne",
+   "module_short": "tag_mne",
+   "name": "add_event_names"
+  }
+ ],
+ "tm.add_tag": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "tag_mne",
+   "module_short": "tag_mne",
+   "name": "add_tag"
+  }
+ ],
+ "tm.concatenate_epochs": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "tag_mne",
+   "module_short": "tag_mne",
+   "name": "concatenate_epochs"
+  }
+ ],
+ "tm.events_from_markers": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "tag_mne",
+   "module_short": "tag_mne",
+   "name": "events_from_markers"
+  }
+ ],
+ "tm.markers_from_events": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "tag_mne",
+   "module_short": "tag_mne",
+   "name": "markers_from_events"
+  }
+ ],
+ "tm.remove": [
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "builtins",
+   "module_short": "builtins",
+   "name": "function"
+  },
+  {
+   "is_class": false,
+   "is_explicit": false,
+   "module": "tag_mne",
+   "module_short": "tag_mne",
+   "name": "remove"
+  }
+ ]
+}

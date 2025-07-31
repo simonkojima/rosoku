@@ -7,9 +7,6 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 import rosoku
-from pathlib import Path
-
-page_repository_base = Path("~") / "git" / "rosoku.github.io"
 
 project = "Rosoku"
 copyright = "2025, Simon Kojima"
@@ -70,7 +67,7 @@ html_theme_options = {
     },
     "navbar_end": ["theme-switcher", "version-switcher"],
     "switcher": {
-        "json_url": page_repository_base / "versions.json",
+        "json_url": "https://simonkojima.github.io/rosoku-docs/versions.json",
         "version_match": release,
     },
 }
