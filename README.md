@@ -24,4 +24,6 @@ sphinx-apidoc -f -o ../docs/source ../rosoku && make html
 
 
 sphinx-apidoc -f -o ../docs/source ../rosoku && sphinx-multiversion source build/html
+
+sphinx-build -b html docs/source ~/git/rosoku.github.io/v0.0.2
 ```
