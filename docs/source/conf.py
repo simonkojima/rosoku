@@ -42,15 +42,9 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
     "sphinx_multiversion",
+    "sphinx_gallery.gen_gallery",
     "numpydoc",
 ]
-
-current_version = os.environ.get("SMV_VERSION", "")
-
-if current_version == "latest" or current_version == "main":
-    examples_are_enabled = True
-else:
-    examples_are_enabled = False
 
 autosummary_generate = True
 
@@ -84,15 +78,11 @@ html_context = {
     "version_match": release,
 }
 
-if examples_are_enabled:
-    extensions += ["sphinx_gallery.gen_gallery"]
-    sphinx_gallery_conf = {
-        "examples_dirs": "../../examples",
-        "gallery_dirs": "auto_examples",
-        "filename_pattern": r"example_",
-    }
-else:
-    pass
+sphinx_gallery_conf = {
+    "examples_dirs": "../../examples",
+    "gallery_dirs": "auto_examples",
+    "filename_pattern": r"example_",
+}
 
 
 source_suffix = {
