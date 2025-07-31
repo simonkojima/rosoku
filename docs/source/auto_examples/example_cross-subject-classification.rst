@@ -42,7 +42,7 @@ example
     [1 2 3]
     [1 2 3]
 
-    [<matplotlib.lines.Line2D object at 0x73f7c9a07450>]
+    [<matplotlib.lines.Line2D object at 0x7380c67fe410>]
 
 
 
@@ -71,7 +71,7 @@ example
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 0.042 seconds)
+   **Total running time of the script:** (0 minutes 0.034 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_cross-subject-classification.py:

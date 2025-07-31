@@ -57,7 +57,6 @@ smv_branch_labels = {
 # import sphinx_rtd_theme
 
 html_theme = "pydata_sphinx_theme"
-html_sidebars = {"**": ["sidebar-nav-bs", "versions.html"]}
 
 sphinx_gallery_conf = {
     "examples_dirs": "../../examples",
