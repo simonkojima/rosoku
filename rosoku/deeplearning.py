@@ -1093,11 +1093,13 @@ def deeplearning(
                 df_results["normalization_mean"] = [normalization_mean.flatten()]
                 df_results["normalization_std"] = [normalization_std.flatten()]
 
-            table = wandb.Table(columns=["id", "labels", "preds"])
-            for idx, (label, pred) in enumerate(zip(labels, preds)):
-                table.add_data(idx, label, pred)
+            if enable_wandb_logging:
+                if (enable_ddp and params["rank"] == 0) or (enable_ddp is False):
+                    table = wandb.Table(columns=["id", "labels", "preds"])
+                    for idx, (label, pred) in enumerate(zip(labels, preds)):
+                        table.add_data(idx, label, pred)
 
-            wandb.log({"test/accuracy": accuracy, "predictions": table})
+                    wandb.log({"test/accuracy": accuracy, "predictions": table})
 
             df_list.append(df_results)
 
