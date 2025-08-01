@@ -1,12 +1,11 @@
 """
-Example: Within-subject classification with deep learning
-=========================================================
+Example: Cross-subject classification with deep learning
+========================================================
 """
 
 # %%
 import functools
 import numpy as np
-import matplotlib.pyplot as plt
 
 from pathlib import Path
 

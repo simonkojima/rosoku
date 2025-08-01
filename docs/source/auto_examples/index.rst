@@ -14,7 +14,7 @@ hogehoge
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Example: Within-subject classification with deep learning">
+    <div class="sphx-glr-thumbcontainer" tooltip="Example: Within-subject classification with riemannian classifier">
 
 .. only:: html
 
@@ -25,13 +25,13 @@ hogehoge
 
 .. raw:: html
 
-      <div class="sphx-glr-thumbnail-title">Example: Within-subject classification with deep learning</div>
+      <div class="sphx-glr-thumbnail-title">Example: Within-subject classification with riemannian classifier</div>
     </div>
 
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Example: Within-subject classification with deep learning">
+    <div class="sphx-glr-thumbcontainer" tooltip="Example: Cross-subject classification with riemannian classifier">
 
 .. only:: html
 
@@ -42,7 +42,7 @@ hogehoge
 
 .. raw:: html
 
-      <div class="sphx-glr-thumbnail-title">Example: Within-subject classification with deep learning</div>
+      <div class="sphx-glr-thumbnail-title">Example: Cross-subject classification with riemannian classifier</div>
     </div>
 
 
@@ -65,7 +65,7 @@ hogehoge
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Example: Within-subject classification with deep learning">
+    <div class="sphx-glr-thumbcontainer" tooltip="Example: Cross-subject classification with deep learning">
 
 .. only:: html
 
@@ -76,7 +76,7 @@ hogehoge
 
 .. raw:: html
 
-      <div class="sphx-glr-thumbnail-title">Example: Within-subject classification with deep learning</div>
+      <div class="sphx-glr-thumbnail-title">Example: Cross-subject classification with deep learning</div>
     </div>
 
 

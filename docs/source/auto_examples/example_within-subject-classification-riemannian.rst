@@ -18,8 +18,8 @@
 .. _sphx_glr_auto_examples_example_within-subject-classification-riemannian.py:
 
 
-Example: Within-subject classification with deep learning
-=========================================================
+Example: Within-subject classification with riemannian classifier
+=================================================================
 
 .. GENERATED FROM PYTHON SOURCE LINES 7-22
 
@@ -161,7 +161,7 @@ Example: Within-subject classification with deep learning
 
  .. code-block:: none
 
-    0it [00:00, ?it/s]    9it [00:00, 24432.84it/s]
+    0it [00:00, ?it/s]    9it [00:00, 21472.55it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -349,7 +349,7 @@ Example: Within-subject classification with deep learning
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.826 seconds)
+   **Total running time of the script:** (0 minutes 1.707 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_within-subject-classification-riemannian.py:

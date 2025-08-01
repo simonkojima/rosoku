@@ -18,8 +18,8 @@
 .. _sphx_glr_auto_examples_example_cross-subject-classification-deeplearning.py:
 
 
-Example: Within-subject classification with deep learning
-=========================================================
+Example: Cross-subject classification with deep learning
+========================================================
 
 .. GENERATED FROM PYTHON SOURCE LINES 7-22
 
@@ -283,7 +283,7 @@ label_keys = {"event:left": 0, "event:right": 1}
 
  .. code-block:: none
 
-    0it [00:00, ?it/s]    9it [00:00, 22989.49it/s]
+    0it [00:00, ?it/s]    9it [00:00, 20218.93it/s]
     Reading 0 ... 230399  =      0.000 ...   449.998 secs...
     Reading 0 ... 230399  =      0.000 ...   449.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -391,7 +391,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:1/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:1/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18378.16it/s]
+    0it [00:00, ?it/s]    9it [00:00, 17598.48it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -499,7 +499,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:2/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:2/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18577.13it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18061.60it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -607,7 +607,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:3/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:3/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18978.75it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18836.69it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -715,7 +715,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:4/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:4/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18669.01it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18706.01it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -823,7 +823,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:left_hand/subject:5/event:left/run:4R5online'): 20
      np.str_('marker:right_hand/subject:5/event:right/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18743.17it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18874.37it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1039,7 +1039,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:7/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:7/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18874.37it/s]
+    0it [00:00, ?it/s]    9it [00:00, 19045.78it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1147,7 +1147,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:8/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:8/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18771.13it/s]
+    0it [00:00, ?it/s]    9it [00:00, 19055.39it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1255,7 +1255,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:9/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:9/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 19036.18it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18817.91it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1363,7 +1363,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:10/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:10/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 17907.37it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18027.09it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1471,7 +1471,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:11/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:11/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18988.30it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18855.51it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 232447  =      0.000 ...   453.998 secs...
@@ -1579,7 +1579,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:12/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:12/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18183.40it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18568.00it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1687,7 +1687,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:left_hand/subject:13/event:left/run:4R5online'): 20
      np.str_('marker:right_hand/subject:13/event:right/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18113.60it/s]
+    0it [00:00, ?it/s]    9it [00:00, 19084.30it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1795,7 +1795,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:14/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:14/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 19103.61it/s]
+    0it [00:00, ?it/s]    9it [00:00, 17967.03it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1903,7 +1903,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:left_hand/subject:15/event:left/run:4R5online'): 20
      np.str_('marker:right_hand/subject:15/event:right/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18200.93it/s]
+    0it [00:00, ?it/s]    9it [00:00, 19132.66it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2011,7 +2011,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:16/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:16/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18333.53it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18687.49it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2119,7 +2119,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:17/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:17/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18696.75it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18969.21it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2227,7 +2227,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:left_hand/subject:18/event:left/run:4R5online'): 20
      np.str_('marker:right_hand/subject:18/event:right/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18113.60it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18289.12it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2335,7 +2335,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:19/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:19/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 17772.47it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18486.16it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2443,7 +2443,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:left_hand/subject:20/event:left/run:4R5online'): 20
      np.str_('marker:right_hand/subject:20/event:right/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 19142.36it/s]
+    0it [00:00, ?it/s]    9it [00:00, 19065.02it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2551,7 +2551,7 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:21/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:21/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 18315.74it/s]
+    0it [00:00, ?it/s]    9it [00:00, 18752.48it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2659,102 +2659,102 @@ label_keys = {"event:left": 0, "event:right": 1}
      np.str_('marker:right_hand/subject:56/event:right/run:4R5online'): 20
      np.str_('marker:left_hand/subject:56/event:left/run:4R5online'): 20>
     (200, 27, 513)
-    epoch 000, train_loss: 0.6929, train_acc: 0.50, valid_loss: 0.6929, valid_acc: 0.50, lr: 9.9999e-04, et: 0.5850, checkpoint saved
-    epoch 001, train_loss: 0.6925, train_acc: 0.50, valid_loss: 0.6926, valid_acc: 0.50, lr: 9.9996e-04, et: 0.5608, checkpoint saved
-    epoch 002, train_loss: 0.6914, train_acc: 0.51, valid_loss: 0.6913, valid_acc: 0.52, lr: 9.9991e-04, et: 0.5557, checkpoint saved
-    epoch 003, train_loss: 0.6877, train_acc: 0.54, valid_loss: 0.6848, valid_acc: 0.57, lr: 9.9984e-04, et: 0.5555, checkpoint saved
-    epoch 004, train_loss: 0.6719, train_acc: 0.62, valid_loss: 0.6583, valid_acc: 0.63, lr: 9.9975e-04, et: 0.5569, checkpoint saved
-    epoch 005, train_loss: 0.6264, train_acc: 0.66, valid_loss: 0.5785, valid_acc: 0.69, lr: 9.9965e-04, et: 0.5637, checkpoint saved
-    epoch 006, train_loss: 0.5821, train_acc: 0.69, valid_loss: 0.5161, valid_acc: 0.72, lr: 9.9952e-04, et: 0.5672, checkpoint saved
-    epoch 007, train_loss: 0.5645, train_acc: 0.70, valid_loss: 0.4823, valid_acc: 0.73, lr: 9.9937e-04, et: 0.5637, checkpoint saved
-    epoch 008, train_loss: 0.5342, train_acc: 0.72, valid_loss: 0.4630, valid_acc: 0.75, lr: 9.9920e-04, et: 0.5516, checkpoint saved
-    epoch 009, train_loss: 0.5285, train_acc: 0.73, valid_loss: 0.4546, valid_acc: 0.75, lr: 9.9901e-04, et: 0.5581, checkpoint saved
-    epoch 010, train_loss: 0.5221, train_acc: 0.73, valid_loss: 0.4493, valid_acc: 0.75, lr: 9.9881e-04, et: 0.5648, checkpoint saved
-    epoch 011, train_loss: 0.5208, train_acc: 0.72, valid_loss: 0.4571, valid_acc: 0.75, lr: 9.9858e-04, et: 0.5637
-    epoch 012, train_loss: 0.5149, train_acc: 0.74, valid_loss: 0.4549, valid_acc: 0.76, lr: 9.9833e-04, et: 0.5605
-    epoch 013, train_loss: 0.5124, train_acc: 0.73, valid_loss: 0.4489, valid_acc: 0.76, lr: 9.9807e-04, et: 0.5497, checkpoint saved
-    epoch 014, train_loss: 0.5102, train_acc: 0.74, valid_loss: 0.4492, valid_acc: 0.76, lr: 9.9778e-04, et: 0.5517
-    epoch 015, train_loss: 0.5089, train_acc: 0.74, valid_loss: 0.4511, valid_acc: 0.75, lr: 9.9748e-04, et: 0.5619
-    epoch 016, train_loss: 0.5078, train_acc: 0.75, valid_loss: 0.4510, valid_acc: 0.76, lr: 9.9715e-04, et: 0.5566
-    epoch 017, train_loss: 0.5042, train_acc: 0.75, valid_loss: 0.4467, valid_acc: 0.76, lr: 9.9681e-04, et: 0.5593, checkpoint saved
-    epoch 018, train_loss: 0.4993, train_acc: 0.75, valid_loss: 0.4460, valid_acc: 0.76, lr: 9.9644e-04, et: 0.5630, checkpoint saved
-    epoch 019, train_loss: 0.5007, train_acc: 0.75, valid_loss: 0.4469, valid_acc: 0.75, lr: 9.9606e-04, et: 0.5648
-    epoch 020, train_loss: 0.5091, train_acc: 0.73, valid_loss: 0.4739, valid_acc: 0.74, lr: 9.9566e-04, et: 0.5625
-    epoch 021, train_loss: 0.4927, train_acc: 0.76, valid_loss: 0.4518, valid_acc: 0.76, lr: 9.9524e-04, et: 0.5671
-    epoch 022, train_loss: 0.5025, train_acc: 0.75, valid_loss: 0.4535, valid_acc: 0.75, lr: 9.9479e-04, et: 0.5597
-    epoch 023, train_loss: 0.5149, train_acc: 0.73, valid_loss: 0.4758, valid_acc: 0.74, lr: 9.9433e-04, et: 0.5497
-    epoch 024, train_loss: 0.4866, train_acc: 0.76, valid_loss: 0.4493, valid_acc: 0.75, lr: 9.9385e-04, et: 0.5573
-    epoch 025, train_loss: 0.4815, train_acc: 0.76, valid_loss: 0.4494, valid_acc: 0.75, lr: 9.9335e-04, et: 0.5564
-    epoch 026, train_loss: 0.4810, train_acc: 0.77, valid_loss: 0.4543, valid_acc: 0.76, lr: 9.9283e-04, et: 0.5661
-    epoch 027, train_loss: 0.4886, train_acc: 0.75, valid_loss: 0.4688, valid_acc: 0.74, lr: 9.9229e-04, et: 0.5729
-    epoch 028, train_loss: 0.4819, train_acc: 0.76, valid_loss: 0.4601, valid_acc: 0.75, lr: 9.9173e-04, et: 0.5677
-    epoch 029, train_loss: 0.4745, train_acc: 0.77, valid_loss: 0.4578, valid_acc: 0.76, lr: 9.9115e-04, et: 0.5674
-    epoch 030, train_loss: 0.4785, train_acc: 0.77, valid_loss: 0.4672, valid_acc: 0.74, lr: 9.9055e-04, et: 0.5657
-    epoch 031, train_loss: 0.4738, train_acc: 0.77, valid_loss: 0.4636, valid_acc: 0.74, lr: 9.8994e-04, et: 0.5672
-    epoch 032, train_loss: 0.4666, train_acc: 0.78, valid_loss: 0.4602, valid_acc: 0.75, lr: 9.8930e-04, et: 0.5656
-    epoch 033, train_loss: 0.4714, train_acc: 0.77, valid_loss: 0.4662, valid_acc: 0.75, lr: 9.8865e-04, et: 0.5690
-    epoch 034, train_loss: 0.4687, train_acc: 0.77, valid_loss: 0.4821, valid_acc: 0.74, lr: 9.8797e-04, et: 0.5641
-    epoch 035, train_loss: 0.4634, train_acc: 0.78, valid_loss: 0.4664, valid_acc: 0.75, lr: 9.8728e-04, et: 0.5799
-    epoch 036, train_loss: 0.4656, train_acc: 0.77, valid_loss: 0.4762, valid_acc: 0.75, lr: 9.8656e-04, et: 0.5592
-    epoch 037, train_loss: 0.4661, train_acc: 0.78, valid_loss: 0.4789, valid_acc: 0.74, lr: 9.8583e-04, et: 0.5737
-    epoch 038, train_loss: 0.4573, train_acc: 0.79, valid_loss: 0.4654, valid_acc: 0.75, lr: 9.8508e-04, et: 0.5912
-    epoch 039, train_loss: 0.4550, train_acc: 0.79, valid_loss: 0.4684, valid_acc: 0.74, lr: 9.8431e-04, et: 0.5820
-    epoch 040, train_loss: 0.4572, train_acc: 0.78, valid_loss: 0.4745, valid_acc: 0.74, lr: 9.8352e-04, et: 0.5696
-    epoch 041, train_loss: 0.4487, train_acc: 0.78, valid_loss: 0.4670, valid_acc: 0.75, lr: 9.8271e-04, et: 0.5724
-    epoch 042, train_loss: 0.4473, train_acc: 0.78, valid_loss: 0.4611, valid_acc: 0.75, lr: 9.8188e-04, et: 0.5686
-    epoch 043, train_loss: 0.4456, train_acc: 0.79, valid_loss: 0.4699, valid_acc: 0.75, lr: 9.8103e-04, et: 0.5615
-    epoch 044, train_loss: 0.4462, train_acc: 0.79, valid_loss: 0.4647, valid_acc: 0.75, lr: 9.8017e-04, et: 0.5533
-    epoch 045, train_loss: 0.4445, train_acc: 0.79, valid_loss: 0.4624, valid_acc: 0.75, lr: 9.7928e-04, et: 0.5588
-    epoch 046, train_loss: 0.4451, train_acc: 0.79, valid_loss: 0.4706, valid_acc: 0.74, lr: 9.7838e-04, et: 0.5677
-    epoch 047, train_loss: 0.4429, train_acc: 0.79, valid_loss: 0.4650, valid_acc: 0.76, lr: 9.7745e-04, et: 0.5537
-    epoch 048, train_loss: 0.4429, train_acc: 0.79, valid_loss: 0.4718, valid_acc: 0.75, lr: 9.7651e-04, et: 0.5530
-    epoch 049, train_loss: 0.4386, train_acc: 0.79, valid_loss: 0.4719, valid_acc: 0.75, lr: 9.7555e-04, et: 0.5524
-    epoch 050, train_loss: 0.4381, train_acc: 0.80, valid_loss: 0.4659, valid_acc: 0.75, lr: 9.7457e-04, et: 0.5515
-    epoch 051, train_loss: 0.4372, train_acc: 0.79, valid_loss: 0.4652, valid_acc: 0.76, lr: 9.7358e-04, et: 0.5491
-    epoch 052, train_loss: 0.4373, train_acc: 0.79, valid_loss: 0.4834, valid_acc: 0.73, lr: 9.7256e-04, et: 0.5534
-    epoch 053, train_loss: 0.4410, train_acc: 0.79, valid_loss: 0.4795, valid_acc: 0.74, lr: 9.7152e-04, et: 0.5490
-    epoch 054, train_loss: 0.4355, train_acc: 0.80, valid_loss: 0.4781, valid_acc: 0.75, lr: 9.7047e-04, et: 0.5547
-    epoch 055, train_loss: 0.4375, train_acc: 0.79, valid_loss: 0.4637, valid_acc: 0.75, lr: 9.6940e-04, et: 0.5494
-    epoch 056, train_loss: 0.4344, train_acc: 0.80, valid_loss: 0.4758, valid_acc: 0.75, lr: 9.6831e-04, et: 0.5549
-    epoch 057, train_loss: 0.4338, train_acc: 0.80, valid_loss: 0.4712, valid_acc: 0.76, lr: 9.6720e-04, et: 0.5498
-    epoch 058, train_loss: 0.4391, train_acc: 0.80, valid_loss: 0.4775, valid_acc: 0.75, lr: 9.6607e-04, et: 0.5538
-    epoch 059, train_loss: 0.4310, train_acc: 0.80, valid_loss: 0.4695, valid_acc: 0.76, lr: 9.6492e-04, et: 0.5571
-    epoch 060, train_loss: 0.4339, train_acc: 0.80, valid_loss: 0.4732, valid_acc: 0.76, lr: 9.6376e-04, et: 0.5651
-    epoch 061, train_loss: 0.4353, train_acc: 0.80, valid_loss: 0.4773, valid_acc: 0.75, lr: 9.6258e-04, et: 0.5629
-    epoch 062, train_loss: 0.4328, train_acc: 0.81, valid_loss: 0.4731, valid_acc: 0.76, lr: 9.6138e-04, et: 0.5553
-    epoch 063, train_loss: 0.4368, train_acc: 0.80, valid_loss: 0.4849, valid_acc: 0.75, lr: 9.6016e-04, et: 0.5557
-    epoch 064, train_loss: 0.4456, train_acc: 0.78, valid_loss: 0.4991, valid_acc: 0.73, lr: 9.5892e-04, et: 0.5702
-    epoch 065, train_loss: 0.4295, train_acc: 0.81, valid_loss: 0.4715, valid_acc: 0.75, lr: 9.5766e-04, et: 0.5557
-    epoch 066, train_loss: 0.4274, train_acc: 0.80, valid_loss: 0.4723, valid_acc: 0.75, lr: 9.5639e-04, et: 0.5736
-    epoch 067, train_loss: 0.4303, train_acc: 0.80, valid_loss: 0.4889, valid_acc: 0.73, lr: 9.5510e-04, et: 0.5614
-    epoch 068, train_loss: 0.4256, train_acc: 0.80, valid_loss: 0.4780, valid_acc: 0.74, lr: 9.5379e-04, et: 0.5795
-    epoch 069, train_loss: 0.4247, train_acc: 0.80, valid_loss: 0.4863, valid_acc: 0.74, lr: 9.5246e-04, et: 0.5728
-    epoch 070, train_loss: 0.4256, train_acc: 0.81, valid_loss: 0.4738, valid_acc: 0.75, lr: 9.5112e-04, et: 0.5827
-    epoch 071, train_loss: 0.4268, train_acc: 0.80, valid_loss: 0.4772, valid_acc: 0.75, lr: 9.4975e-04, et: 0.5736
-    epoch 072, train_loss: 0.4268, train_acc: 0.80, valid_loss: 0.4853, valid_acc: 0.74, lr: 9.4837e-04, et: 0.5758
-    epoch 073, train_loss: 0.4291, train_acc: 0.80, valid_loss: 0.4841, valid_acc: 0.75, lr: 9.4697e-04, et: 0.5691
-    epoch 074, train_loss: 0.4243, train_acc: 0.81, valid_loss: 0.4802, valid_acc: 0.75, lr: 9.4556e-04, et: 0.5751
-    epoch 075, train_loss: 0.4217, train_acc: 0.81, valid_loss: 0.4789, valid_acc: 0.75, lr: 9.4412e-04, et: 0.5641
-    epoch 076, train_loss: 0.4217, train_acc: 0.81, valid_loss: 0.4760, valid_acc: 0.75, lr: 9.4267e-04, et: 0.5688
-    epoch 077, train_loss: 0.4223, train_acc: 0.81, valid_loss: 0.4813, valid_acc: 0.75, lr: 9.4120e-04, et: 0.5623
-    epoch 078, train_loss: 0.4224, train_acc: 0.81, valid_loss: 0.4812, valid_acc: 0.74, lr: 9.3972e-04, et: 0.5639
-    epoch 079, train_loss: 0.4216, train_acc: 0.80, valid_loss: 0.4792, valid_acc: 0.74, lr: 9.3822e-04, et: 0.5520
-    epoch 080, train_loss: 0.4231, train_acc: 0.81, valid_loss: 0.4757, valid_acc: 0.75, lr: 9.3669e-04, et: 0.5547
-    epoch 081, train_loss: 0.4206, train_acc: 0.81, valid_loss: 0.4756, valid_acc: 0.76, lr: 9.3516e-04, et: 0.5693
-    epoch 082, train_loss: 0.4220, train_acc: 0.81, valid_loss: 0.4810, valid_acc: 0.75, lr: 9.3360e-04, et: 0.5755
-    epoch 083, train_loss: 0.4233, train_acc: 0.81, valid_loss: 0.4845, valid_acc: 0.75, lr: 9.3203e-04, et: 0.5823
-    epoch 084, train_loss: 0.4237, train_acc: 0.81, valid_loss: 0.4792, valid_acc: 0.75, lr: 9.3044e-04, et: 0.5619
-    epoch 085, train_loss: 0.4189, train_acc: 0.81, valid_loss: 0.4707, valid_acc: 0.75, lr: 9.2883e-04, et: 0.5690
-    epoch 086, train_loss: 0.4250, train_acc: 0.80, valid_loss: 0.4989, valid_acc: 0.74, lr: 9.2721e-04, et: 0.5868
-    epoch 087, train_loss: 0.4187, train_acc: 0.81, valid_loss: 0.4835, valid_acc: 0.75, lr: 9.2557e-04, et: 0.5712
-    epoch 088, train_loss: 0.4208, train_acc: 0.81, valid_loss: 0.4848, valid_acc: 0.74, lr: 9.2392e-04, et: 0.5881
-    epoch 089, train_loss: 0.4201, train_acc: 0.81, valid_loss: 0.4855, valid_acc: 0.75, lr: 9.2224e-04, et: 0.5909
-    epoch 090, train_loss: 0.4196, train_acc: 0.81, valid_loss: 0.4887, valid_acc: 0.75, lr: 9.2055e-04, et: 0.5729
-    epoch 091, train_loss: 0.4314, train_acc: 0.80, valid_loss: 0.5005, valid_acc: 0.73, lr: 9.1885e-04, et: 0.5678
-    epoch 092, train_loss: 0.4195, train_acc: 0.81, valid_loss: 0.4804, valid_acc: 0.75, lr: 9.1712e-04, et: 0.5559
-    epoch 093, train_loss: 0.4160, train_acc: 0.82, valid_loss: 0.4785, valid_acc: 0.74, lr: 9.1538e-04, et: 0.5574
+    epoch 000, train_loss: 0.6929, train_acc: 0.50, valid_loss: 0.6929, valid_acc: 0.50, lr: 9.9999e-04, et: 0.7972, checkpoint saved
+    epoch 001, train_loss: 0.6925, train_acc: 0.50, valid_loss: 0.6926, valid_acc: 0.50, lr: 9.9996e-04, et: 0.5435, checkpoint saved
+    epoch 002, train_loss: 0.6914, train_acc: 0.51, valid_loss: 0.6913, valid_acc: 0.52, lr: 9.9991e-04, et: 0.5416, checkpoint saved
+    epoch 003, train_loss: 0.6877, train_acc: 0.54, valid_loss: 0.6848, valid_acc: 0.57, lr: 9.9984e-04, et: 0.5433, checkpoint saved
+    epoch 004, train_loss: 0.6719, train_acc: 0.62, valid_loss: 0.6583, valid_acc: 0.63, lr: 9.9975e-04, et: 0.5430, checkpoint saved
+    epoch 005, train_loss: 0.6264, train_acc: 0.66, valid_loss: 0.5785, valid_acc: 0.69, lr: 9.9965e-04, et: 0.5440, checkpoint saved
+    epoch 006, train_loss: 0.5821, train_acc: 0.69, valid_loss: 0.5161, valid_acc: 0.72, lr: 9.9952e-04, et: 0.5444, checkpoint saved
+    epoch 007, train_loss: 0.5645, train_acc: 0.70, valid_loss: 0.4823, valid_acc: 0.73, lr: 9.9937e-04, et: 0.5471, checkpoint saved
+    epoch 008, train_loss: 0.5342, train_acc: 0.72, valid_loss: 0.4630, valid_acc: 0.75, lr: 9.9920e-04, et: 0.5447, checkpoint saved
+    epoch 009, train_loss: 0.5285, train_acc: 0.73, valid_loss: 0.4546, valid_acc: 0.75, lr: 9.9901e-04, et: 0.5457, checkpoint saved
+    epoch 010, train_loss: 0.5221, train_acc: 0.73, valid_loss: 0.4493, valid_acc: 0.75, lr: 9.9881e-04, et: 0.5435, checkpoint saved
+    epoch 011, train_loss: 0.5208, train_acc: 0.72, valid_loss: 0.4571, valid_acc: 0.75, lr: 9.9858e-04, et: 0.5448
+    epoch 012, train_loss: 0.5149, train_acc: 0.74, valid_loss: 0.4549, valid_acc: 0.76, lr: 9.9833e-04, et: 0.5457
+    epoch 013, train_loss: 0.5124, train_acc: 0.73, valid_loss: 0.4489, valid_acc: 0.76, lr: 9.9807e-04, et: 0.5454, checkpoint saved
+    epoch 014, train_loss: 0.5102, train_acc: 0.74, valid_loss: 0.4492, valid_acc: 0.76, lr: 9.9778e-04, et: 0.5447
+    epoch 015, train_loss: 0.5089, train_acc: 0.74, valid_loss: 0.4511, valid_acc: 0.75, lr: 9.9748e-04, et: 0.5486
+    epoch 016, train_loss: 0.5078, train_acc: 0.75, valid_loss: 0.4510, valid_acc: 0.76, lr: 9.9715e-04, et: 0.5449
+    epoch 017, train_loss: 0.5042, train_acc: 0.75, valid_loss: 0.4467, valid_acc: 0.76, lr: 9.9681e-04, et: 0.5487, checkpoint saved
+    epoch 018, train_loss: 0.4993, train_acc: 0.75, valid_loss: 0.4460, valid_acc: 0.76, lr: 9.9644e-04, et: 0.5472, checkpoint saved
+    epoch 019, train_loss: 0.5007, train_acc: 0.75, valid_loss: 0.4469, valid_acc: 0.75, lr: 9.9606e-04, et: 0.5482
+    epoch 020, train_loss: 0.5091, train_acc: 0.73, valid_loss: 0.4739, valid_acc: 0.74, lr: 9.9566e-04, et: 0.5462
+    epoch 021, train_loss: 0.4927, train_acc: 0.76, valid_loss: 0.4518, valid_acc: 0.76, lr: 9.9524e-04, et: 0.5480
+    epoch 022, train_loss: 0.5025, train_acc: 0.75, valid_loss: 0.4535, valid_acc: 0.75, lr: 9.9479e-04, et: 0.5465
+    epoch 023, train_loss: 0.5149, train_acc: 0.73, valid_loss: 0.4758, valid_acc: 0.74, lr: 9.9433e-04, et: 0.5476
+    epoch 024, train_loss: 0.4866, train_acc: 0.76, valid_loss: 0.4493, valid_acc: 0.75, lr: 9.9385e-04, et: 0.5489
+    epoch 025, train_loss: 0.4815, train_acc: 0.76, valid_loss: 0.4494, valid_acc: 0.75, lr: 9.9335e-04, et: 0.5474
+    epoch 026, train_loss: 0.4810, train_acc: 0.77, valid_loss: 0.4543, valid_acc: 0.76, lr: 9.9283e-04, et: 0.5484
+    epoch 027, train_loss: 0.4886, train_acc: 0.75, valid_loss: 0.4688, valid_acc: 0.74, lr: 9.9229e-04, et: 0.5483
+    epoch 028, train_loss: 0.4819, train_acc: 0.76, valid_loss: 0.4601, valid_acc: 0.75, lr: 9.9173e-04, et: 0.5518
+    epoch 029, train_loss: 0.4745, train_acc: 0.77, valid_loss: 0.4578, valid_acc: 0.76, lr: 9.9115e-04, et: 0.5468
+    epoch 030, train_loss: 0.4785, train_acc: 0.77, valid_loss: 0.4672, valid_acc: 0.74, lr: 9.9055e-04, et: 0.5516
+    epoch 031, train_loss: 0.4738, train_acc: 0.77, valid_loss: 0.4636, valid_acc: 0.74, lr: 9.8994e-04, et: 0.5466
+    epoch 032, train_loss: 0.4666, train_acc: 0.78, valid_loss: 0.4602, valid_acc: 0.75, lr: 9.8930e-04, et: 0.5546
+    epoch 033, train_loss: 0.4714, train_acc: 0.77, valid_loss: 0.4662, valid_acc: 0.75, lr: 9.8865e-04, et: 0.5473
+    epoch 034, train_loss: 0.4687, train_acc: 0.77, valid_loss: 0.4821, valid_acc: 0.74, lr: 9.8797e-04, et: 0.5509
+    epoch 035, train_loss: 0.4634, train_acc: 0.78, valid_loss: 0.4664, valid_acc: 0.75, lr: 9.8728e-04, et: 0.5440
+    epoch 036, train_loss: 0.4656, train_acc: 0.77, valid_loss: 0.4762, valid_acc: 0.75, lr: 9.8656e-04, et: 0.5500
+    epoch 037, train_loss: 0.4661, train_acc: 0.78, valid_loss: 0.4789, valid_acc: 0.74, lr: 9.8583e-04, et: 0.5459
+    epoch 038, train_loss: 0.4573, train_acc: 0.79, valid_loss: 0.4654, valid_acc: 0.75, lr: 9.8508e-04, et: 0.5527
+    epoch 039, train_loss: 0.4550, train_acc: 0.79, valid_loss: 0.4684, valid_acc: 0.74, lr: 9.8431e-04, et: 0.5478
+    epoch 040, train_loss: 0.4572, train_acc: 0.78, valid_loss: 0.4745, valid_acc: 0.74, lr: 9.8352e-04, et: 0.5565
+    epoch 041, train_loss: 0.4487, train_acc: 0.78, valid_loss: 0.4670, valid_acc: 0.75, lr: 9.8271e-04, et: 0.5466
+    epoch 042, train_loss: 0.4473, train_acc: 0.78, valid_loss: 0.4611, valid_acc: 0.75, lr: 9.8188e-04, et: 0.5502
+    epoch 043, train_loss: 0.4456, train_acc: 0.79, valid_loss: 0.4699, valid_acc: 0.75, lr: 9.8103e-04, et: 0.5513
+    epoch 044, train_loss: 0.4462, train_acc: 0.79, valid_loss: 0.4647, valid_acc: 0.75, lr: 9.8017e-04, et: 0.5487
+    epoch 045, train_loss: 0.4445, train_acc: 0.79, valid_loss: 0.4624, valid_acc: 0.75, lr: 9.7928e-04, et: 0.5485
+    epoch 046, train_loss: 0.4451, train_acc: 0.79, valid_loss: 0.4706, valid_acc: 0.74, lr: 9.7838e-04, et: 0.5502
+    epoch 047, train_loss: 0.4429, train_acc: 0.79, valid_loss: 0.4650, valid_acc: 0.76, lr: 9.7745e-04, et: 0.5478
+    epoch 048, train_loss: 0.4429, train_acc: 0.79, valid_loss: 0.4718, valid_acc: 0.75, lr: 9.7651e-04, et: 0.5515
+    epoch 049, train_loss: 0.4386, train_acc: 0.79, valid_loss: 0.4719, valid_acc: 0.75, lr: 9.7555e-04, et: 0.5508
+    epoch 050, train_loss: 0.4381, train_acc: 0.80, valid_loss: 0.4659, valid_acc: 0.75, lr: 9.7457e-04, et: 0.5500
+    epoch 051, train_loss: 0.4372, train_acc: 0.79, valid_loss: 0.4652, valid_acc: 0.76, lr: 9.7358e-04, et: 0.5490
+    epoch 052, train_loss: 0.4373, train_acc: 0.79, valid_loss: 0.4834, valid_acc: 0.73, lr: 9.7256e-04, et: 0.5493
+    epoch 053, train_loss: 0.4410, train_acc: 0.79, valid_loss: 0.4795, valid_acc: 0.74, lr: 9.7152e-04, et: 0.5508
+    epoch 054, train_loss: 0.4355, train_acc: 0.80, valid_loss: 0.4781, valid_acc: 0.75, lr: 9.7047e-04, et: 0.5503
+    epoch 055, train_loss: 0.4375, train_acc: 0.79, valid_loss: 0.4637, valid_acc: 0.75, lr: 9.6940e-04, et: 0.5498
+    epoch 056, train_loss: 0.4344, train_acc: 0.80, valid_loss: 0.4758, valid_acc: 0.75, lr: 9.6831e-04, et: 0.5509
+    epoch 057, train_loss: 0.4338, train_acc: 0.80, valid_loss: 0.4712, valid_acc: 0.76, lr: 9.6720e-04, et: 0.5525
+    epoch 058, train_loss: 0.4391, train_acc: 0.80, valid_loss: 0.4775, valid_acc: 0.75, lr: 9.6607e-04, et: 0.5524
+    epoch 059, train_loss: 0.4310, train_acc: 0.80, valid_loss: 0.4695, valid_acc: 0.76, lr: 9.6492e-04, et: 0.5508
+    epoch 060, train_loss: 0.4339, train_acc: 0.80, valid_loss: 0.4732, valid_acc: 0.76, lr: 9.6376e-04, et: 0.5503
+    epoch 061, train_loss: 0.4353, train_acc: 0.80, valid_loss: 0.4773, valid_acc: 0.75, lr: 9.6258e-04, et: 0.5513
+    epoch 062, train_loss: 0.4328, train_acc: 0.81, valid_loss: 0.4731, valid_acc: 0.76, lr: 9.6138e-04, et: 0.5512
+    epoch 063, train_loss: 0.4368, train_acc: 0.80, valid_loss: 0.4849, valid_acc: 0.75, lr: 9.6016e-04, et: 0.5571
+    epoch 064, train_loss: 0.4456, train_acc: 0.78, valid_loss: 0.4991, valid_acc: 0.73, lr: 9.5892e-04, et: 0.5511
+    epoch 065, train_loss: 0.4295, train_acc: 0.81, valid_loss: 0.4715, valid_acc: 0.75, lr: 9.5766e-04, et: 0.5511
+    epoch 066, train_loss: 0.4274, train_acc: 0.80, valid_loss: 0.4723, valid_acc: 0.75, lr: 9.5639e-04, et: 0.5519
+    epoch 067, train_loss: 0.4303, train_acc: 0.80, valid_loss: 0.4889, valid_acc: 0.73, lr: 9.5510e-04, et: 0.5516
+    epoch 068, train_loss: 0.4256, train_acc: 0.80, valid_loss: 0.4780, valid_acc: 0.74, lr: 9.5379e-04, et: 0.5573
+    epoch 069, train_loss: 0.4247, train_acc: 0.80, valid_loss: 0.4863, valid_acc: 0.74, lr: 9.5246e-04, et: 0.5512
+    epoch 070, train_loss: 0.4256, train_acc: 0.81, valid_loss: 0.4738, valid_acc: 0.75, lr: 9.5112e-04, et: 0.5518
+    epoch 071, train_loss: 0.4268, train_acc: 0.80, valid_loss: 0.4772, valid_acc: 0.75, lr: 9.4975e-04, et: 0.5517
+    epoch 072, train_loss: 0.4268, train_acc: 0.80, valid_loss: 0.4853, valid_acc: 0.74, lr: 9.4837e-04, et: 0.5534
+    epoch 073, train_loss: 0.4291, train_acc: 0.80, valid_loss: 0.4841, valid_acc: 0.75, lr: 9.4697e-04, et: 0.5510
+    epoch 074, train_loss: 0.4243, train_acc: 0.81, valid_loss: 0.4802, valid_acc: 0.75, lr: 9.4556e-04, et: 0.5533
+    epoch 075, train_loss: 0.4217, train_acc: 0.81, valid_loss: 0.4789, valid_acc: 0.75, lr: 9.4412e-04, et: 0.5513
+    epoch 076, train_loss: 0.4217, train_acc: 0.81, valid_loss: 0.4760, valid_acc: 0.75, lr: 9.4267e-04, et: 0.5551
+    epoch 077, train_loss: 0.4223, train_acc: 0.81, valid_loss: 0.4813, valid_acc: 0.75, lr: 9.4120e-04, et: 0.5543
+    epoch 078, train_loss: 0.4224, train_acc: 0.81, valid_loss: 0.4812, valid_acc: 0.74, lr: 9.3972e-04, et: 0.5582
+    epoch 079, train_loss: 0.4216, train_acc: 0.80, valid_loss: 0.4792, valid_acc: 0.74, lr: 9.3822e-04, et: 0.5507
+    epoch 080, train_loss: 0.4231, train_acc: 0.81, valid_loss: 0.4757, valid_acc: 0.75, lr: 9.3669e-04, et: 0.5572
+    epoch 081, train_loss: 0.4206, train_acc: 0.81, valid_loss: 0.4756, valid_acc: 0.76, lr: 9.3516e-04, et: 0.5493
+    epoch 082, train_loss: 0.4220, train_acc: 0.81, valid_loss: 0.4810, valid_acc: 0.75, lr: 9.3360e-04, et: 0.5557
+    epoch 083, train_loss: 0.4233, train_acc: 0.81, valid_loss: 0.4845, valid_acc: 0.75, lr: 9.3203e-04, et: 0.5493
+    epoch 084, train_loss: 0.4237, train_acc: 0.81, valid_loss: 0.4792, valid_acc: 0.75, lr: 9.3044e-04, et: 0.5561
+    epoch 085, train_loss: 0.4189, train_acc: 0.81, valid_loss: 0.4707, valid_acc: 0.75, lr: 9.2883e-04, et: 0.5506
+    epoch 086, train_loss: 0.4250, train_acc: 0.80, valid_loss: 0.4989, valid_acc: 0.74, lr: 9.2721e-04, et: 0.5586
+    epoch 087, train_loss: 0.4187, train_acc: 0.81, valid_loss: 0.4835, valid_acc: 0.75, lr: 9.2557e-04, et: 0.5541
+    epoch 088, train_loss: 0.4208, train_acc: 0.81, valid_loss: 0.4848, valid_acc: 0.74, lr: 9.2392e-04, et: 0.5553
+    epoch 089, train_loss: 0.4201, train_acc: 0.81, valid_loss: 0.4855, valid_acc: 0.75, lr: 9.2224e-04, et: 0.5515
+    epoch 090, train_loss: 0.4196, train_acc: 0.81, valid_loss: 0.4887, valid_acc: 0.75, lr: 9.2055e-04, et: 0.5553
+    epoch 091, train_loss: 0.4314, train_acc: 0.80, valid_loss: 0.5005, valid_acc: 0.73, lr: 9.1885e-04, et: 0.5550
+    epoch 092, train_loss: 0.4195, train_acc: 0.81, valid_loss: 0.4804, valid_acc: 0.75, lr: 9.1712e-04, et: 0.5554
+    epoch 093, train_loss: 0.4160, train_acc: 0.82, valid_loss: 0.4785, valid_acc: 0.74, lr: 9.1538e-04, et: 0.5520
     Early stopping was triggered: epoch #94
-    Elapsed Time: 53.07s
+    Elapsed Time: 51.98s
     keywords_train        [A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11,...
     keywords_valid                                [A16, A17, A18, A19, A20]
     keywords_test                                                       A21
@@ -2788,7 +2788,7 @@ label_keys = {"event:left": 0, "event:right": 1}
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (1 minutes 23.649 seconds)
+   **Total running time of the script:** (1 minutes 22.869 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_cross-subject-classification-deeplearning.py:

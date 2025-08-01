@@ -18,8 +18,8 @@
 .. _sphx_glr_auto_examples_example_cross-subject-classification-riemannian.py:
 
 
-Example: Within-subject classification with deep learning
-=========================================================
+Example: Cross-subject classification with riemannian classifier
+================================================================
 
 .. GENERATED FROM PYTHON SOURCE LINES 7-22
 
@@ -221,7 +221,7 @@ Example: Within-subject classification with deep learning
 
  .. code-block:: none
 
-    0it [00:00, ?it/s]    9it [00:00, 25149.06it/s]
+    0it [00:00, ?it/s]    9it [00:00, 25540.42it/s]
     Reading 0 ... 230399  =      0.000 ...   449.998 secs...
     Reading 0 ... 230399  =      0.000 ...   449.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -317,7 +317,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 17260.51it/s]
+    0it [00:00, ?it/s]    9it [00:00, 17268.41it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -413,7 +413,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 17104.09it/s]
+    0it [00:00, ?it/s]    9it [00:00, 17057.72it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -509,7 +509,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 16897.38it/s]
+    0it [00:00, ?it/s]    9it [00:00, 16740.02it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -605,7 +605,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 17284.22it/s]
+    0it [00:00, ?it/s]    9it [00:00, 16740.02it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -701,7 +701,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 17492.46it/s]
+    0it [00:00, ?it/s]    9it [00:00, 16702.98it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -797,7 +797,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 16942.88it/s]
+    0it [00:00, ?it/s]    9it [00:00, 16412.49it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -893,7 +893,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 17034.63it/s]
+    0it [00:00, ?it/s]    9it [00:00, 16859.64it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -989,7 +989,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 17492.46it/s]
+    0it [00:00, ?it/s]    9it [00:00, 14496.44it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1085,7 +1085,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 16166.48it/s]
+    0it [00:00, ?it/s]    9it [00:00, 12557.80it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1181,7 +1181,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 17042.32it/s]
+    0it [00:00, ?it/s]    9it [00:00, 14780.24it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1277,7 +1277,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 15981.68it/s]
+    0it [00:00, ?it/s]    9it [00:00, 14260.95it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 232447  =      0.000 ...   453.998 secs...
@@ -1373,7 +1373,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 15432.84it/s]
+    0it [00:00, ?it/s]    9it [00:00, 13781.94it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1469,7 +1469,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 16717.78it/s]
+    0it [00:00, ?it/s]    9it [00:00, 14844.17it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1565,7 +1565,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 15547.26it/s]
+    0it [00:00, ?it/s]    9it [00:00, 13919.15it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1661,7 +1661,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 15847.50it/s]
+    0it [00:00, ?it/s]    9it [00:00, 14496.44it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1757,7 +1757,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 17088.61it/s]
+    0it [00:00, ?it/s]    9it [00:00, 14132.81it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1853,7 +1853,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 16541.95it/s]
+    0it [00:00, ?it/s]    9it [00:00, 13578.68it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1949,7 +1949,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 16138.84it/s]
+    0it [00:00, ?it/s]    9it [00:00, 14479.76it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2045,7 +2045,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 10769.97it/s]
+    0it [00:00, ?it/s]    9it [00:00, 14122.24it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2141,7 +2141,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 16469.78it/s]
+    0it [00:00, ?it/s]    9it [00:00, 14059.12it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2237,7 +2237,7 @@ Example: Within-subject classification with deep learning
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 16549.20it/s]
+    0it [00:00, ?it/s]    9it [00:00, 14132.81it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2376,7 +2376,7 @@ Example: Within-subject classification with deep learning
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 46.625 seconds)
+   **Total running time of the script:** (0 minutes 55.174 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_cross-subject-classification-riemannian.py:

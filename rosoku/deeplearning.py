@@ -156,9 +156,11 @@ def deeplearning_train(
     if rank == 0:
         print(f"Elapsed Time: {elapsed_time:.2f}s")
 
+    """
     if enable_wandb_logging:
         if (enable_ddp and rank == 0) or (enable_ddp is False):
             wandb.finish()
+    """
 
     if history_fname is not None and rank == 0:
         df_save = pd.DataFrame(history)
@@ -1091,93 +1093,23 @@ def deeplearning(
                 df_results["normalization_mean"] = [normalization_mean.flatten()]
                 df_results["normalization_std"] = [normalization_std.flatten()]
 
+            table = wandb.Table(columns=["id", "labels", "preds"])
+            for idx, (label, pred) in enumerate(zip(labels, preds)):
+                table.add_data(idx, label, pred)
+
+            wandb.log({"test/accuracy": accuracy, "predictions": table})
+
             df_list.append(df_results)
 
     df = pd.concat(df_list, axis=0, ignore_index=True)
 
+    if enable_wandb_logging:
+
+        if enable_ddp:
+            ddp_params = utils.get_ddp_params()
+            rank = ddp_params["rank"]
+
+        if (enable_ddp and rank == 0) or (enable_ddp is False):
+            wandb.finish()
+
     return df
-
-
-if __name__ == "__main__":
-    import torch
-    import braindecode
-
-    def _func_proc_epochs(epochs):
-        epochs = epochs.pick(picks="eeg").crop(tmin=0.25, tmax=5.0)
-        return epochs
-
-    def _func_get_fnames(subject):
-        from pathlib import Path
-
-        base_dir = (
-            Path("~/Documents/datasets/dreyer_2023/derivatives")
-            / "epochs"
-            / "l_freq-8.0_h_freq-30.0_resample-128"
-            / subject
-        )
-
-        fnames_list = list()
-        fnames_list.append(base_dir / f"sub-{subject}_acquisition-epo.fif")
-        fnames_list.append(base_dir / f"sub-{subject}_online-epo.fif")
-
-        return fnames_list
-
-    def _func_get_model(X, y, device):
-        print(X.shape)
-        _, n_chans, n_times = X.shape
-        F1 = 4
-        D = 2
-        F2 = F1 * D
-
-        model = braindecode.models.EEGNetv4(
-            n_chans=n_chans,
-            n_outputs=2,
-            n_times=n_times,
-            F1=F1,
-            D=D,
-            F2=F2,
-            drop_prob=0.25,
-        )
-        model.to(device)
-
-        return model
-
-    # setup mpdels
-
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    lr = 0.001
-    weight_decay = 0.0005
-    n_epochs = 100
-    batch_size = 64
-    patience = 75
-
-    early_stopping = utils.EarlyStopping(patience=patience)
-
-    criterion = torch.nn.CrossEntropyLoss()
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR
-
-    returns = deeplearning_cross_subject(
-        # subjects_train=["A1", "A2"],
-        # subjects_valid=["A3", "A4"],
-        # subjects_test=["A5", "A6"],
-        subjects_train=[f"A{m}" for m in range(1, 16)] + ["A56"],
-        subjects_valid=[f"A{m}" for m in range(17, 19)] + ["A56"],
-        subjects_test=["A56"],
-        func_get_fnames=_func_get_fnames,
-        func_proc_epochs=_func_proc_epochs,
-        func_get_model=_func_get_model,
-        criterion=criterion,
-        scheduler=scheduler,
-        batch_size=batch_size,
-        n_epochs=n_epochs,
-        checkpoint_fname=None,
-        early_stopping=None,
-        use_cuda=True,
-        num_workers=2,
-        history_fname=None,
-        scheduler_params={"T_max": n_epochs, "eta_min": 1e-6},
-        optimizer=torch.optim.AdamW,
-        optimizer_params={"lr": lr, "weight_decay": weight_decay},
-        compile_test_subjects=False,
-    )

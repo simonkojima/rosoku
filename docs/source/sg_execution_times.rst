@@ -6,7 +6,7 @@
 
 Computation times
 =================
-**02:19.760** total execution time for 4 files **from all galleries**:
+**02:19.750** total execution time for 4 files **from all galleries**:
 
 .. container::
 
@@ -33,14 +33,14 @@ Computation times
      - Time
      - Mem (MB)
    * - :ref:`sphx_glr_auto_examples_example_cross-subject-classification-deeplearning.py` (``../../examples/example_cross-subject-classification-deeplearning.py``)
-     - 01:23.649
+     - 01:22.869
      - 0.0
    * - :ref:`sphx_glr_auto_examples_example_cross-subject-classification-riemannian.py` (``../../examples/example_cross-subject-classification-riemannian.py``)
-     - 00:46.625
-     - 0.0
-   * - :ref:`sphx_glr_auto_examples_example_within-subject-classification-deeplearning.py` (``../../examples/example_within-subject-classification-deeplearning.py``)
-     - 00:07.660
+     - 00:55.174
      - 0.0
    * - :ref:`sphx_glr_auto_examples_example_within-subject-classification-riemannian.py` (``../../examples/example_within-subject-classification-riemannian.py``)
-     - 00:01.826
+     - 00:01.707
+     - 0.0
+   * - :ref:`sphx_glr_auto_examples_example_within-subject-classification-deeplearning.py` (``../../examples/example_within-subject-classification-deeplearning.py``)
+     - 00:00.000
      - 0.0

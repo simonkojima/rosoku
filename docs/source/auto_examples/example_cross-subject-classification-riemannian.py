@@ -1,6 +1,6 @@
 """
-Example: Within-subject classification with deep learning
-=========================================================
+Example: Cross-subject classification with riemannian classifier
+================================================================
 """
 
 # %%
