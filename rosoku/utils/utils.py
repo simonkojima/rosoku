@@ -202,25 +202,28 @@ def dataset_to_dataloader(
     """
     import torch
 
-    if generator is not None:
-        if enable_DS:
-            if isinstance(generator, int) is False:
-                raise ValueError("When enable_DS = True, generator must be int.")
-            else:
+    if generator is None:
+        g = None
+        func_worker_init = None
+    elif isinstance(generator, int):
+        g = torch.Generator()
+        g.manual_seed(generator)
 
-                def func_worker_init(worker_id):
-                    worker_seed = generator + worker_id
-                    np.random.seed(worker_seed)
-                    random.seed(worker_seed)
+        def func_worker_init(worker_id):
+            worker_seed = generator + worker_id
+            np.random.seed(worker_seed)
+            random.seed(worker_seed)
 
-        if isinstance(generator, int):
-            g = torch.Generator()
-            g.manual_seed(generator)
-        else:
-            g = generator
+    elif isinstance(generator, torch.Generator):
+        g = generator
+
+        def func_worker_init(worker_id):
+            worker_seed = g.initial_seed() + worker_id
+            np.random.seed(worker_seed)
+            random.seed(worker_seed)
 
     else:
-        g = generator
+        raise ValueError("generator must be an int or torch.Generator")
 
     if enable_DS:
         world_size = DS_params["world_size"]
@@ -292,7 +295,11 @@ def dataset_to_dataloader(
     else:
 
         dataloader_train = torch.utils.data.DataLoader(
-            dataset_train, batch_size=batch_size, shuffle=True, generator=g
+            dataset_train,
+            batch_size=batch_size,
+            shuffle=True,
+            generator=g,
+            worker_init_fn=func_worker_init,
         )
         dataloader_valid = torch.utils.data.DataLoader(
             dataset_valid, batch_size=batch_size, shuffle=False
