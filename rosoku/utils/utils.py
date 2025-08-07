@@ -127,6 +127,11 @@ def get_labels_from_epochs(epochs, label_keys={"event:left": 0, "event:right": 1
             if key in marker:
                 y.append(val)
 
+    if len(epochs) != len(y):
+        raise RuntimeError(
+            f"lenth of epochs is not match with length of y.\n len(epochs): {len(epochs)}, len(y): {len(y)}"
+        )
+
     return y
 
 
