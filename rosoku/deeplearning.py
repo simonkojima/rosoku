@@ -1066,6 +1066,8 @@ def deeplearning(
             )
 
             accuracy = sklearn.metrics.accuracy_score(labels, preds)
+            f1 = sklearn.metrics.f1_score(labels, preds)
+            bacc = sklearn.metrics.balanced_accuracy_score(labels, preds)
 
             df_results = pd.DataFrame()
             df_results["keywords_train"] = [keywords_train]
@@ -1089,7 +1091,14 @@ def deeplearning(
                     for idx, (label, pred) in enumerate(zip(labels, preds)):
                         table.add_data(idx, label, pred)
 
-                    wandb.log({"test/accuracy": accuracy, "predictions": table})
+                    wandb.log(
+                        {
+                            "test/accuracy": accuracy,
+                            "test/bacc": bacc,
+                            "test/f1": f1,
+                            "predictions": table,
+                        }
+                    )
 
             df_list.append(df_results)
 
