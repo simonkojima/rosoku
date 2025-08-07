@@ -724,24 +724,6 @@ def deeplearning_cross_subject(
     return df
 
 
-def convert_epochs_to_ndarray(
-    epochs_train,
-    epochs_valid,
-    epochs_test,
-    label_keys={"event:left": 0, "event:right": 1},
-):
-
-    X_train = epochs_train.get_data()
-    X_valid = epochs_valid.get_data()
-    X_test = epochs_test.get_data()
-
-    y_train = utils.get_labels_from_epochs(epochs_train, label_keys)
-    y_valid = utils.get_labels_from_epochs(epochs_valid, label_keys)
-    y_test = utils.get_labels_from_epochs(epochs_test, label_keys)
-
-    return X_train, X_valid, X_test, y_train, y_valid, y_test
-
-
 def deeplearning(
     keywords_train,
     keywords_valid,
@@ -753,10 +735,10 @@ def deeplearning(
     n_epochs=500,
     optimizer=torch.optim.AdamW,
     *,
-    apply_func_proc_per_obj=False,
+    apply_func_proc_per_obj=True,
     func_proc_epochs=None,
     func_proc_ndarray=None,
-    func_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
+    func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
     optimizer_params=None,
     model=None,
     func_get_model=None,
@@ -963,6 +945,14 @@ def deeplearning(
         func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
         compile_test=compile_test,
     )
+
+    if compile_test:
+        keywords_test = ["[" + ", ".join(keywords_test) + "]"]
+    else:
+        keywords_test = ["[" + keyword + "]" for keyword in keywords_test]
+
+    if len(keywords_test) != len(X_test):
+        raise RuntimeError("len(keywords_test) != len(X_test)")
 
     # data normalization
     if enable_normalization:

@@ -602,22 +602,36 @@ def train_epoch(
 
 
 def convert_epochs_to_ndarray(
+    epochs,
+    label_keys={"event:left": 0, "event:right": 1},
+):
+
+    X = epochs.get_data()
+    y = get_labels_from_epochs(epochs, label_keys)
+
+    return X, y
+
+
+def convert_multiple_epochs_to_ndarray(
     epochs_train,
+    epochs_valid,
     epochs_test,
-    epochs_valid=None,
     label_keys={"event:left": 0, "event:right": 1},
 ):
 
     X_train = epochs_train.get_data()
     if epochs_valid is not None:
         X_valid = epochs_valid.get_data()
-    X_test = epochs_test.get_data()
+    if isinstance(epochs_test, list):
+        X_test = [epochs.get_data() for epochs in epochs_test]
 
     y_train = get_labels_from_epochs(epochs_train, label_keys)
 
     if epochs_valid is not None:
         y_valid = get_labels_from_epochs(epochs_valid, label_keys)
-    y_test = get_labels_from_epochs(epochs_test, label_keys)
+
+    if isinstance(epochs_test, list):
+        y_test = [get_labels_from_epochs(epochs, label_keys) for epochs in epochs_test]
 
     if epochs_valid is not None:
         return X_train, X_valid, X_test, y_train, y_valid, y_test
@@ -627,8 +641,8 @@ def convert_epochs_to_ndarray(
 
 def load_data(
     keywords_train,
+    keywords_valid,
     keywords_test,
-    keywords_valid=None,
     func_load_epochs=None,
     func_load_ndarray=None,
     func_proc_epochs=None,
@@ -637,7 +651,7 @@ def load_data(
     func_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
     compile_test=False,
 ):
-    ## training data
+
     if func_load_epochs is not None:
         epochs_train = func_load_epochs(keywords_train, "train")
         if keywords_valid is not None:
@@ -668,14 +682,29 @@ def load_data(
                         epochs_test,
                     )
 
-        if keywords_valid is not None:
-            X_train, X_valid, X_test, y_train, y_valid, y_test = (
-                func_convert_epochs_to_ndarray(epochs_train, epochs_valid, epochs_test)
-            )
+        if apply_func_proc_per_obj:
+            X_train, y_train = func_convert_epochs_to_ndarray(epochs_train)
+            X_test = []
+            y_test = []
+            for epochs in epochs_test:
+                X, y = func_convert_epochs_to_ndarray(epochs)
+                X_test.append(X)
+                y_test.append(y)
+
+            if keywords_valid is not None:
+                X_valid, y_valid = func_convert_epochs_to_ndarray(epochs_valid)
         else:
-            X_train, X_test, y_train, y_test = func_convert_epochs_to_ndarray(
-                epochs_train, epochs_test
-            )
+
+            if keywords_valid is not None:
+                X_train, X_valid, X_test, y_train, y_valid, y_test = (
+                    func_convert_epochs_to_ndarray(
+                        epochs_train, epochs_valid, epochs_test
+                    )
+                )
+            else:
+                X_train, X_test, y_train, y_test = func_convert_epochs_to_ndarray(
+                    epochs_train, epochs_test
+                )
 
     elif func_load_ndarray is not None:
         X_train, y_train = func_load_ndarray(keywords_train, "train")
