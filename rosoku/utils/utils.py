@@ -635,14 +635,19 @@ def load_data(
         epochs_train = func_load_epochs(keywords_train, "train")
         if keywords_valid is not None:
             epochs_valid = func_load_epochs(keywords_valid, "valid")
-        epochs_test = func_load_epochs(keywords_test, "test")
+
+        epochs_test = []
+        for keyword in keywords_test:
+            epochs_test.append(func_load_epochs(keyword, "test"))
 
         if func_proc_epochs is not None:
             if apply_func_proc_per_obj:
                 epochs_train = func_proc_epochs(epochs_train, "train")
                 if keywords_valid is not None:
                     epochs_valid = func_proc_epochs(epochs_valid, "valid")
-                epochs_test = func_proc_epochs(epochs_test, "test")
+                epochs_test = [
+                    func_proc_epochs(epochs, "test") for epochs in epochs_test
+                ]
             else:
                 if keywords_valid is not None:
                     epochs_train, epochs_valid, epochs_test = func_proc_epochs(
@@ -669,7 +674,12 @@ def load_data(
         X_train, y_train = func_load_ndarray(keywords_train, "train")
         if keywords_valid is not None:
             X_valid, y_valid = func_load_ndarray(keywords_valid, "valid")
-        X_test, y_test = func_load_ndarray(keywords_test, "test")
+
+        X_test, y_test = []
+        for keyword in keywords_test:
+            X, y = func_load_ndarray(keyword, "test")
+            X_test.append(X)
+            y_test.append(y)
     else:
         raise ValueError(
             "either func_load_epochs or func_load_ndarray should not be None"
@@ -687,7 +697,16 @@ def load_data(
             X_train, y_train = func_proc_ndarray(X_train, y_train, "train")
             if keywords_valid is not None:
                 X_valid, y_valid = func_proc_ndarray(X_valid, y_valid, "valid")
-            X_test, y_test = func_proc_ndarray(X_test, y_test, "test")
+
+            X_test_proc, y_test_proc = [], []
+            for X, y in zip(X_test, y_test):
+                X, y = func_proc_ndarray(X, y, "test")
+                X_test_proc.append(X)
+                y_test_proc.append(y)
+
+            X_test = X_test_proc
+            y_test = y_test_proc
+
         else:
             if keywords_valid is not None:
                 X_train, X_valid, X_test, y_train, y_valid, y_test = func_proc_ndarray(
