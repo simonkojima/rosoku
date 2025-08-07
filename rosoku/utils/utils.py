@@ -645,7 +645,7 @@ def load_data(
 
         epochs_test = []
         for keyword in keywords_test:
-            epochs_test.append(func_load_epochs(keyword, "test"))
+            epochs_test.append(func_load_epochs([keyword], "test"))
 
         if func_proc_epochs is not None:
             if apply_func_proc_per_obj:
@@ -682,9 +682,9 @@ def load_data(
         if keywords_valid is not None:
             X_valid, y_valid = func_load_ndarray(keywords_valid, "valid")
 
-        X_test, y_test = []
+        X_test, y_test = [], []
         for keyword in keywords_test:
-            X, y = func_load_ndarray(keyword, "test")
+            X, y = func_load_ndarray([keyword], "test")
             X_test.append(X)
             y_test.append(y)
     else:
