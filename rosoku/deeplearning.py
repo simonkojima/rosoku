@@ -942,11 +942,6 @@ def deeplearning(
         func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
     )
 
-    print(X_train.shape)
-    print(X_valid.shape)
-
-    exit()
-
     if len(keywords_test) != len(X_test):
         raise RuntimeError("len(keywords_test) != len(X_test)")
 
