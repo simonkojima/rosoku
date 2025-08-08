@@ -34,7 +34,7 @@ def epochs_from_raws(
             l_freq=l_freq,
             h_freq=h_freq,
             method="iir",
-            iir_params={"ftype": "butter", "order": 4, "btype": "bandpass"},
+            iir_params={"ftype": "butter", "order": order_filter, "btype": "bandpass"},
         )
 
         # eog and emg mapping
@@ -120,21 +120,15 @@ def func_load_epochs(keywords, mode, epochs):
 
 
 def convert_epochs_to_ndarray(
-    epochs_train,
-    epochs_test,
+    epochs,
     label_keys,
 ):
 
-    X_train = epochs_train.get_data()
-    X_test = epochs_test.get_data()
+    X = epochs.get_data()
+    X = pyriemann.estimation.Covariances().transform(X)
+    y = rosoku.utils.get_labels_from_epochs(epochs, label_keys)
 
-    X_train = pyriemann.estimation.Covariances().transform(X_train)
-    X_test = pyriemann.estimation.Covariances().transform(X_test)
-
-    y_train = rosoku.utils.get_labels_from_epochs(epochs_train, label_keys)
-    y_test = rosoku.utils.get_labels_from_epochs(epochs_test, label_keys)
-
-    return X_train, X_test, y_train, y_test
+    return X, y
 
 
 # %%
@@ -142,7 +136,7 @@ label_keys = {"event:left": 0, "event:right": 1}
 
 results = rosoku.conventional(
     keywords_train=["run:1", "run:2"],
-    keywords_test=["run:3", "run:4", "run:5"],
+    keywords_test=[["run:3", "run:4", "run:5"]],
     func_load_epochs=functools.partial(func_load_epochs, epochs=epochs),
     func_proc_epochs=func_proc_epochs,
     func_convert_epochs_to_ndarray=functools.partial(
@@ -150,4 +144,5 @@ results = rosoku.conventional(
     ),
 )
 
-print(results)
+for m in range(results.shape[0]):
+    print(results.loc[m])

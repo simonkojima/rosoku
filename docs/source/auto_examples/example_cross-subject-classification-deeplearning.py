@@ -114,10 +114,7 @@ def func_load_ndarray(
 
         epochs_subject = tm.concatenate_epochs(epochs_subject)
 
-        print(epochs_subject)
-
         epochs_subject = epochs_subject.crop(tmin=tmin, tmax=tmax).pick(picks="eeg")
-        print(epochs_subject.get_data().shape)
 
         y_subject = rosoku.utils.get_labels_from_epochs(
             epochs_subject, label_keys=label_keys
@@ -128,9 +125,8 @@ def func_load_ndarray(
         y.append(y_subject)
         X.append(X_subject)
 
-    if mode != "test":
-        X = np.concatenate(X, axis=0)
-        y = np.concatenate(y, axis=0)
+    X = np.concatenate(X, axis=0)
+    y = np.concatenate(y, axis=0)
 
     return X, y
 
@@ -192,7 +188,6 @@ results = rosoku.deeplearning(
     scheduler_params=scheduler_params,
     device=device,
     enable_ddp=enable_ddp,
-    compile_test=False,
     func_proc_epochs=None,
     early_stopping=early_stopping,
     enable_normalization=enable_normalization,

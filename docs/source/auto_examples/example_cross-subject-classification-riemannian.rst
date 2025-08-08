@@ -43,7 +43,7 @@ Example: Cross-subject classification with riemannian classifier
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 19-118
+.. GENERATED FROM PYTHON SOURCE LINES 19-116
 
 .. code-block:: Python
 
@@ -104,7 +104,6 @@ Example: Cross-subject classification with riemannian classifier
                     markers, {"left": ["left_hand"], "right": ["right_hand"]}
                 )
                 markers = tm.add_tag(markers, f"run:{name}")
-                # markers = tm.add_tag(markers, f"rtype:{rtype}")
 
                 samples, markers = tm.remove(samples, markers, "event:misc")
 
@@ -139,9 +138,8 @@ Example: Cross-subject classification with riemannian classifier
             y.append(y_subject)
             X.append(X_subject)
 
-        if mode != "test":
-            X = np.concatenate(X, axis=0)
-            y = np.concatenate(y, axis=0)
+        X = np.concatenate(X, axis=0)
+        y = np.concatenate(y, axis=0)
 
         return X, y
 
@@ -153,7 +151,7 @@ Example: Cross-subject classification with riemannian classifier
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 119-139
+.. GENERATED FROM PYTHON SOURCE LINES 117-137
 
 .. code-block:: Python
 
@@ -184,14 +182,14 @@ Example: Cross-subject classification with riemannian classifier
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 140-161
+.. GENERATED FROM PYTHON SOURCE LINES 138-158
 
 .. code-block:: Python
 
     label_keys = {"event:left": 0, "event:right": 1}
 
     results = rosoku.conventional(
-        keywords_train=[f"A{num}" for num in range(1, 21)],
+        keywords_train=[f"A{num}" for num in range(1, 3)],
         keywords_test=["A21", "A56"],
         func_load_ndarray=functools.partial(
             func_load_ndarray,
@@ -204,7 +202,6 @@ Example: Cross-subject classification with riemannian classifier
             resample=128,
             label_keys={"event:left": 0, "event:right": 1},
         ),
-        compile_test=False,
     )
 
     for m in range(results.shape[0]):
@@ -217,7 +214,7 @@ Example: Cross-subject classification with riemannian classifier
 
  .. code-block:: none
 
-    0it [00:00, ?it/s]    9it [00:00, 39610.43it/s]
+    0it [00:00, ?it/s]    9it [00:00, 40329.85it/s]
     Reading 0 ... 230399  =      0.000 ...   449.998 secs...
     Reading 0 ... 230399  =      0.000 ...   449.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -313,61 +310,7 @@ Example: Cross-subject classification with riemannian classifier
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/62.0M [00:00<?, ?B/s]
-      0%|                                     | 15.4k/62.0M [00:00<13:48, 74.8kB/s]
-      0%|                                      | 62.5k/62.0M [00:00<04:31, 228kB/s]
-      0%|▏                                      | 230k/62.0M [00:00<01:22, 746kB/s]
-      1%|▎                                     | 582k/62.0M [00:00<00:48, 1.28MB/s]
-      1%|▌                                     | 898k/62.0M [00:00<00:35, 1.71MB/s]
-      3%|█                                    | 1.82M/62.0M [00:00<00:16, 3.66MB/s]
-      5%|█▊                                   | 2.95M/62.0M [00:00<00:10, 5.75MB/s]
-      7%|██▍                                  | 4.09M/62.0M [00:01<00:07, 7.35MB/s]
-      8%|███                                  | 5.18M/62.0M [00:01<00:06, 8.27MB/s]
-     10%|███▊                                 | 6.47M/62.0M [00:01<00:05, 9.51MB/s]
-     12%|████▍                                | 7.46M/62.0M [00:01<00:05, 9.48MB/s]
-     14%|█████                                | 8.44M/62.0M [00:01<00:05, 9.31MB/s]
-     16%|█████▊                               | 9.67M/62.0M [00:01<00:05, 10.1MB/s]
-     17%|██████▍                              | 10.7M/62.0M [00:01<00:05, 10.1MB/s]
-     19%|███████                              | 11.7M/62.0M [00:01<00:04, 10.2MB/s]
-     21%|███████▉                             | 13.3M/62.0M [00:01<00:04, 11.6MB/s]
-     24%|████████▋                            | 14.6M/62.0M [00:01<00:03, 12.1MB/s]
-     26%|█████████▍                           | 15.8M/62.0M [00:02<00:03, 12.1MB/s]
-     28%|██████████▎                          | 17.3M/62.0M [00:02<00:03, 12.7MB/s]
-     30%|███████████▏                         | 18.7M/62.0M [00:02<00:03, 13.2MB/s]
-     32%|███████████▉                         | 20.0M/62.0M [00:02<00:03, 13.1MB/s]
-     34%|████████████▊                        | 21.4M/62.0M [00:02<00:03, 12.8MB/s]
-     37%|█████████████▌                       | 22.7M/62.0M [00:02<00:03, 12.9MB/s]
-     39%|██████████████▍                      | 24.1M/62.0M [00:02<00:02, 13.1MB/s]
-     41%|███████████████▏                     | 25.4M/62.0M [00:02<00:02, 13.1MB/s]
-     43%|████████████████                     | 26.8M/62.0M [00:02<00:02, 13.4MB/s]
-     45%|████████████████▊                    | 28.2M/62.0M [00:02<00:02, 13.3MB/s]
-     48%|█████████████████▋                   | 29.6M/62.0M [00:03<00:02, 13.5MB/s]
-     50%|██████████████████▌                  | 31.0M/62.0M [00:03<00:02, 13.6MB/s]
-     52%|███████████████████▎                 | 32.4M/62.0M [00:03<00:02, 13.8MB/s]
-     55%|████████████████████▏                | 33.8M/62.0M [00:03<00:02, 13.7MB/s]
-     57%|█████████████████████                | 35.2M/62.0M [00:03<00:01, 13.5MB/s]
-     59%|█████████████████████▊               | 36.6M/62.0M [00:03<00:01, 12.7MB/s]
-     61%|██████████████████████▌              | 37.9M/62.0M [00:03<00:02, 9.01MB/s]
-     64%|███████████████████████▌             | 39.4M/62.0M [00:03<00:02, 10.3MB/s]
-     66%|████████████████████████▎            | 40.7M/62.0M [00:04<00:01, 11.0MB/s]
-     68%|█████████████████████████▏           | 42.3M/62.0M [00:04<00:01, 12.1MB/s]
-     70%|██████████████████████████           | 43.6M/62.0M [00:04<00:01, 12.0MB/s]
-     72%|██████████████████████████▊          | 44.9M/62.0M [00:04<00:01, 12.3MB/s]
-     75%|███████████████████████████▋         | 46.3M/62.0M [00:04<00:01, 12.9MB/s]
-     77%|████████████████████████████▌        | 47.8M/62.0M [00:04<00:01, 13.3MB/s]
-     80%|█████████████████████████████▍       | 49.3M/62.0M [00:04<00:00, 13.6MB/s]
-     82%|██████████████████████████████▎      | 50.7M/62.0M [00:04<00:00, 13.7MB/s]
-     84%|███████████████████████████████      | 52.1M/62.0M [00:04<00:00, 13.9MB/s]
-     87%|████████████████████████████████     | 53.6M/62.0M [00:04<00:00, 14.2MB/s]
-     89%|████████████████████████████████▉    | 55.1M/62.0M [00:05<00:00, 14.2MB/s]
-     91%|█████████████████████████████████▊   | 56.5M/62.0M [00:05<00:00, 14.0MB/s]
-     94%|██████████████████████████████████▌  | 57.9M/62.0M [00:05<00:00, 13.4MB/s]
-     96%|███████████████████████████████████▍ | 59.3M/62.0M [00:05<00:00, 12.4MB/s]
-     98%|████████████████████████████████████▏| 60.5M/62.0M [00:05<00:00, 8.83MB/s]
-    100%|████████████████████████████████████▊| 61.7M/62.0M [00:05<00:00, 9.19MB/s]
-      0%|                                              | 0.00/62.0M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 62.0M/62.0M [00:00<00:00, 555GB/s]
-    9it [00:08,  1.08it/s]    9it [00:08,  1.08it/s]
+    0it [00:00, ?it/s]    9it [00:00, 33054.94it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -463,44 +406,7 @@ Example: Cross-subject classification with riemannian classifier
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/41.1M [00:00<?, ?B/s]
-      0%|                                      | 78.8k/41.1M [00:00<01:07, 610kB/s]
-      1%|▏                                      | 212k/41.1M [00:00<00:41, 973kB/s]
-      1%|▍                                     | 425k/41.1M [00:00<00:27, 1.46MB/s]
-      2%|▋                                     | 743k/41.1M [00:00<00:19, 2.10MB/s]
-      4%|█▍                                   | 1.59M/41.1M [00:00<00:09, 4.26MB/s]
-      6%|██▏                                  | 2.44M/41.1M [00:00<00:06, 5.61MB/s]
-      9%|███▍                                 | 3.75M/41.1M [00:00<00:04, 7.94MB/s]
-     12%|████▌                                | 5.08M/41.1M [00:00<00:03, 9.51MB/s]
-     15%|█████▋                               | 6.31M/41.1M [00:00<00:03, 10.2MB/s]
-     18%|██████▋                              | 7.44M/41.1M [00:01<00:03, 10.5MB/s]
-     21%|███████▉                             | 8.80M/41.1M [00:01<00:02, 11.4MB/s]
-     25%|█████████                            | 10.1M/41.1M [00:01<00:02, 11.7MB/s]
-     28%|██████████▎                          | 11.5M/41.1M [00:01<00:02, 12.2MB/s]
-     31%|███████████▍                         | 12.7M/41.1M [00:01<00:02, 12.3MB/s]
-     34%|████████████▌                        | 14.0M/41.1M [00:01<00:02, 12.3MB/s]
-     37%|█████████████▋                       | 15.2M/41.1M [00:01<00:02, 11.8MB/s]
-     40%|██████████████▉                      | 16.6M/41.1M [00:01<00:01, 12.3MB/s]
-     43%|████████████████                     | 17.9M/41.1M [00:01<00:01, 12.4MB/s]
-     47%|█████████████████▍                   | 19.3M/41.1M [00:01<00:01, 12.9MB/s]
-     50%|██████████████████▋                  | 20.7M/41.1M [00:02<00:01, 13.1MB/s]
-     54%|███████████████████▊                 | 22.0M/41.1M [00:02<00:01, 13.1MB/s]
-     57%|█████████████████████                | 23.3M/41.1M [00:02<00:01, 13.1MB/s]
-     60%|██████████████████████▏              | 24.7M/41.1M [00:02<00:01, 12.9MB/s]
-     63%|███████████████████████▍             | 26.0M/41.1M [00:02<00:01, 13.1MB/s]
-     67%|████████████████████████▋            | 27.4M/41.1M [00:02<00:01, 13.2MB/s]
-     70%|█████████████████████████▉           | 28.8M/41.1M [00:02<00:00, 13.3MB/s]
-     73%|███████████████████████████          | 30.1M/41.1M [00:02<00:00, 13.3MB/s]
-     77%|████████████████████████████▎        | 31.5M/41.1M [00:02<00:00, 13.5MB/s]
-     80%|█████████████████████████████▌       | 32.9M/41.1M [00:02<00:00, 13.6MB/s]
-     84%|██████████████████████████████▉      | 34.4M/41.1M [00:03<00:00, 13.9MB/s]
-     87%|████████████████████████████████▎    | 35.9M/41.1M [00:03<00:00, 14.2MB/s]
-     91%|█████████████████████████████████▋   | 37.4M/41.1M [00:03<00:00, 14.3MB/s]
-     95%|██████████████████████████████████▉  | 38.8M/41.1M [00:03<00:00, 14.1MB/s]
-     98%|████████████████████████████████████▎| 40.3M/41.1M [00:03<00:00, 14.2MB/s]
-      0%|                                              | 0.00/41.1M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 41.1M/41.1M [00:00<00:00, 363GB/s]
-    9it [00:05,  1.74it/s]    9it [00:05,  1.74it/s]
+    0it [00:00, ?it/s]    9it [00:00, 33825.03it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -596,3097 +502,7 @@ Example: Cross-subject classification with riemannian classifier
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/52.4M [00:00<?, ?B/s]
-      0%|                                      | 41.0k/52.4M [00:00<06:32, 134kB/s]
-      0%|                                      | 69.6k/52.4M [00:00<06:23, 137kB/s]
-      0%|                                      | 96.3k/52.4M [00:00<06:30, 134kB/s]
-      0%|                                       | 123k/52.4M [00:00<06:42, 130kB/s]
-      0%|                                      | 146k/52.4M [00:01<09:21, 93.1kB/s]
-      0%|                                      | 170k/52.4M [00:01<11:01, 79.0kB/s]
-      0%|▏                                     | 194k/52.4M [00:01<09:04, 95.8kB/s]
-      0%|▏                                      | 224k/52.4M [00:02<07:37, 114kB/s]
-      0%|▏                                      | 246k/52.4M [00:02<06:41, 130kB/s]
-      1%|▏                                      | 265k/52.4M [00:02<07:21, 118kB/s]
-      1%|▏                                      | 295k/52.4M [00:02<06:54, 126kB/s]
-      1%|▏                                      | 327k/52.4M [00:02<06:26, 135kB/s]
-      1%|▎                                      | 354k/52.4M [00:02<06:26, 135kB/s]
-      1%|▎                                      | 381k/52.4M [00:03<06:26, 135kB/s]
-      1%|▎                                      | 408k/52.4M [00:03<06:30, 133kB/s]
-      1%|▎                                      | 436k/52.4M [00:03<06:24, 135kB/s]
-      1%|▎                                      | 463k/52.4M [00:03<06:32, 132kB/s]
-      1%|▎                                      | 489k/52.4M [00:03<05:45, 150kB/s]
-      1%|▍                                      | 528k/52.4M [00:04<04:27, 194kB/s]
-      1%|▍                                      | 554k/52.4M [00:04<04:51, 178kB/s]
-      1%|▍                                      | 613k/52.4M [00:04<03:18, 261kB/s]
-      1%|▍                                      | 663k/52.4M [00:04<02:46, 311kB/s]
-      1%|▌                                      | 732k/52.4M [00:04<02:07, 404kB/s]
-      2%|▌                                      | 836k/52.4M [00:04<01:31, 564kB/s]
-      2%|▋                                      | 980k/52.4M [00:04<01:04, 797kB/s]
-      2%|▊                                    | 1.22M/52.4M [00:04<00:41, 1.23MB/s]
-      3%|█                                    | 1.58M/52.4M [00:04<00:26, 1.90MB/s]
-      4%|█▍                                   | 2.00M/52.4M [00:05<00:20, 2.52MB/s]
-      5%|█▉                                   | 2.69M/52.4M [00:05<00:13, 3.76MB/s]
-      6%|██▏                                  | 3.16M/52.4M [00:05<00:12, 4.02MB/s]
-      8%|██▊                                  | 3.96M/52.4M [00:05<00:09, 5.18MB/s]
-      9%|███▏                                 | 4.59M/52.4M [00:05<00:08, 5.44MB/s]
-     10%|███▋                                 | 5.27M/52.4M [00:05<00:08, 5.83MB/s]
-     11%|████▏                                | 5.91M/52.4M [00:05<00:07, 5.97MB/s]
-     12%|████▌                                | 6.51M/52.4M [00:05<00:11, 4.13MB/s]
-     14%|█████                                | 7.16M/52.4M [00:05<00:09, 4.64MB/s]
-     15%|█████▍                               | 7.73M/52.4M [00:06<00:09, 4.91MB/s]
-     16%|█████▊                               | 8.29M/52.4M [00:06<00:08, 5.00MB/s]
-     17%|██████▎                              | 8.91M/52.4M [00:06<00:08, 5.29MB/s]
-     18%|██████▊                              | 9.63M/52.4M [00:06<00:07, 5.70MB/s]
-     20%|███████▎                             | 10.3M/52.4M [00:06<00:06, 6.06MB/s]
-     21%|███████▋                             | 11.0M/52.4M [00:06<00:06, 6.08MB/s]
-     22%|████████▏                            | 11.6M/52.4M [00:06<00:06, 6.11MB/s]
-     23%|████████▋                            | 12.3M/52.4M [00:06<00:06, 6.20MB/s]
-     25%|█████████▏                           | 13.0M/52.4M [00:06<00:06, 6.44MB/s]
-     26%|█████████▌                           | 13.6M/52.4M [00:07<00:06, 6.29MB/s]
-     27%|██████████                           | 14.3M/52.4M [00:07<00:05, 6.45MB/s]
-     29%|██████████▌                          | 15.0M/52.4M [00:07<00:05, 6.32MB/s]
-     30%|███████████                          | 15.6M/52.4M [00:07<00:05, 6.42MB/s]
-     31%|███████████▌                         | 16.3M/52.4M [00:07<00:05, 6.32MB/s]
-     33%|████████████                         | 17.2M/52.4M [00:07<00:05, 6.84MB/s]
-     34%|████████████▋                        | 18.0M/52.4M [00:07<00:04, 7.10MB/s]
-     37%|█████████████▋                       | 19.3M/52.4M [00:07<00:03, 8.75MB/s]
-     39%|██████████████▍                      | 20.4M/52.4M [00:07<00:03, 9.30MB/s]
-     41%|███████████████▏                     | 21.6M/52.4M [00:07<00:03, 9.90MB/s]
-     43%|████████████████                     | 22.7M/52.4M [00:08<00:02, 10.3MB/s]
-     46%|████████████████▊                    | 23.9M/52.4M [00:08<00:02, 10.7MB/s]
-     48%|█████████████████▋                   | 25.0M/52.4M [00:08<00:02, 10.4MB/s]
-     50%|██████████████████▎                  | 26.0M/52.4M [00:08<00:02, 10.4MB/s]
-     52%|███████████████████▏                 | 27.1M/52.4M [00:08<00:02, 10.4MB/s]
-     54%|███████████████████▉                 | 28.3M/52.4M [00:08<00:02, 10.7MB/s]
-     56%|████████████████████▊                | 29.4M/52.4M [00:08<00:02, 10.6MB/s]
-     58%|█████████████████████▌               | 30.5M/52.4M [00:08<00:02, 10.7MB/s]
-     60%|██████████████████████▎              | 31.6M/52.4M [00:08<00:02, 10.4MB/s]
-     63%|███████████████████████▏             | 32.8M/52.4M [00:09<00:01, 10.9MB/s]
-     65%|███████████████████████▉             | 33.9M/52.4M [00:09<00:01, 10.9MB/s]
-     67%|████████████████████████▋            | 35.0M/52.4M [00:09<00:01, 10.9MB/s]
-     69%|█████████████████████████▍           | 36.1M/52.4M [00:09<00:01, 10.5MB/s]
-     71%|██████████████████████████▏          | 37.2M/52.4M [00:09<00:01, 10.5MB/s]
-     73%|██████████████████████████▉          | 38.2M/52.4M [00:09<00:01, 10.5MB/s]
-     75%|███████████████████████████▋         | 39.3M/52.4M [00:09<00:01, 10.1MB/s]
-     77%|████████████████████████████▍        | 40.4M/52.4M [00:09<00:01, 10.1MB/s]
-     79%|█████████████████████████████▏       | 41.4M/52.4M [00:09<00:01, 8.03MB/s]
-     81%|█████████████████████████████▊       | 42.2M/52.4M [00:10<00:01, 7.25MB/s]
-     82%|██████████████████████████████▎      | 43.0M/52.4M [00:10<00:01, 5.04MB/s]
-     84%|██████████████████████████████▉      | 43.8M/52.4M [00:10<00:01, 5.63MB/s]
-     85%|███████████████████████████████▌     | 44.8M/52.4M [00:10<00:01, 6.36MB/s]
-     88%|████████████████████████████████▍    | 45.9M/52.4M [00:10<00:00, 7.45MB/s]
-     90%|█████████████████████████████████▏   | 47.1M/52.4M [00:10<00:00, 8.44MB/s]
-     92%|█████████████████████████████████▉   | 48.0M/52.4M [00:10<00:00, 8.00MB/s]
-     93%|██████████████████████████████████▌  | 48.9M/52.4M [00:11<00:00, 7.79MB/s]
-     95%|███████████████████████████████████  | 49.7M/52.4M [00:11<00:00, 7.42MB/s]
-     97%|███████████████████████████████████▊ | 50.7M/52.4M [00:11<00:00, 7.97MB/s]
-     98%|████████████████████████████████████▍| 51.6M/52.4M [00:11<00:00, 8.14MB/s]
-      0%|                                              | 0.00/52.4M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 52.4M/52.4M [00:00<00:00, 245GB/s]
-    9it [00:13,  1.48s/it]    9it [00:13,  1.48s/it]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/65.0M [00:00<?, ?B/s]
-      0%|                                     | 15.4k/65.0M [00:00<14:30, 74.7kB/s]
-      0%|                                     | 38.9k/65.0M [00:00<11:04, 97.7kB/s]
-      0%|                                      | 64.5k/65.0M [00:00<09:46, 111kB/s]
-      0%|                                      | 89.1k/65.0M [00:00<09:27, 114kB/s]
-      0%|                                       | 114k/65.0M [00:01<09:16, 117kB/s]
-      0%|                                      | 126k/65.0M [00:01<11:08, 97.1kB/s]
-      0%|                                      | 141k/65.0M [00:01<13:53, 77.9kB/s]
-      0%|                                       | 165k/65.0M [00:01<10:26, 103kB/s]
-      0%|                                      | 178k/65.0M [00:01<12:02, 89.8kB/s]
-      0%|                                      | 191k/65.0M [00:02<13:08, 82.2kB/s]
-      0%|▏                                     | 214k/65.0M [00:02<11:46, 91.8kB/s]
-      0%|▏                                     | 232k/65.0M [00:02<11:56, 90.4kB/s]
-      0%|▏                                     | 251k/65.0M [00:02<11:59, 90.0kB/s]
-      0%|▏                                     | 269k/65.0M [00:02<11:55, 90.5kB/s]
-      0%|▏                                     | 285k/65.0M [00:03<12:34, 85.8kB/s]
-      0%|▏                                     | 301k/65.0M [00:03<12:52, 83.8kB/s]
-      0%|▏                                     | 318k/65.0M [00:03<11:42, 92.1kB/s]
-      1%|▏                                     | 336k/65.0M [00:03<11:02, 97.6kB/s]
-      1%|▏                                     | 346k/65.0M [00:03<11:00, 97.8kB/s]
-      1%|▏                                      | 357k/65.0M [00:03<10:41, 101kB/s]
-      1%|▏                                      | 369k/65.0M [00:03<10:27, 103kB/s]
-      1%|▏                                      | 380k/65.0M [00:03<10:23, 104kB/s]
-      1%|▏                                      | 404k/65.0M [00:04<07:42, 140kB/s]
-      1%|▎                                      | 420k/65.0M [00:04<07:31, 143kB/s]
-      1%|▎                                      | 435k/65.0M [00:04<09:28, 114kB/s]
-      1%|▎                                     | 450k/65.0M [00:04<11:18, 95.1kB/s]
-      1%|▎                                      | 477k/65.0M [00:04<08:10, 131kB/s]
-      1%|▎                                      | 494k/65.0M [00:04<09:20, 115kB/s]
-      1%|▎                                      | 510k/65.0M [00:05<08:37, 125kB/s]
-      1%|▎                                      | 524k/65.0M [00:05<08:25, 128kB/s]
-      1%|▎                                      | 541k/65.0M [00:05<07:59, 134kB/s]
-      1%|▎                                      | 571k/65.0M [00:05<06:05, 177kB/s]
-      1%|▎                                      | 594k/65.0M [00:05<07:10, 150kB/s]
-      1%|▍                                      | 627k/65.0M [00:05<06:57, 154kB/s]
-      1%|▍                                      | 667k/65.0M [00:05<06:21, 169kB/s]
-      1%|▍                                      | 715k/65.0M [00:06<05:35, 192kB/s]
-      1%|▍                                      | 750k/65.0M [00:06<05:51, 183kB/s]
-      1%|▍                                      | 785k/65.0M [00:06<05:56, 180kB/s]
-      1%|▍                                      | 820k/65.0M [00:06<06:02, 177kB/s]
-      1%|▌                                      | 856k/65.0M [00:06<06:03, 176kB/s]
-      1%|▌                                      | 892k/65.0M [00:07<06:04, 176kB/s]
-      1%|▌                                      | 928k/65.0M [00:07<06:04, 176kB/s]
-      2%|▌                                      | 987k/65.0M [00:07<04:19, 247kB/s]
-      2%|▌                                     | 1.02M/65.0M [00:07<03:58, 268kB/s]
-      2%|▋                                     | 1.08M/65.0M [00:07<03:17, 323kB/s]
-      2%|▋                                     | 1.15M/65.0M [00:07<02:37, 407kB/s]
-      2%|▋                                     | 1.24M/65.0M [00:07<01:59, 536kB/s]
-      2%|▊                                     | 1.38M/65.0M [00:07<01:23, 758kB/s]
-      2%|▉                                    | 1.59M/65.0M [00:08<00:56, 1.12MB/s]
-      3%|█                                    | 1.87M/65.0M [00:08<00:39, 1.60MB/s]
-      4%|█▎                                   | 2.31M/65.0M [00:08<00:26, 2.39MB/s]
-      4%|█▌                                   | 2.77M/65.0M [00:08<00:20, 3.01MB/s]
-      5%|█▊                                   | 3.24M/65.0M [00:08<00:17, 3.51MB/s]
-      6%|██▏                                  | 3.73M/65.0M [00:08<00:15, 3.91MB/s]
-      6%|██▍                                  | 4.21M/65.0M [00:08<00:14, 4.10MB/s]
-      7%|██▋                                  | 4.77M/65.0M [00:08<00:13, 4.47MB/s]
-      8%|██▉                                  | 5.26M/65.0M [00:08<00:13, 4.59MB/s]
-      9%|███▎                                 | 5.88M/65.0M [00:09<00:11, 5.00MB/s]
-     10%|███▋                                 | 6.38M/65.0M [00:09<00:11, 4.97MB/s]
-     11%|███▉                                 | 6.95M/65.0M [00:09<00:11, 5.12MB/s]
-     11%|████▏                                | 7.46M/65.0M [00:09<00:11, 5.12MB/s]
-     12%|████▌                                | 7.99M/65.0M [00:09<00:11, 5.16MB/s]
-     13%|████▊                                | 8.54M/65.0M [00:09<00:10, 5.20MB/s]
-     14%|█████▏                               | 9.06M/65.0M [00:09<00:10, 5.20MB/s]
-     15%|█████▍                               | 9.58M/65.0M [00:09<00:10, 5.21MB/s]
-     16%|█████▊                               | 10.1M/65.0M [00:09<00:10, 5.22MB/s]
-     16%|██████                               | 10.6M/65.0M [00:09<00:10, 5.12MB/s]
-     17%|██████▎                              | 11.2M/65.0M [00:10<00:10, 5.21MB/s]
-     18%|██████▋                              | 11.7M/65.0M [00:10<00:10, 5.26MB/s]
-     19%|██████▉                              | 12.2M/65.0M [00:10<00:10, 5.16MB/s]
-     20%|███████▎                             | 12.8M/65.0M [00:10<00:09, 5.28MB/s]
-     21%|███████▌                             | 13.3M/65.0M [00:10<00:10, 5.10MB/s]
-     21%|███████▉                             | 14.0M/65.0M [00:10<00:09, 5.39MB/s]
-     22%|████████▎                            | 14.5M/65.0M [00:10<00:09, 5.38MB/s]
-     23%|████████▌                            | 15.1M/65.0M [00:10<00:09, 5.40MB/s]
-     25%|█████████▏                           | 16.1M/65.0M [00:10<00:07, 6.58MB/s]
-     26%|█████████▌                           | 16.9M/65.0M [00:10<00:06, 7.03MB/s]
-     27%|██████████▏                          | 17.9M/65.0M [00:11<00:06, 7.81MB/s]
-     29%|██████████▊                          | 19.0M/65.0M [00:11<00:05, 8.62MB/s]
-     31%|███████████▎                         | 19.9M/65.0M [00:11<00:05, 8.71MB/s]
-     32%|███████████▉                         | 20.9M/65.0M [00:11<00:04, 9.21MB/s]
-     34%|████████████▍                        | 21.9M/65.0M [00:11<00:04, 9.20MB/s]
-     35%|█████████████                        | 22.9M/65.0M [00:11<00:04, 9.15MB/s]
-     37%|█████████████▋                       | 24.0M/65.0M [00:11<00:04, 9.50MB/s]
-     38%|██████████████▏                      | 25.0M/65.0M [00:11<00:04, 9.63MB/s]
-     40%|██████████████▊                      | 26.0M/65.0M [00:11<00:03, 9.78MB/s]
-     42%|███████████████▎                     | 27.0M/65.0M [00:12<00:03, 9.78MB/s]
-     43%|███████████████▉                     | 28.0M/65.0M [00:12<00:03, 9.71MB/s]
-     45%|████████████████▍                    | 28.9M/65.0M [00:12<00:03, 9.61MB/s]
-     46%|█████████████████                    | 30.0M/65.0M [00:12<00:03, 9.84MB/s]
-     48%|█████████████████▋                   | 31.0M/65.0M [00:12<00:03, 9.84MB/s]
-     49%|██████████████████▎                  | 32.1M/65.0M [00:12<00:03, 10.1MB/s]
-     51%|██████████████████▊                  | 33.1M/65.0M [00:12<00:03, 9.81MB/s]
-     53%|███████████████████▍                 | 34.1M/65.0M [00:12<00:03, 9.99MB/s]
-     54%|███████████████████▉                 | 35.1M/65.0M [00:12<00:03, 9.21MB/s]
-     55%|████████████████████▌                | 36.1M/65.0M [00:13<00:04, 6.35MB/s]
-     57%|█████████████████████                | 37.0M/65.0M [00:13<00:04, 6.95MB/s]
-     59%|█████████████████████▋               | 38.0M/65.0M [00:13<00:03, 7.77MB/s]
-     60%|██████████████████████▏              | 39.1M/65.0M [00:13<00:03, 8.35MB/s]
-     62%|██████████████████████▊              | 40.2M/65.0M [00:13<00:02, 9.13MB/s]
-     63%|███████████████████████▍             | 41.2M/65.0M [00:13<00:02, 9.46MB/s]
-     65%|████████████████████████             | 42.4M/65.0M [00:13<00:02, 9.99MB/s]
-     67%|████████████████████████▋            | 43.4M/65.0M [00:13<00:02, 10.0MB/s]
-     68%|█████████████████████████▎           | 44.5M/65.0M [00:13<00:02, 10.1MB/s]
-     70%|█████████████████████████▉           | 45.6M/65.0M [00:14<00:01, 10.6MB/s]
-     72%|██████████████████████████▌          | 46.7M/65.0M [00:14<00:01, 10.6MB/s]
-     74%|███████████████████████████▏         | 47.8M/65.0M [00:14<00:01, 10.7MB/s]
-     75%|███████████████████████████▉         | 49.1M/65.0M [00:14<00:01, 11.1MB/s]
-     77%|████████████████████████████▌        | 50.2M/65.0M [00:14<00:01, 10.4MB/s]
-     79%|█████████████████████████████▏       | 51.2M/65.0M [00:14<00:01, 9.82MB/s]
-     80%|█████████████████████████████▋       | 52.2M/65.0M [00:14<00:01, 7.58MB/s]
-     82%|██████████████████████████████▏      | 53.0M/65.0M [00:14<00:01, 7.00MB/s]
-     83%|██████████████████████████████▋      | 53.9M/65.0M [00:15<00:01, 7.24MB/s]
-     84%|███████████████████████████████      | 54.6M/65.0M [00:15<00:01, 6.76MB/s]
-     86%|███████████████████████████████▋     | 55.7M/65.0M [00:15<00:01, 7.66MB/s]
-     88%|████████████████████████████████▍    | 57.0M/65.0M [00:15<00:00, 8.97MB/s]
-     89%|████████████████████████████████▉    | 58.0M/65.0M [00:15<00:00, 8.93MB/s]
-     91%|█████████████████████████████████▋   | 59.1M/65.0M [00:15<00:00, 9.61MB/s]
-     93%|██████████████████████████████████▎  | 60.4M/65.0M [00:15<00:00, 10.3MB/s]
-     95%|███████████████████████████████████▏ | 61.8M/65.0M [00:15<00:00, 11.4MB/s]
-     97%|███████████████████████████████████▊ | 63.0M/65.0M [00:15<00:00, 11.6MB/s]
-     99%|████████████████████████████████████▌| 64.2M/65.0M [00:15<00:00, 11.7MB/s]
-      0%|                                              | 0.00/65.0M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 65.0M/65.0M [00:00<00:00, 381GB/s]
-    9it [00:18,  2.05s/it]    9it [00:18,  2.05s/it]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/62.8M [00:00<?, ?B/s]
-      0%|                                      | 43.0k/62.8M [00:00<02:36, 401kB/s]
-      0%|                                       | 146k/62.8M [00:00<02:07, 492kB/s]
-      1%|▏                                     | 407k/62.8M [00:00<00:51, 1.21MB/s]
-      1%|▎                                     | 550k/62.8M [00:00<00:50, 1.23MB/s]
-      2%|▌                                     | 965k/62.8M [00:00<00:29, 2.12MB/s]
-      2%|▉                                    | 1.49M/62.8M [00:00<00:19, 3.08MB/s]
-      3%|█▎                                   | 2.15M/62.8M [00:00<00:15, 4.02MB/s]
-      4%|█▋                                   | 2.82M/62.8M [00:00<00:12, 4.76MB/s]
-      5%|██                                   | 3.44M/62.8M [00:01<00:11, 5.13MB/s]
-      7%|██▌                                  | 4.28M/62.8M [00:01<00:09, 6.06MB/s]
-      8%|██▉                                  | 5.03M/62.8M [00:01<00:08, 6.48MB/s]
-      9%|███▎                                 | 5.69M/62.8M [00:01<00:08, 6.48MB/s]
-     10%|███▊                                 | 6.51M/62.8M [00:01<00:08, 6.95MB/s]
-     11%|████▏                                | 7.21M/62.8M [00:01<00:09, 5.95MB/s]
-     13%|████▊                                | 8.18M/62.8M [00:01<00:08, 6.79MB/s]
-     14%|█████▏                               | 8.88M/62.8M [00:01<00:08, 6.68MB/s]
-     16%|█████▊                               | 9.77M/62.8M [00:01<00:07, 7.06MB/s]
-     17%|██████▏                              | 10.5M/62.8M [00:02<00:07, 6.99MB/s]
-     18%|██████▋                              | 11.4M/62.8M [00:02<00:06, 7.45MB/s]
-     19%|███████▏                             | 12.1M/62.8M [00:02<00:06, 7.40MB/s]
-     21%|███████▌                             | 12.9M/62.8M [00:02<00:06, 7.16MB/s]
-     22%|████████                             | 13.7M/62.8M [00:02<00:06, 7.51MB/s]
-     23%|████████▌                            | 14.5M/62.8M [00:02<00:06, 7.43MB/s]
-     24%|████████▉                            | 15.2M/62.8M [00:02<00:06, 7.14MB/s]
-     25%|█████████▍                           | 16.0M/62.8M [00:02<00:06, 7.22MB/s]
-     27%|█████████▉                           | 16.8M/62.8M [00:02<00:06, 7.49MB/s]
-     28%|██████████▎                          | 17.6M/62.8M [00:02<00:06, 7.49MB/s]
-     29%|██████████▊                          | 18.3M/62.8M [00:03<00:05, 7.48MB/s]
-     30%|███████████▏                         | 19.1M/62.8M [00:03<00:05, 7.46MB/s]
-     32%|███████████▋                         | 19.9M/62.8M [00:03<00:05, 7.47MB/s]
-     33%|████████████▏                        | 20.6M/62.8M [00:03<00:06, 6.12MB/s]
-     35%|████████████▊                        | 21.7M/62.8M [00:03<00:05, 7.36MB/s]
-     36%|█████████████▏                       | 22.5M/62.8M [00:03<00:05, 7.18MB/s]
-     37%|█████████████▋                       | 23.2M/62.8M [00:03<00:07, 5.13MB/s]
-     38%|██████████████                       | 23.9M/62.8M [00:04<00:08, 4.61MB/s]
-     39%|██████████████▍                      | 24.6M/62.8M [00:04<00:07, 5.17MB/s]
-     41%|███████████████                      | 25.5M/62.8M [00:04<00:06, 6.09MB/s]
-     42%|███████████████▍                     | 26.2M/62.8M [00:04<00:05, 6.15MB/s]
-     43%|███████████████▊                     | 26.9M/62.8M [00:04<00:05, 6.27MB/s]
-     44%|████████████████▍                    | 28.0M/62.8M [00:04<00:04, 7.16MB/s]
-     46%|████████████████▉                    | 28.7M/62.8M [00:04<00:04, 7.21MB/s]
-     47%|█████████████████▍                   | 29.6M/62.8M [00:04<00:04, 7.11MB/s]
-     48%|█████████████████▊                   | 30.3M/62.8M [00:04<00:04, 7.27MB/s]
-     50%|██████████████████▎                  | 31.2M/62.8M [00:05<00:04, 7.52MB/s]
-     51%|██████████████████▊                  | 32.0M/62.8M [00:05<00:03, 7.73MB/s]
-     52%|███████████████████▎                 | 32.8M/62.8M [00:05<00:05, 5.34MB/s]
-     53%|███████████████████▊                 | 33.5M/62.8M [00:05<00:05, 5.53MB/s]
-     55%|████████████████████▏                | 34.4M/62.8M [00:05<00:04, 6.17MB/s]
-     56%|████████████████████▋                | 35.2M/62.8M [00:05<00:04, 6.61MB/s]
-     57%|█████████████████████▏               | 36.0M/62.8M [00:05<00:03, 7.14MB/s]
-     59%|█████████████████████▋               | 36.8M/62.8M [00:05<00:03, 7.25MB/s]
-     60%|██████████████████████▏              | 37.7M/62.8M [00:06<00:03, 7.68MB/s]
-     61%|██████████████████████▋              | 38.6M/62.8M [00:06<00:03, 8.01MB/s]
-     63%|███████████████████████▏             | 39.5M/62.8M [00:06<00:02, 8.06MB/s]
-     64%|███████████████████████▋             | 40.3M/62.8M [00:06<00:02, 8.15MB/s]
-     65%|████████████████████████▏            | 41.1M/62.8M [00:06<00:02, 8.09MB/s]
-     67%|████████████████████████▊            | 42.1M/62.8M [00:06<00:02, 8.45MB/s]
-     68%|█████████████████████████▎           | 42.9M/62.8M [00:06<00:02, 8.16MB/s]
-     70%|█████████████████████████▊           | 43.8M/62.8M [00:06<00:02, 8.08MB/s]
-     71%|██████████████████████████▎          | 44.7M/62.8M [00:06<00:02, 8.51MB/s]
-     73%|██████████████████████████▊          | 45.6M/62.8M [00:06<00:02, 8.25MB/s]
-     74%|███████████████████████████▍         | 46.5M/62.8M [00:07<00:01, 8.41MB/s]
-     75%|███████████████████████████▉         | 47.4M/62.8M [00:07<00:01, 8.47MB/s]
-     77%|████████████████████████████▍        | 48.2M/62.8M [00:07<00:01, 8.25MB/s]
-     78%|████████████████████████████▉        | 49.0M/62.8M [00:07<00:01, 7.47MB/s]
-     79%|█████████████████████████████▍       | 49.9M/62.8M [00:07<00:01, 7.73MB/s]
-     81%|█████████████████████████████▉       | 50.8M/62.8M [00:07<00:01, 7.85MB/s]
-     82%|██████████████████████████████▌      | 51.8M/62.8M [00:07<00:01, 8.47MB/s]
-     84%|███████████████████████████████      | 52.7M/62.8M [00:07<00:01, 8.15MB/s]
-     85%|███████████████████████████████▌     | 53.6M/62.8M [00:07<00:01, 8.47MB/s]
-     87%|████████████████████████████████     | 54.5M/62.8M [00:08<00:00, 8.40MB/s]
-     88%|████████████████████████████████▋    | 55.5M/62.8M [00:08<00:00, 8.92MB/s]
-     90%|█████████████████████████████████▍   | 56.7M/62.8M [00:08<00:00, 9.85MB/s]
-     92%|██████████████████████████████████▏  | 58.1M/62.8M [00:08<00:00, 10.8MB/s]
-     94%|██████████████████████████████████▉  | 59.4M/62.8M [00:08<00:00, 11.3MB/s]
-     96%|███████████████████████████████████▋ | 60.5M/62.8M [00:08<00:00, 11.0MB/s]
-     98%|████████████████████████████████████▎| 61.7M/62.8M [00:08<00:00, 11.3MB/s]
-      0%|                                              | 0.00/62.8M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 62.8M/62.8M [00:00<00:00, 342GB/s]
-    9it [00:11,  1.30s/it]    9it [00:11,  1.30s/it]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/64.3M [00:00<?, ?B/s]
-      0%|                                      | 36.9k/64.3M [00:00<02:56, 363kB/s]
-      0%|                                      | 80.9k/64.3M [00:00<05:10, 207kB/s]
-      0%|▏                                      | 240k/64.3M [00:00<01:45, 607kB/s]
-      1%|▍                                     | 660k/64.3M [00:00<00:38, 1.67MB/s]
-      2%|▊                                    | 1.38M/64.3M [00:00<00:19, 3.28MB/s]
-      3%|█▏                                   | 2.10M/64.3M [00:00<00:14, 4.43MB/s]
-      5%|█▊                                   | 3.18M/64.3M [00:00<00:09, 6.32MB/s]
-      6%|██▍                                  | 4.18M/64.3M [00:00<00:08, 7.36MB/s]
-      8%|███                                  | 5.32M/64.3M [00:01<00:06, 8.52MB/s]
-     10%|███▊                                 | 6.67M/64.3M [00:01<00:05, 9.93MB/s]
-     12%|████▍                                | 7.78M/64.3M [00:01<00:05, 10.2MB/s]
-     14%|█████▏                               | 8.96M/64.3M [00:01<00:05, 10.6MB/s]
-     16%|█████▉                               | 10.3M/64.3M [00:01<00:04, 11.1MB/s]
-     18%|██████▋                              | 11.5M/64.3M [00:01<00:04, 11.4MB/s]
-     20%|███████▎                             | 12.7M/64.3M [00:01<00:05, 10.3MB/s]
-     21%|███████▉                             | 13.8M/64.3M [00:01<00:04, 10.4MB/s]
-     23%|████████▌                            | 14.8M/64.3M [00:01<00:04, 10.4MB/s]
-     25%|█████████▏                           | 15.9M/64.3M [00:02<00:05, 9.26MB/s]
-     27%|█████████▊                           | 17.1M/64.3M [00:02<00:04, 9.98MB/s]
-     29%|██████████▋                          | 18.5M/64.3M [00:02<00:04, 11.1MB/s]
-     31%|███████████▎                         | 19.7M/64.3M [00:02<00:03, 11.2MB/s]
-     33%|████████████                         | 21.0M/64.3M [00:02<00:03, 11.8MB/s]
-     35%|████████████▊                        | 22.3M/64.3M [00:02<00:03, 12.0MB/s]
-     37%|█████████████▌                       | 23.5M/64.3M [00:02<00:03, 11.7MB/s]
-     39%|██████████████▎                      | 24.8M/64.3M [00:02<00:03, 12.0MB/s]
-     41%|███████████████▏                     | 26.4M/64.3M [00:02<00:02, 13.1MB/s]
-     43%|███████████████▉                     | 27.7M/64.3M [00:03<00:02, 12.9MB/s]
-     45%|████████████████▋                    | 29.0M/64.3M [00:03<00:02, 13.1MB/s]
-     47%|█████████████████▍                   | 30.4M/64.3M [00:03<00:02, 12.7MB/s]
-     50%|██████████████████▎                  | 31.9M/64.3M [00:03<00:02, 13.4MB/s]
-     52%|███████████████████▏                 | 33.2M/64.3M [00:03<00:02, 13.0MB/s]
-     54%|███████████████████▉                 | 34.7M/64.3M [00:03<00:02, 13.1MB/s]
-     56%|████████████████████▊                | 36.2M/64.3M [00:03<00:02, 13.6MB/s]
-     58%|█████████████████████▋               | 37.6M/64.3M [00:03<00:02, 13.0MB/s]
-     61%|██████████████████████▌              | 39.1M/64.3M [00:03<00:01, 13.6MB/s]
-     63%|███████████████████████▎             | 40.5M/64.3M [00:03<00:01, 13.3MB/s]
-     65%|████████████████████████▏            | 42.1M/64.3M [00:04<00:01, 13.9MB/s]
-     68%|█████████████████████████            | 43.5M/64.3M [00:04<00:01, 12.6MB/s]
-     70%|█████████████████████████▊           | 44.8M/64.3M [00:04<00:01, 12.8MB/s]
-     72%|██████████████████████████▋          | 46.3M/64.3M [00:04<00:01, 13.3MB/s]
-     74%|███████████████████████████▍         | 47.7M/64.3M [00:04<00:01, 11.8MB/s]
-     76%|████████████████████████████▏        | 48.9M/64.3M [00:04<00:01, 11.1MB/s]
-     78%|████████████████████████████▊        | 50.1M/64.3M [00:04<00:01, 11.3MB/s]
-     80%|█████████████████████████████▌       | 51.5M/64.3M [00:04<00:01, 11.9MB/s]
-     82%|██████████████████████████████▍      | 52.9M/64.3M [00:04<00:00, 12.5MB/s]
-     84%|███████████████████████████████▏     | 54.3M/64.3M [00:05<00:00, 12.7MB/s]
-     86%|███████████████████████████████▉     | 55.5M/64.3M [00:05<00:00, 12.7MB/s]
-     88%|████████████████████████████████▋    | 56.8M/64.3M [00:05<00:00, 10.5MB/s]
-     90%|█████████████████████████████████▎   | 58.0M/64.3M [00:05<00:00, 8.64MB/s]
-     92%|██████████████████████████████████   | 59.3M/64.3M [00:05<00:00, 9.65MB/s]
-     94%|██████████████████████████████████▊  | 60.6M/64.3M [00:05<00:00, 10.4MB/s]
-     96%|███████████████████████████████████▋ | 61.9M/64.3M [00:05<00:00, 11.0MB/s]
-     99%|████████████████████████████████████▌| 63.5M/64.3M [00:05<00:00, 12.2MB/s]
-      0%|                                              | 0.00/64.3M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 64.3M/64.3M [00:00<00:00, 272GB/s]
-    9it [00:07,  1.21it/s]    9it [00:07,  1.21it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/69.9M [00:00<?, ?B/s]
-      0%|                                     | 15.4k/69.9M [00:00<15:28, 75.3kB/s]
-      0%|                                      | 62.5k/69.9M [00:00<04:55, 237kB/s]
-      0%|                                       | 202k/69.9M [00:00<01:45, 663kB/s]
-      1%|▎                                     | 597k/69.9M [00:00<00:45, 1.51MB/s]
-      2%|▋                                    | 1.29M/69.9M [00:00<00:22, 3.10MB/s]
-      3%|█                                    | 1.97M/69.9M [00:00<00:16, 4.15MB/s]
-      4%|█▍                                   | 2.77M/69.9M [00:00<00:12, 5.30MB/s]
-      5%|█▉                                   | 3.56M/69.9M [00:00<00:11, 5.69MB/s]
-      6%|██▍                                  | 4.49M/69.9M [00:01<00:09, 6.58MB/s]
-      8%|██▊                                  | 5.41M/69.9M [00:01<00:08, 7.23MB/s]
-      9%|███▎                                 | 6.23M/69.9M [00:01<00:08, 7.41MB/s]
-     10%|███▋                                 | 7.01M/69.9M [00:01<00:08, 7.36MB/s]
-     11%|████▏                                | 7.87M/69.9M [00:01<00:08, 7.55MB/s]
-     13%|████▋                                | 8.77M/69.9M [00:01<00:07, 7.93MB/s]
-     14%|█████                                | 9.57M/69.9M [00:01<00:07, 7.93MB/s]
-     15%|█████▌                               | 10.5M/69.9M [00:01<00:07, 8.33MB/s]
-     16%|██████                               | 11.3M/69.9M [00:01<00:07, 8.04MB/s]
-     17%|██████▍                              | 12.2M/69.9M [00:02<00:07, 8.04MB/s]
-     19%|██████▉                              | 13.1M/69.9M [00:02<00:06, 8.30MB/s]
-     20%|███████▍                             | 13.9M/69.9M [00:02<00:06, 8.37MB/s]
-     21%|███████▊                             | 14.8M/69.9M [00:02<00:06, 8.31MB/s]
-     22%|████████▎                            | 15.7M/69.9M [00:02<00:06, 8.44MB/s]
-     24%|████████▋                            | 16.5M/69.9M [00:02<00:06, 8.46MB/s]
-     25%|█████████▏                           | 17.4M/69.9M [00:02<00:06, 8.44MB/s]
-     26%|█████████▋                           | 18.2M/69.9M [00:02<00:06, 8.29MB/s]
-     27%|██████████                           | 19.1M/69.9M [00:02<00:06, 7.34MB/s]
-     29%|██████████▌                          | 20.0M/69.9M [00:02<00:06, 7.98MB/s]
-     30%|███████████                          | 21.0M/69.9M [00:03<00:06, 7.65MB/s]
-     31%|███████████▌                         | 21.8M/69.9M [00:03<00:06, 7.80MB/s]
-     32%|████████████                         | 22.7M/69.9M [00:03<00:05, 7.97MB/s]
-     34%|████████████▌                        | 23.8M/69.9M [00:03<00:05, 8.57MB/s]
-     36%|█████████████▏                       | 24.9M/69.9M [00:03<00:04, 9.35MB/s]
-     37%|█████████████▋                       | 25.8M/69.9M [00:03<00:04, 9.25MB/s]
-     38%|██████████████▏                      | 26.8M/69.9M [00:03<00:04, 9.21MB/s]
-     40%|██████████████▋                      | 27.7M/69.9M [00:03<00:04, 8.79MB/s]
-     41%|███████████████▏                     | 28.7M/69.9M [00:03<00:04, 9.14MB/s]
-     43%|███████████████▋                     | 29.7M/69.9M [00:04<00:04, 9.30MB/s]
-     44%|████████████████▎                    | 30.8M/69.9M [00:04<00:04, 9.53MB/s]
-     45%|████████████████▊                    | 31.7M/69.9M [00:04<00:04, 9.31MB/s]
-     47%|█████████████████▎                   | 32.7M/69.9M [00:04<00:03, 9.42MB/s]
-     48%|█████████████████▊                   | 33.8M/69.9M [00:04<00:03, 9.68MB/s]
-     50%|██████████████████▎                  | 34.7M/69.9M [00:04<00:03, 9.10MB/s]
-     51%|███████████████████                  | 36.0M/69.9M [00:04<00:03, 10.0MB/s]
-     53%|███████████████████▌                 | 37.0M/69.9M [00:04<00:03, 10.0MB/s]
-     54%|████████████████████                 | 38.0M/69.9M [00:04<00:03, 9.81MB/s]
-     56%|████████████████████▋                | 39.0M/69.9M [00:05<00:03, 9.81MB/s]
-     57%|█████████████████████▏               | 40.0M/69.9M [00:05<00:03, 9.85MB/s]
-     59%|█████████████████████▋               | 41.0M/69.9M [00:05<00:03, 9.44MB/s]
-     60%|██████████████████████▎              | 42.2M/69.9M [00:05<00:02, 10.1MB/s]
-     62%|██████████████████████▊              | 43.2M/69.9M [00:05<00:04, 6.63MB/s]
-     63%|███████████████████████▎             | 44.1M/69.9M [00:05<00:03, 7.15MB/s]
-     65%|███████████████████████▊             | 45.1M/69.9M [00:05<00:03, 7.88MB/s]
-     66%|████████████████████████▍            | 46.1M/69.9M [00:05<00:02, 8.27MB/s]
-     67%|████████████████████████▊            | 47.0M/69.9M [00:06<00:02, 8.48MB/s]
-     69%|█████████████████████████▍           | 48.1M/69.9M [00:06<00:02, 9.07MB/s]
-     70%|█████████████████████████▉           | 49.1M/69.9M [00:06<00:02, 9.30MB/s]
-     72%|██████████████████████████▌          | 50.2M/69.9M [00:06<00:02, 9.58MB/s]
-     73%|███████████████████████████          | 51.2M/69.9M [00:06<00:01, 9.91MB/s]
-     75%|███████████████████████████▋         | 52.3M/69.9M [00:06<00:01, 10.0MB/s]
-     76%|████████████████████████████▏        | 53.3M/69.9M [00:06<00:01, 9.91MB/s]
-     78%|████████████████████████████▊        | 54.3M/69.9M [00:06<00:01, 10.0MB/s]
-     79%|█████████████████████████████▎       | 55.4M/69.9M [00:06<00:01, 10.1MB/s]
-     81%|█████████████████████████████▉       | 56.5M/69.9M [00:06<00:01, 10.2MB/s]
-     82%|██████████████████████████████▍      | 57.5M/69.9M [00:07<00:01, 10.3MB/s]
-     84%|██████████████████████████████▉      | 58.6M/69.9M [00:07<00:01, 10.3MB/s]
-     85%|███████████████████████████████▌     | 59.6M/69.9M [00:07<00:01, 9.77MB/s]
-     87%|████████████████████████████████     | 60.6M/69.9M [00:07<00:00, 9.73MB/s]
-     88%|████████████████████████████████▋    | 61.8M/69.9M [00:07<00:00, 10.3MB/s]
-     90%|█████████████████████████████████▎   | 62.9M/69.9M [00:07<00:00, 10.6MB/s]
-     92%|█████████████████████████████████▊   | 64.0M/69.9M [00:07<00:00, 10.4MB/s]
-     93%|██████████████████████████████████▍  | 65.0M/69.9M [00:07<00:00, 9.78MB/s]
-     94%|██████████████████████████████████▉  | 66.0M/69.9M [00:08<00:00, 7.31MB/s]
-     96%|███████████████████████████████████▌ | 67.1M/69.9M [00:08<00:00, 8.05MB/s]
-     97%|████████████████████████████████████ | 68.1M/69.9M [00:08<00:00, 8.38MB/s]
-     99%|████████████████████████████████████▋| 69.3M/69.9M [00:08<00:00, 9.07MB/s]
-      0%|                                              | 0.00/69.9M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 69.9M/69.9M [00:00<00:00, 398GB/s]
-    9it [00:11,  1.22s/it]    9it [00:11,  1.22s/it]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/66.3M [00:00<?, ?B/s]
-      0%|                                     | 15.4k/66.3M [00:00<14:28, 76.3kB/s]
-      0%|                                      | 48.1k/66.3M [00:00<08:46, 126kB/s]
-      0%|                                      | 80.9k/66.3M [00:00<07:55, 139kB/s]
-      0%|                                       | 135k/66.3M [00:00<05:43, 193kB/s]
-      0%|                                       | 160k/66.3M [00:01<06:43, 164kB/s]
-      0%|                                       | 207k/66.3M [00:01<05:52, 188kB/s]
-      0%|▏                                      | 305k/66.3M [00:01<03:15, 338kB/s]
-      1%|▏                                      | 352k/66.3M [00:01<03:00, 365kB/s]
-      1%|▏                                      | 402k/66.3M [00:01<02:47, 394kB/s]
-      1%|▎                                      | 466k/66.3M [00:01<02:25, 451kB/s]
-      1%|▎                                      | 559k/66.3M [00:01<01:54, 574kB/s]
-      1%|▍                                      | 695k/66.3M [00:01<01:23, 786kB/s]
-      1%|▍                                      | 848k/66.3M [00:01<01:06, 989kB/s]
-      2%|▌                                     | 999k/66.3M [00:02<00:57, 1.13MB/s]
-      2%|▋                                    | 1.15M/66.3M [00:02<00:53, 1.22MB/s]
-      2%|▋                                    | 1.31M/66.3M [00:02<00:48, 1.34MB/s]
-      2%|▊                                    | 1.47M/66.3M [00:02<00:45, 1.42MB/s]
-      2%|▉                                    | 1.64M/66.3M [00:02<00:44, 1.46MB/s]
-      3%|█                                    | 1.80M/66.3M [00:02<00:42, 1.50MB/s]
-      3%|█                                    | 1.97M/66.3M [00:02<00:41, 1.54MB/s]
-      3%|█▏                                   | 2.16M/66.3M [00:02<00:38, 1.66MB/s]
-      4%|█▍                                   | 2.52M/66.3M [00:02<00:28, 2.23MB/s]
-      4%|█▌                                   | 2.87M/66.3M [00:02<00:24, 2.56MB/s]
-      5%|█▊                                   | 3.21M/66.3M [00:03<00:22, 2.79MB/s]
-      5%|█▉                                   | 3.57M/66.3M [00:03<00:21, 2.93MB/s]
-      6%|██▏                                  | 4.00M/66.3M [00:03<00:18, 3.29MB/s]
-      7%|██▍                                  | 4.34M/66.3M [00:03<00:18, 3.28MB/s]
-      7%|██▌                                  | 4.70M/66.3M [00:03<00:18, 3.34MB/s]
-      8%|██▊                                  | 5.09M/66.3M [00:03<00:18, 3.36MB/s]
-      8%|███                                  | 5.49M/66.3M [00:03<00:17, 3.48MB/s]
-      9%|███▎                                 | 5.84M/66.3M [00:03<00:17, 3.38MB/s]
-      9%|███▍                                 | 6.26M/66.3M [00:03<00:16, 3.61MB/s]
-     10%|███▋                                 | 6.62M/66.3M [00:04<00:18, 3.20MB/s]
-     11%|███▉                                 | 7.11M/66.3M [00:04<00:16, 3.50MB/s]
-     11%|████▏                                | 7.52M/66.3M [00:04<00:16, 3.63MB/s]
-     12%|████▍                                | 7.96M/66.3M [00:04<00:15, 3.83MB/s]
-     13%|████▋                                | 8.35M/66.3M [00:04<00:15, 3.82MB/s]
-     13%|████▉                                | 8.75M/66.3M [00:04<00:14, 3.84MB/s]
-     14%|█████                                | 9.14M/66.3M [00:04<00:15, 3.71MB/s]
-     14%|█████▎                               | 9.57M/66.3M [00:04<00:14, 3.88MB/s]
-     15%|█████▌                               | 9.96M/66.3M [00:04<00:14, 3.87MB/s]
-     16%|█████▊                               | 10.3M/66.3M [00:05<00:14, 3.85MB/s]
-     16%|█████▉                               | 10.7M/66.3M [00:05<00:14, 3.83MB/s]
-     17%|██████▎                              | 11.3M/66.3M [00:05<00:13, 4.19MB/s]
-     18%|██████▋                              | 12.0M/66.3M [00:05<00:10, 5.13MB/s]
-     20%|███████▏                             | 12.9M/66.3M [00:05<00:08, 6.30MB/s]
-     21%|███████▊                             | 13.9M/66.3M [00:05<00:07, 7.22MB/s]
-     22%|████████▎                            | 14.9M/66.3M [00:05<00:06, 7.85MB/s]
-     24%|████████▉                            | 15.9M/66.3M [00:05<00:05, 8.60MB/s]
-     25%|█████████▍                           | 16.8M/66.3M [00:05<00:05, 8.67MB/s]
-     27%|█████████▉                           | 17.8M/66.3M [00:05<00:05, 8.95MB/s]
-     28%|██████████▌                          | 18.9M/66.3M [00:06<00:05, 9.24MB/s]
-     30%|███████████                          | 19.8M/66.3M [00:06<00:05, 9.19MB/s]
-     31%|███████████▌                         | 20.8M/66.3M [00:06<00:04, 9.37MB/s]
-     33%|████████████                         | 21.7M/66.3M [00:06<00:04, 9.22MB/s]
-     35%|████████████▊                        | 22.9M/66.3M [00:06<00:04, 10.0MB/s]
-     36%|█████████████▎                       | 23.9M/66.3M [00:06<00:04, 9.80MB/s]
-     38%|█████████████▉                       | 25.0M/66.3M [00:06<00:04, 10.1MB/s]
-     39%|██████████████▌                      | 26.0M/66.3M [00:06<00:04, 10.0MB/s]
-     41%|███████████████                      | 27.1M/66.3M [00:06<00:03, 10.2MB/s]
-     43%|███████████████▊                     | 28.3M/66.3M [00:06<00:03, 9.96MB/s]
-     44%|████████████████▎                    | 29.3M/66.3M [00:07<00:05, 7.00MB/s]
-     46%|████████████████▉                    | 30.3M/66.3M [00:07<00:04, 7.72MB/s]
-     47%|█████████████████▍                   | 31.2M/66.3M [00:07<00:04, 8.03MB/s]
-     49%|██████████████████                   | 32.4M/66.3M [00:07<00:03, 9.01MB/s]
-     50%|██████████████████▋                  | 33.4M/66.3M [00:07<00:03, 8.75MB/s]
-     52%|███████████████████▏                 | 34.5M/66.3M [00:07<00:03, 9.31MB/s]
-     54%|███████████████████▉                 | 35.7M/66.3M [00:07<00:03, 10.1MB/s]
-     56%|████████████████████▌                | 36.8M/66.3M [00:07<00:02, 9.98MB/s]
-     57%|█████████████████████▏               | 38.1M/66.3M [00:08<00:02, 10.6MB/s]
-     59%|█████████████████████▊               | 39.1M/66.3M [00:08<00:02, 10.2MB/s]
-     61%|██████████████████████▌              | 40.3M/66.3M [00:08<00:02, 10.6MB/s]
-     63%|███████████████████████▏             | 41.6M/66.3M [00:08<00:02, 11.1MB/s]
-     64%|███████████████████████▊             | 42.7M/66.3M [00:08<00:02, 11.1MB/s]
-     66%|████████████████████████▍            | 43.9M/66.3M [00:08<00:02, 11.1MB/s]
-     68%|█████████████████████████▏           | 45.0M/66.3M [00:08<00:01, 11.2MB/s]
-     70%|█████████████████████████▊           | 46.2M/66.3M [00:08<00:01, 11.0MB/s]
-     71%|██████████████████████████▍          | 47.3M/66.3M [00:08<00:01, 10.7MB/s]
-     73%|██████████████████████████▉          | 48.3M/66.3M [00:09<00:01, 10.6MB/s]
-     75%|███████████████████████████▋         | 49.7M/66.3M [00:09<00:01, 11.5MB/s]
-     77%|████████████████████████████▍        | 50.8M/66.3M [00:09<00:01, 11.3MB/s]
-     78%|█████████████████████████████        | 52.0M/66.3M [00:09<00:01, 11.0MB/s]
-     80%|█████████████████████████████▌       | 53.1M/66.3M [00:09<00:01, 10.8MB/s]
-     82%|██████████████████████████████▍      | 54.5M/66.3M [00:09<00:01, 11.5MB/s]
-     84%|███████████████████████████████      | 55.6M/66.3M [00:09<00:01, 9.82MB/s]
-     85%|███████████████████████████████▌     | 56.6M/66.3M [00:09<00:00, 9.83MB/s]
-     87%|████████████████████████████████▏    | 57.6M/66.3M [00:09<00:00, 9.34MB/s]
-     88%|████████████████████████████████▋    | 58.6M/66.3M [00:10<00:00, 8.43MB/s]
-     90%|█████████████████████████████████▍   | 59.9M/66.3M [00:10<00:00, 9.54MB/s]
-     92%|██████████████████████████████████   | 61.0M/66.3M [00:10<00:00, 10.0MB/s]
-     94%|██████████████████████████████████▊  | 62.3M/66.3M [00:10<00:00, 10.8MB/s]
-     96%|███████████████████████████████████▌ | 63.7M/66.3M [00:10<00:00, 11.6MB/s]
-     98%|████████████████████████████████████▏| 64.9M/66.3M [00:10<00:00, 11.4MB/s]
-    100%|████████████████████████████████████▊| 66.0M/66.3M [00:10<00:00, 10.8MB/s]
-      0%|                                              | 0.00/66.3M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 66.3M/66.3M [00:00<00:00, 343GB/s]
-    9it [00:13,  1.50s/it]    9it [00:13,  1.50s/it]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/70.8M [00:00<?, ?B/s]
-      0%|                                      | 31.7k/70.8M [00:00<10:33, 112kB/s]
-      0%|                                      | 71.7k/70.8M [00:00<07:45, 152kB/s]
-      0%|                                       | 113k/70.8M [00:00<06:51, 172kB/s]
-      0%|                                       | 169k/70.8M [00:00<05:36, 210kB/s]
-      0%|▏                                      | 230k/70.8M [00:01<04:52, 241kB/s]
-      0%|▏                                      | 292k/70.8M [00:01<04:30, 261kB/s]
-      0%|▏                                      | 348k/70.8M [00:01<05:50, 201kB/s]
-      1%|▏                                      | 406k/70.8M [00:01<04:45, 247kB/s]
-      1%|▎                                      | 458k/70.8M [00:01<04:01, 291kB/s]
-      1%|▎                                      | 496k/70.8M [00:02<03:49, 307kB/s]
-      1%|▎                                      | 537k/70.8M [00:02<03:34, 327kB/s]
-      1%|▎                                      | 584k/70.8M [00:02<03:16, 358kB/s]
-      1%|▎                                      | 669k/70.8M [00:02<02:27, 474kB/s]
-      1%|▍                                      | 785k/70.8M [00:02<01:47, 652kB/s]
-      1%|▌                                      | 953k/70.8M [00:02<01:15, 930kB/s]
-      2%|▋                                    | 1.22M/70.8M [00:02<00:49, 1.41MB/s]
-      2%|▊                                    | 1.57M/70.8M [00:02<00:34, 2.01MB/s]
-      3%|▉                                    | 1.89M/70.8M [00:02<00:29, 2.31MB/s]
-      3%|█▏                                   | 2.29M/70.8M [00:02<00:24, 2.76MB/s]
-      4%|█▍                                   | 2.67M/70.8M [00:03<00:22, 3.04MB/s]
-      4%|█▌                                   | 3.06M/70.8M [00:03<00:20, 3.29MB/s]
-      5%|█▊                                   | 3.47M/70.8M [00:03<00:19, 3.48MB/s]
-      5%|██                                   | 3.87M/70.8M [00:03<00:18, 3.61MB/s]
-      6%|██▏                                  | 4.26M/70.8M [00:03<00:18, 3.66MB/s]
-      7%|██▍                                  | 4.67M/70.8M [00:03<00:17, 3.72MB/s]
-      7%|██▋                                  | 5.08M/70.8M [00:03<00:17, 3.81MB/s]
-      8%|██▊                                  | 5.46M/70.8M [00:03<00:17, 3.69MB/s]
-      8%|███                                  | 5.91M/70.8M [00:03<00:16, 3.90MB/s]
-      9%|███▎                                 | 6.31M/70.8M [00:04<00:16, 3.82MB/s]
-     10%|███▌                                 | 6.73M/70.8M [00:04<00:16, 3.92MB/s]
-     10%|███▋                                 | 7.13M/70.8M [00:04<00:16, 3.91MB/s]
-     11%|███▉                                 | 7.52M/70.8M [00:04<00:16, 3.89MB/s]
-     11%|████▏                                | 7.91M/70.8M [00:04<00:16, 3.88MB/s]
-     12%|████▎                                | 8.30M/70.8M [00:04<00:16, 3.81MB/s]
-     12%|████▌                                | 8.72M/70.8M [00:04<00:16, 3.76MB/s]
-     13%|████▊                                | 9.17M/70.8M [00:04<00:16, 3.85MB/s]
-     13%|████▉                                | 9.56M/70.8M [00:04<00:15, 3.85MB/s]
-     14%|█████▏                               | 9.99M/70.8M [00:04<00:15, 3.98MB/s]
-     15%|█████▍                               | 10.4M/70.8M [00:05<00:14, 4.04MB/s]
-     16%|█████▊                               | 11.1M/70.8M [00:05<00:12, 4.67MB/s]
-     17%|██████▏                              | 11.9M/70.8M [00:05<00:10, 5.38MB/s]
-     18%|██████▋                              | 12.9M/70.8M [00:05<00:08, 6.68MB/s]
-     19%|███████▏                             | 13.8M/70.8M [00:05<00:08, 6.81MB/s]
-     21%|███████▊                             | 14.9M/70.8M [00:05<00:07, 7.74MB/s]
-     22%|████████▏                            | 15.8M/70.8M [00:05<00:06, 8.01MB/s]
-     24%|████████▊                            | 17.0M/70.8M [00:05<00:06, 8.93MB/s]
-     25%|█████████▍                           | 18.0M/70.8M [00:05<00:05, 9.25MB/s]
-     27%|█████████▉                           | 18.9M/70.8M [00:06<00:05, 9.19MB/s]
-     28%|██████████▍                          | 19.9M/70.8M [00:06<00:05, 9.20MB/s]
-     29%|██████████▊                          | 20.8M/70.8M [00:06<00:05, 8.98MB/s]
-     31%|███████████▍                         | 21.8M/70.8M [00:06<00:05, 9.23MB/s]
-     32%|███████████▉                         | 22.8M/70.8M [00:06<00:05, 9.18MB/s]
-     33%|████████████▎                        | 23.7M/70.8M [00:06<00:05, 8.72MB/s]
-     35%|████████████▉                        | 24.7M/70.8M [00:06<00:05, 8.92MB/s]
-     36%|█████████████▎                       | 25.6M/70.8M [00:06<00:05, 8.30MB/s]
-     37%|█████████████▊                       | 26.6M/70.8M [00:06<00:05, 8.64MB/s]
-     39%|██████████████▎                      | 27.4M/70.8M [00:07<00:06, 6.32MB/s]
-     40%|██████████████▋                      | 28.2M/70.8M [00:07<00:08, 5.28MB/s]
-     41%|███████████████                      | 28.8M/70.8M [00:07<00:12, 3.39MB/s]
-     41%|███████████████▎                     | 29.3M/70.8M [00:07<00:12, 3.39MB/s]
-     42%|███████████████▌                     | 29.7M/70.8M [00:08<00:17, 2.35MB/s]
-     42%|███████████████▋                     | 30.0M/70.8M [00:08<00:17, 2.40MB/s]
-     44%|████████████████                     | 30.8M/70.8M [00:08<00:16, 2.40MB/s]
-     44%|████████████████▎                    | 31.2M/70.8M [00:08<00:16, 2.41MB/s]
-     45%|████████████████▍                    | 31.6M/70.8M [00:09<00:16, 2.35MB/s]
-     45%|████████████████▊                    | 32.1M/70.8M [00:09<00:14, 2.64MB/s]
-     46%|████████████████▉                    | 32.4M/70.8M [00:09<00:15, 2.51MB/s]
-     46%|█████████████████▏                   | 32.8M/70.8M [00:09<00:19, 1.98MB/s]
-     47%|█████████████████▍                   | 33.4M/70.8M [00:09<00:15, 2.37MB/s]
-     48%|█████████████████▋                   | 33.8M/70.8M [00:09<00:15, 2.41MB/s]
-     48%|█████████████████▊                   | 34.2M/70.8M [00:10<00:15, 2.32MB/s]
-     49%|█████████████████▉                   | 34.4M/70.8M [00:10<00:21, 1.70MB/s]
-     49%|██████████████████                   | 34.6M/70.8M [00:10<00:26, 1.37MB/s]
-     51%|██████████████████▊                  | 36.1M/70.8M [00:10<00:10, 3.26MB/s]
-     52%|███████████████████                  | 36.5M/70.8M [00:11<00:10, 3.19MB/s]
-     53%|███████████████████▍                 | 37.2M/70.8M [00:11<00:08, 3.84MB/s]
-     53%|███████████████████▋                 | 37.7M/70.8M [00:11<00:08, 4.12MB/s]
-     54%|███████████████████▉                 | 38.2M/70.8M [00:11<00:07, 4.21MB/s]
-     55%|████████████████████▏                | 38.7M/70.8M [00:11<00:07, 4.27MB/s]
-     55%|████████████████████▍                | 39.2M/70.8M [00:11<00:07, 4.27MB/s]
-     56%|████████████████████▋                | 39.7M/70.8M [00:11<00:07, 4.42MB/s]
-     57%|████████████████████▉                | 40.1M/70.8M [00:11<00:07, 4.30MB/s]
-     57%|█████████████████████▏               | 40.6M/70.8M [00:11<00:06, 4.54MB/s]
-     58%|█████████████████████▍               | 41.1M/70.8M [00:11<00:06, 4.55MB/s]
-     59%|█████████████████████▋               | 41.6M/70.8M [00:12<00:06, 4.35MB/s]
-     59%|█████████████████████▉               | 42.1M/70.8M [00:12<00:06, 4.53MB/s]
-     60%|██████████████████████▏              | 42.6M/70.8M [00:12<00:06, 4.58MB/s]
-     61%|██████████████████████▍              | 43.0M/70.8M [00:12<00:06, 4.33MB/s]
-     61%|██████████████████████▊              | 43.6M/70.8M [00:12<00:05, 4.62MB/s]
-     62%|██████████████████████▉              | 44.0M/70.8M [00:12<00:05, 4.57MB/s]
-     63%|███████████████████████▏             | 44.5M/70.8M [00:12<00:05, 4.56MB/s]
-     63%|███████████████████████▍             | 45.0M/70.8M [00:12<00:05, 4.54MB/s]
-     65%|███████████████████████▉             | 45.9M/70.8M [00:12<00:04, 5.92MB/s]
-     66%|████████████████████████▍            | 46.8M/70.8M [00:13<00:03, 6.81MB/s]
-     67%|████████████████████████▉            | 47.7M/70.8M [00:13<00:03, 7.38MB/s]
-     69%|█████████████████████████▍           | 48.8M/70.8M [00:13<00:02, 8.42MB/s]
-     70%|██████████████████████████           | 49.9M/70.8M [00:13<00:02, 9.00MB/s]
-     72%|██████████████████████████▋          | 51.0M/70.8M [00:13<00:02, 9.79MB/s]
-     74%|███████████████████████████▎         | 52.2M/70.8M [00:13<00:01, 10.3MB/s]
-     75%|███████████████████████████▊         | 53.4M/70.8M [00:13<00:01, 10.7MB/s]
-     77%|████████████████████████████▌        | 54.6M/70.8M [00:13<00:01, 11.1MB/s]
-     79%|█████████████████████████████▏       | 56.0M/70.8M [00:13<00:01, 11.7MB/s]
-     81%|█████████████████████████████▉       | 57.3M/70.8M [00:13<00:01, 12.0MB/s]
-     83%|██████████████████████████████▌      | 58.6M/70.8M [00:14<00:00, 12.4MB/s]
-     85%|███████████████████████████████▎     | 59.9M/70.8M [00:14<00:00, 12.4MB/s]
-     86%|███████████████████████████████▉     | 61.2M/70.8M [00:14<00:00, 12.7MB/s]
-     88%|████████████████████████████████▋    | 62.5M/70.8M [00:14<00:00, 12.8MB/s]
-     90%|█████████████████████████████████▎   | 63.8M/70.8M [00:14<00:00, 12.7MB/s]
-     92%|█████████████████████████████████▉   | 65.1M/70.8M [00:14<00:00, 12.5MB/s]
-     94%|██████████████████████████████████▋  | 66.3M/70.8M [00:14<00:00, 12.5MB/s]
-     95%|███████████████████████████████████▎ | 67.6M/70.8M [00:14<00:00, 11.4MB/s]
-     97%|███████████████████████████████████▉ | 68.8M/70.8M [00:14<00:00, 11.6MB/s]
-     99%|████████████████████████████████████▌| 70.0M/70.8M [00:15<00:00, 11.2MB/s]
-      0%|                                              | 0.00/70.8M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 70.8M/70.8M [00:00<00:00, 424GB/s]
-    9it [00:16,  1.83s/it]    9it [00:16,  1.83s/it]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/71.1M [00:00<?, ?B/s]
-      0%|                                     | 15.4k/71.1M [00:00<16:19, 72.6kB/s]
-      0%|                                      | 43.0k/71.1M [00:00<10:52, 109kB/s]
-      0%|                                      | 70.7k/71.1M [00:00<09:48, 121kB/s]
-      0%|                                      | 97.3k/71.1M [00:00<09:22, 126kB/s]
-      0%|                                       | 125k/71.1M [00:01<09:16, 128kB/s]
-      0%|                                      | 153k/71.1M [00:01<13:33, 87.2kB/s]
-      0%|                                       | 175k/71.1M [00:01<11:20, 104kB/s]
-      0%|                                      | 189k/71.1M [00:02<16:05, 73.5kB/s]
-      0%|                                      | 210k/71.1M [00:02<14:49, 79.7kB/s]
-      0%|▏                                      | 249k/71.1M [00:02<09:41, 122kB/s]
-      0%|▏                                      | 267k/71.1M [00:02<10:15, 115kB/s]
-      0%|▏                                      | 284k/71.1M [00:02<09:48, 120kB/s]
-      0%|▏                                      | 309k/71.1M [00:02<08:05, 146kB/s]
-      0%|▏                                      | 338k/71.1M [00:02<06:44, 175kB/s]
-      1%|▏                                      | 365k/71.1M [00:02<06:01, 196kB/s]
-      1%|▏                                      | 392k/71.1M [00:03<05:36, 210kB/s]
-      1%|▏                                      | 420k/71.1M [00:03<05:11, 227kB/s]
-      1%|▏                                      | 447k/71.1M [00:03<05:02, 234kB/s]
-      1%|▎                                      | 480k/71.1M [00:03<05:30, 214kB/s]
-      1%|▎                                      | 513k/71.1M [00:03<04:57, 237kB/s]
-      1%|▎                                      | 595k/71.1M [00:03<03:03, 384kB/s]
-      1%|▎                                      | 662k/71.1M [00:03<02:34, 456kB/s]
-      1%|▍                                      | 757k/71.1M [00:03<02:03, 570kB/s]
-      1%|▍                                      | 881k/71.1M [00:04<01:33, 752kB/s]
-      2%|▌                                    | 1.08M/71.1M [00:04<01:04, 1.09MB/s]
-      2%|▋                                    | 1.31M/71.1M [00:04<00:48, 1.44MB/s]
-      2%|▊                                    | 1.53M/71.1M [00:04<00:42, 1.64MB/s]
-      3%|▉                                    | 1.80M/71.1M [00:04<00:37, 1.87MB/s]
-      3%|█                                    | 2.01M/71.1M [00:04<00:35, 1.94MB/s]
-      3%|█▏                                   | 2.31M/71.1M [00:04<00:31, 2.21MB/s]
-      4%|█▎                                   | 2.53M/71.1M [00:04<00:31, 2.18MB/s]
-      4%|█▍                                   | 2.82M/71.1M [00:04<00:30, 2.26MB/s]
-      4%|█▌                                   | 3.08M/71.1M [00:04<00:29, 2.30MB/s]
-      5%|█▋                                   | 3.36M/71.1M [00:05<00:28, 2.40MB/s]
-      5%|█▊                                   | 3.60M/71.1M [00:05<00:28, 2.39MB/s]
-      5%|█▉                                   | 3.84M/71.1M [00:05<00:28, 2.39MB/s]
-      6%|██▏                                  | 4.09M/71.1M [00:05<00:27, 2.42MB/s]
-      6%|██▎                                  | 4.34M/71.1M [00:05<00:28, 2.36MB/s]
-      6%|██▍                                  | 4.60M/71.1M [00:05<00:27, 2.41MB/s]
-      7%|██▌                                  | 4.87M/71.1M [00:05<00:26, 2.46MB/s]
-      7%|██▋                                  | 5.14M/71.1M [00:05<00:26, 2.52MB/s]
-      8%|██▊                                  | 5.42M/71.1M [00:05<00:25, 2.58MB/s]
-      8%|███                                  | 5.88M/71.1M [00:06<00:22, 2.88MB/s]
-      9%|███▎                                 | 6.41M/71.1M [00:06<00:18, 3.52MB/s]
-     10%|███▌                                 | 6.95M/71.1M [00:06<00:15, 4.05MB/s]
-     10%|███▊                                 | 7.42M/71.1M [00:06<00:15, 4.21MB/s]
-     11%|████                                 | 7.90M/71.1M [00:06<00:14, 4.35MB/s]
-     12%|████▎                                | 8.37M/71.1M [00:06<00:14, 4.45MB/s]
-     12%|████▌                                | 8.85M/71.1M [00:06<00:13, 4.50MB/s]
-     13%|████▊                                | 9.30M/71.1M [00:06<00:15, 4.08MB/s]
-     14%|█████▏                               | 9.96M/71.1M [00:06<00:12, 4.74MB/s]
-     15%|█████▍                               | 10.4M/71.1M [00:06<00:12, 4.68MB/s]
-     15%|█████▋                               | 10.9M/71.1M [00:07<00:12, 4.72MB/s]
-     16%|█████▉                               | 11.4M/71.1M [00:07<00:12, 4.71MB/s]
-     17%|██████▏                              | 11.9M/71.1M [00:07<00:12, 4.69MB/s]
-     17%|██████▍                              | 12.4M/71.1M [00:07<00:12, 4.67MB/s]
-     18%|██████▋                              | 12.8M/71.1M [00:07<00:13, 4.46MB/s]
-     19%|██████▉                              | 13.4M/71.1M [00:07<00:12, 4.73MB/s]
-     19%|███████▏                             | 13.8M/71.1M [00:07<00:12, 4.60MB/s]
-     20%|███████▍                             | 14.4M/71.1M [00:07<00:12, 4.71MB/s]
-     21%|███████▋                             | 14.8M/71.1M [00:07<00:12, 4.64MB/s]
-     22%|███████▉                             | 15.4M/71.1M [00:08<00:11, 4.77MB/s]
-     22%|████████▏                            | 15.8M/71.1M [00:08<00:11, 4.76MB/s]
-     23%|████████▍                            | 16.3M/71.1M [00:08<00:11, 4.72MB/s]
-     24%|████████▋                            | 16.8M/71.1M [00:08<00:11, 4.71MB/s]
-     24%|████████▉                            | 17.3M/71.1M [00:08<00:11, 4.68MB/s]
-     25%|█████████▏                           | 17.8M/71.1M [00:08<00:11, 4.75MB/s]
-     26%|█████████▋                           | 18.7M/71.1M [00:08<00:08, 5.97MB/s]
-     27%|██████████▏                          | 19.5M/71.1M [00:08<00:07, 6.55MB/s]
-     29%|██████████▋                          | 20.5M/71.1M [00:08<00:06, 7.34MB/s]
-     30%|███████████                          | 21.2M/71.1M [00:09<00:07, 6.39MB/s]
-     31%|███████████▌                         | 22.1M/71.1M [00:09<00:06, 7.04MB/s]
-     32%|███████████▉                         | 23.0M/71.1M [00:09<00:06, 7.62MB/s]
-     34%|████████████▍                        | 23.9M/71.1M [00:09<00:05, 7.94MB/s]
-     35%|████████████▉                        | 24.9M/71.1M [00:09<00:05, 8.25MB/s]
-     36%|█████████████▍                       | 25.8M/71.1M [00:09<00:05, 8.22MB/s]
-     37%|█████████████▊                       | 26.7M/71.1M [00:09<00:05, 8.45MB/s]
-     39%|██████████████▎                      | 27.6M/71.1M [00:09<00:05, 8.06MB/s]
-     40%|██████████████▊                      | 28.5M/71.1M [00:09<00:05, 8.45MB/s]
-     42%|███████████████▍                     | 29.6M/71.1M [00:09<00:04, 9.06MB/s]
-     43%|███████████████▉                     | 30.6M/71.1M [00:10<00:04, 9.25MB/s]
-     44%|████████████████▍                    | 31.5M/71.1M [00:10<00:04, 9.12MB/s]
-     46%|████████████████▉                    | 32.5M/71.1M [00:10<00:06, 6.03MB/s]
-     47%|█████████████████▎                   | 33.2M/71.1M [00:10<00:06, 5.65MB/s]
-     48%|█████████████████▊                   | 34.2M/71.1M [00:10<00:05, 6.62MB/s]
-     50%|██████████████████▎                  | 35.2M/71.1M [00:10<00:04, 7.38MB/s]
-     51%|██████████████████▊                  | 36.2M/71.1M [00:10<00:04, 8.00MB/s]
-     52%|███████████████████▎                 | 37.1M/71.1M [00:11<00:04, 8.19MB/s]
-     53%|███████████████████▊                 | 38.0M/71.1M [00:11<00:04, 8.20MB/s]
-     55%|████████████████████▎                | 39.0M/71.1M [00:11<00:03, 8.81MB/s]
-     56%|████████████████████▊                | 40.0M/71.1M [00:11<00:03, 8.72MB/s]
-     57%|█████████████████████▎               | 40.9M/71.1M [00:11<00:03, 8.56MB/s]
-     59%|█████████████████████▊               | 41.8M/71.1M [00:11<00:03, 8.77MB/s]
-     60%|██████████████████████▎              | 42.8M/71.1M [00:11<00:03, 8.76MB/s]
-     62%|██████████████████████▊              | 43.7M/71.1M [00:11<00:03, 8.67MB/s]
-     63%|███████████████████████▏             | 44.6M/71.1M [00:11<00:03, 8.71MB/s]
-     64%|███████████████████████▋             | 45.6M/71.1M [00:11<00:02, 8.98MB/s]
-     66%|████████████████████████▏            | 46.6M/71.1M [00:12<00:02, 9.09MB/s]
-     67%|████████████████████████▊            | 47.6M/71.1M [00:12<00:02, 9.23MB/s]
-     68%|█████████████████████████▎           | 48.6M/71.1M [00:12<00:02, 9.39MB/s]
-     70%|█████████████████████████▊           | 49.5M/71.1M [00:12<00:02, 9.36MB/s]
-     71%|██████████████████████████▎          | 50.5M/71.1M [00:12<00:02, 9.34MB/s]
-     72%|██████████████████████████▋          | 51.4M/71.1M [00:12<00:02, 9.22MB/s]
-     74%|███████████████████████████▏         | 52.3M/71.1M [00:12<00:02, 9.14MB/s]
-     75%|███████████████████████████▋         | 53.3M/71.1M [00:12<00:01, 9.29MB/s]
-     76%|████████████████████████████▏        | 54.2M/71.1M [00:12<00:01, 9.05MB/s]
-     78%|████████████████████████████▋        | 55.2M/71.1M [00:13<00:01, 9.11MB/s]
-     79%|█████████████████████████████▏       | 56.1M/71.1M [00:13<00:01, 9.09MB/s]
-     80%|█████████████████████████████▋       | 57.0M/71.1M [00:13<00:01, 9.09MB/s]
-     81%|██████████████████████████████▏      | 57.9M/71.1M [00:13<00:01, 9.08MB/s]
-     83%|██████████████████████████████▊      | 59.2M/71.1M [00:13<00:01, 10.2MB/s]
-     86%|███████████████████████████████▋     | 60.9M/71.1M [00:13<00:00, 12.0MB/s]
-     88%|████████████████████████████████▍    | 62.4M/71.1M [00:13<00:00, 13.0MB/s]
-     90%|█████████████████████████████████▎   | 64.1M/71.1M [00:13<00:00, 13.9MB/s]
-     92%|██████████████████████████████████   | 65.5M/71.1M [00:13<00:00, 13.9MB/s]
-     94%|██████████████████████████████████▉  | 67.2M/71.1M [00:13<00:00, 14.6MB/s]
-     96%|███████████████████████████████████▋ | 68.6M/71.1M [00:14<00:00, 14.5MB/s]
-     99%|████████████████████████████████████▍| 70.1M/71.1M [00:14<00:00, 14.4MB/s]
-      0%|                                              | 0.00/71.1M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 71.1M/71.1M [00:00<00:00, 669GB/s]
-    9it [00:15,  1.76s/it]    9it [00:15,  1.76s/it]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/68.8M [00:00<?, ?B/s]
-      0%|                                      | 48.1k/68.8M [00:00<03:47, 303kB/s]
-      0%|                                      | 80.9k/68.8M [00:00<04:15, 269kB/s]
-      0%|▏                                      | 245k/68.8M [00:00<01:30, 755kB/s]
-      1%|▏                                      | 388k/68.8M [00:00<01:09, 981kB/s]
-      1%|▌                                     | 906k/68.8M [00:00<00:29, 2.31MB/s]
-      3%|█                                    | 2.06M/68.8M [00:00<00:12, 5.20MB/s]
-      4%|█▍                                   | 2.62M/68.8M [00:00<00:16, 3.93MB/s]
-      6%|██▏                                  | 4.06M/68.8M [00:01<00:09, 6.52MB/s]
-      8%|██▉                                  | 5.42M/68.8M [00:01<00:07, 8.34MB/s]
-     10%|███▋                                 | 6.90M/68.8M [00:01<00:06, 10.1MB/s]
-     12%|████▌                                | 8.45M/68.8M [00:01<00:05, 11.5MB/s]
-     14%|█████▏                               | 9.69M/68.8M [00:01<00:05, 11.5MB/s]
-     16%|██████                               | 11.2M/68.8M [00:01<00:04, 12.5MB/s]
-     18%|██████▊                              | 12.6M/68.8M [00:01<00:04, 13.0MB/s]
-     20%|███████▌                             | 14.1M/68.8M [00:01<00:04, 13.4MB/s]
-     23%|████████▍                            | 15.7M/68.8M [00:01<00:03, 14.2MB/s]
-     26%|█████████▍                           | 17.6M/68.8M [00:01<00:03, 15.4MB/s]
-     28%|██████████▎                          | 19.1M/68.8M [00:02<00:03, 15.5MB/s]
-     30%|███████████                          | 20.7M/68.8M [00:02<00:03, 15.4MB/s]
-     32%|███████████▉                         | 22.3M/68.8M [00:02<00:02, 15.6MB/s]
-     35%|████████████▉                        | 24.0M/68.8M [00:02<00:02, 16.0MB/s]
-     37%|█████████████▊                       | 25.6M/68.8M [00:02<00:02, 15.3MB/s]
-     40%|██████████████▋                      | 27.3M/68.8M [00:02<00:02, 15.5MB/s]
-     42%|███████████████▌                     | 28.8M/68.8M [00:02<00:02, 15.6MB/s]
-     44%|████████████████▎                    | 30.4M/68.8M [00:02<00:02, 15.5MB/s]
-     47%|█████████████████▏                   | 32.1M/68.8M [00:02<00:02, 15.8MB/s]
-     49%|██████████████████                   | 33.7M/68.8M [00:02<00:02, 15.9MB/s]
-     51%|██████████████████▉                  | 35.3M/68.8M [00:03<00:02, 15.9MB/s]
-     54%|███████████████████▊                 | 36.9M/68.8M [00:03<00:01, 16.0MB/s]
-     56%|████████████████████▊                | 38.6M/68.8M [00:03<00:01, 16.3MB/s]
-     59%|█████████████████████▋               | 40.3M/68.8M [00:03<00:01, 16.1MB/s]
-     61%|██████████████████████▌              | 41.9M/68.8M [00:03<00:01, 16.0MB/s]
-     63%|███████████████████████▍             | 43.6M/68.8M [00:03<00:01, 16.2MB/s]
-     66%|████████████████████████▎            | 45.3M/68.8M [00:03<00:01, 16.2MB/s]
-     68%|█████████████████████████▏           | 46.9M/68.8M [00:03<00:01, 16.2MB/s]
-     71%|██████████████████████████           | 48.5M/68.8M [00:03<00:01, 15.8MB/s]
-     73%|██████████████████████████▉          | 50.1M/68.8M [00:04<00:01, 13.3MB/s]
-     75%|███████████████████████████▋         | 51.5M/68.8M [00:04<00:01, 11.7MB/s]
-     77%|████████████████████████████▎        | 52.8M/68.8M [00:04<00:01, 11.9MB/s]
-     79%|█████████████████████████████▏       | 54.2M/68.8M [00:04<00:01, 12.6MB/s]
-     81%|██████████████████████████████       | 55.9M/68.8M [00:04<00:00, 13.8MB/s]
-     84%|██████████████████████████████▉      | 57.6M/68.8M [00:04<00:00, 14.5MB/s]
-     86%|███████████████████████████████▉     | 59.3M/68.8M [00:04<00:00, 15.0MB/s]
-     89%|████████████████████████████████▊    | 61.1M/68.8M [00:04<00:00, 15.6MB/s]
-     91%|█████████████████████████████████▊   | 62.8M/68.8M [00:04<00:00, 16.2MB/s]
-     94%|██████████████████████████████████▋  | 64.5M/68.8M [00:05<00:00, 16.2MB/s]
-     96%|███████████████████████████████████▌ | 66.1M/68.8M [00:05<00:00, 15.9MB/s]
-     98%|████████████████████████████████████▍| 67.7M/68.8M [00:05<00:00, 15.8MB/s]
-      0%|                                              | 0.00/68.8M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 68.8M/68.8M [00:00<00:00, 718GB/s]
-    9it [00:06,  1.30it/s]    9it [00:06,  1.30it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 232447  =      0.000 ...   453.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/64.7M [00:00<?, ?B/s]
-      0%|                                     | 15.4k/64.7M [00:00<14:19, 75.2kB/s]
-      0%|                                      | 48.1k/64.7M [00:00<08:35, 125kB/s]
-      0%|                                      | 80.9k/64.7M [00:00<07:32, 143kB/s]
-      0%|                                       | 114k/64.7M [00:00<07:11, 150kB/s]
-      0%|                                       | 147k/64.7M [00:00<05:40, 190kB/s]
-      0%|                                      | 169k/64.7M [00:01<10:58, 97.9kB/s]
-      0%|                                       | 194k/64.7M [00:01<10:13, 105kB/s]
-      0%|▏                                      | 217k/64.7M [00:01<09:58, 108kB/s]
-      0%|▏                                      | 242k/64.7M [00:02<09:39, 111kB/s]
-      0%|▏                                      | 265k/64.7M [00:02<09:40, 111kB/s]
-      0%|▏                                      | 289k/64.7M [00:02<09:31, 113kB/s]
-      0%|▏                                      | 314k/64.7M [00:02<09:10, 117kB/s]
-      1%|▏                                      | 340k/64.7M [00:02<09:01, 119kB/s]
-      1%|▏                                      | 367k/64.7M [00:03<08:43, 123kB/s]
-      1%|▏                                      | 406k/64.7M [00:03<06:23, 168kB/s]
-      1%|▎                                      | 426k/64.7M [00:03<06:09, 174kB/s]
-      1%|▎                                      | 446k/64.7M [00:03<07:19, 146kB/s]
-      1%|▎                                      | 483k/64.7M [00:03<06:47, 158kB/s]
-      1%|▎                                      | 553k/64.7M [00:03<04:06, 260kB/s]
-      1%|▎                                      | 600k/64.7M [00:03<03:30, 305kB/s]
-      1%|▍                                      | 652k/64.7M [00:03<03:03, 349kB/s]
-      1%|▍                                      | 705k/64.7M [00:04<02:45, 386kB/s]
-      1%|▍                                      | 754k/64.7M [00:04<02:34, 413kB/s]
-      1%|▍                                      | 816k/64.7M [00:04<02:16, 469kB/s]
-      1%|▌                                      | 906k/64.7M [00:04<01:48, 588kB/s]
-      2%|▌                                     | 1.04M/64.7M [00:04<01:20, 794kB/s]
-      2%|▋                                    | 1.25M/64.7M [00:04<00:54, 1.16MB/s]
-      2%|▉                                    | 1.53M/64.7M [00:04<00:40, 1.57MB/s]
-      3%|▉                                    | 1.69M/64.7M [00:04<00:50, 1.25MB/s]
-      3%|█                                    | 1.85M/64.7M [00:05<00:47, 1.33MB/s]
-      3%|█▏                                   | 2.16M/64.7M [00:05<00:35, 1.79MB/s]
-      4%|█▍                                   | 2.46M/64.7M [00:05<00:29, 2.10MB/s]
-      4%|█▌                                   | 2.72M/64.7M [00:05<00:28, 2.16MB/s]
-      5%|█▊                                   | 3.13M/64.7M [00:05<00:22, 2.68MB/s]
-      5%|█▉                                   | 3.44M/64.7M [00:05<00:22, 2.78MB/s]
-      6%|██▏                                  | 3.73M/64.7M [00:05<00:22, 2.75MB/s]
-      6%|██▎                                  | 4.05M/64.7M [00:05<00:21, 2.82MB/s]
-      7%|██▌                                  | 4.39M/64.7M [00:05<00:20, 2.99MB/s]
-      7%|██▋                                  | 4.70M/64.7M [00:05<00:19, 3.00MB/s]
-      8%|██▉                                  | 5.03M/64.7M [00:06<00:19, 3.05MB/s]
-      8%|███                                  | 5.34M/64.7M [00:06<00:19, 3.06MB/s]
-      9%|███▏                                 | 5.65M/64.7M [00:06<00:19, 3.05MB/s]
-      9%|███▍                                 | 5.96M/64.7M [00:06<00:19, 3.05MB/s]
-     10%|███▌                                 | 6.27M/64.7M [00:06<00:19, 3.00MB/s]
-     10%|███▊                                 | 6.62M/64.7M [00:06<00:18, 3.08MB/s]
-     11%|████                                 | 6.99M/64.7M [00:06<00:17, 3.27MB/s]
-     12%|████▎                                | 7.58M/64.7M [00:06<00:14, 3.85MB/s]
-     13%|████▊                                | 8.52M/64.7M [00:06<00:10, 5.39MB/s]
-     15%|█████▍                               | 9.53M/64.7M [00:06<00:08, 6.75MB/s]
-     17%|██████▎                              | 11.1M/64.7M [00:07<00:05, 9.15MB/s]
-     19%|███████                              | 12.4M/64.7M [00:07<00:05, 10.2MB/s]
-     22%|███████▉                             | 13.9M/64.7M [00:07<00:04, 11.7MB/s]
-     24%|████████▉                            | 15.5M/64.7M [00:07<00:03, 12.9MB/s]
-     26%|█████████▊                           | 17.1M/64.7M [00:07<00:03, 13.6MB/s]
-     29%|██████████▌                          | 18.4M/64.7M [00:07<00:03, 13.6MB/s]
-     31%|███████████▍                         | 20.0M/64.7M [00:07<00:03, 14.0MB/s]
-     33%|████████████▏                        | 21.4M/64.7M [00:07<00:03, 13.8MB/s]
-     35%|█████████████                        | 22.9M/64.7M [00:07<00:02, 14.2MB/s]
-     38%|█████████████▉                       | 24.3M/64.7M [00:08<00:02, 14.2MB/s]
-     40%|██████████████▋                      | 25.7M/64.7M [00:08<00:02, 14.0MB/s]
-     42%|███████████████▌                     | 27.2M/64.7M [00:08<00:02, 13.9MB/s]
-     44%|████████████████▍                    | 28.6M/64.7M [00:08<00:02, 13.7MB/s]
-     46%|█████████████████▏                   | 30.0M/64.7M [00:08<00:02, 11.8MB/s]
-     48%|█████████████████▉                   | 31.3M/64.7M [00:08<00:02, 12.0MB/s]
-     51%|██████████████████▋                  | 32.7M/64.7M [00:08<00:02, 12.5MB/s]
-     53%|███████████████████▍                 | 34.0M/64.7M [00:08<00:02, 11.1MB/s]
-     54%|████████████████████                 | 35.1M/64.7M [00:08<00:02, 11.1MB/s]
-     56%|████████████████████▊                | 36.3M/64.7M [00:09<00:02, 9.94MB/s]
-     58%|█████████████████████▎               | 37.3M/64.7M [00:09<00:02, 9.58MB/s]
-     60%|██████████████████████▎              | 39.0M/64.7M [00:09<00:02, 11.3MB/s]
-     62%|██████████████████████▉              | 40.1M/64.7M [00:09<00:02, 8.69MB/s]
-     64%|███████████████████████▌             | 41.1M/64.7M [00:09<00:02, 8.80MB/s]
-     66%|████████████████████████▎            | 42.5M/64.7M [00:09<00:02, 10.1MB/s]
-     68%|█████████████████████████▎           | 44.2M/64.7M [00:09<00:01, 11.6MB/s]
-     71%|██████████████████████████           | 45.6M/64.7M [00:09<00:01, 12.4MB/s]
-     73%|██████████████████████████▉          | 47.0M/64.7M [00:10<00:01, 12.9MB/s]
-     75%|███████████████████████████▊         | 48.6M/64.7M [00:10<00:01, 13.5MB/s]
-     77%|████████████████████████████▋        | 50.1M/64.7M [00:10<00:01, 13.8MB/s]
-     80%|█████████████████████████████▍       | 51.5M/64.7M [00:10<00:01, 13.0MB/s]
-     82%|██████████████████████████████▎      | 53.1M/64.7M [00:10<00:00, 13.6MB/s]
-     84%|███████████████████████████████▏     | 54.6M/64.7M [00:10<00:00, 13.9MB/s]
-     87%|████████████████████████████████     | 56.0M/64.7M [00:10<00:00, 14.1MB/s]
-     89%|████████████████████████████████▉    | 57.6M/64.7M [00:10<00:00, 14.3MB/s]
-     92%|█████████████████████████████████▉   | 59.3M/64.7M [00:10<00:00, 15.2MB/s]
-     94%|██████████████████████████████████▊  | 60.9M/64.7M [00:11<00:00, 14.5MB/s]
-     97%|███████████████████████████████████▊ | 62.6M/64.7M [00:11<00:00, 15.2MB/s]
-     99%|████████████████████████████████████▊| 64.3M/64.7M [00:11<00:00, 15.7MB/s]
-      0%|                                              | 0.00/64.7M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 64.7M/64.7M [00:00<00:00, 382GB/s]
-    9it [00:13,  1.52s/it]    9it [00:13,  1.52s/it]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/67.9M [00:00<?, ?B/s]
-      0%|                                      | 48.1k/67.9M [00:00<03:34, 317kB/s]
-      0%|                                      | 80.9k/67.9M [00:00<03:33, 317kB/s]
-      0%|                                       | 179k/67.9M [00:00<02:00, 563kB/s]
-      1%|▏                                      | 351k/67.9M [00:00<01:10, 958kB/s]
-      1%|▍                                     | 753k/67.9M [00:00<00:36, 1.84MB/s]
-      2%|▋                                    | 1.20M/67.9M [00:00<00:25, 2.60MB/s]
-      3%|█                                    | 1.87M/67.9M [00:00<00:17, 3.83MB/s]
-      4%|█▍                                   | 2.67M/67.9M [00:00<00:12, 5.09MB/s]
-      6%|██                                   | 3.74M/67.9M [00:01<00:09, 6.73MB/s]
-      7%|██▋                                  | 4.93M/67.9M [00:01<00:07, 8.23MB/s]
-      9%|███▎                                 | 6.16M/67.9M [00:01<00:06, 9.31MB/s]
-     11%|████▏                                | 7.60M/67.9M [00:01<00:05, 10.8MB/s]
-     14%|█████                                | 9.19M/67.9M [00:01<00:04, 12.3MB/s]
-     16%|█████▊                               | 10.8M/67.9M [00:01<00:04, 13.3MB/s]
-     19%|██████▊                              | 12.6M/67.9M [00:01<00:03, 14.6MB/s]
-     21%|███████▋                             | 14.1M/67.9M [00:01<00:03, 14.8MB/s]
-     23%|████████▌                            | 15.8M/67.9M [00:01<00:03, 15.3MB/s]
-     26%|█████████▍                           | 17.3M/67.9M [00:01<00:03, 14.6MB/s]
-     28%|██████████▍                          | 19.2M/67.9M [00:02<00:03, 15.5MB/s]
-     31%|███████████▎                         | 20.8M/67.9M [00:02<00:03, 15.6MB/s]
-     33%|████████████▏                        | 22.3M/67.9M [00:02<00:02, 15.4MB/s]
-     35%|█████████████                        | 24.0M/67.9M [00:02<00:02, 15.7MB/s]
-     38%|█████████████▉                       | 25.7M/67.9M [00:02<00:02, 15.9MB/s]
-     40%|██████████████▊                      | 27.2M/67.9M [00:02<00:02, 15.4MB/s]
-     42%|███████████████▋                     | 28.8M/67.9M [00:02<00:02, 15.4MB/s]
-     45%|████████████████▌                    | 30.3M/67.9M [00:02<00:02, 15.4MB/s]
-     47%|█████████████████▍                   | 32.0M/67.9M [00:02<00:02, 15.6MB/s]
-     50%|██████████████████▎                  | 33.7M/67.9M [00:02<00:02, 16.0MB/s]
-     52%|███████████████████▏                 | 35.3M/67.9M [00:03<00:02, 15.9MB/s]
-     54%|████████████████████                 | 36.9M/67.9M [00:03<00:02, 14.8MB/s]
-     57%|████████████████████▉                | 38.4M/67.9M [00:03<00:02, 13.0MB/s]
-     59%|█████████████████████▋               | 39.7M/67.9M [00:03<00:02, 11.9MB/s]
-     60%|██████████████████████▎              | 41.0M/67.9M [00:03<00:02, 11.4MB/s]
-     62%|███████████████████████              | 42.3M/67.9M [00:03<00:02, 11.7MB/s]
-     65%|███████████████████████▉             | 43.8M/67.9M [00:03<00:01, 12.7MB/s]
-     67%|████████████████████████▋            | 45.3M/67.9M [00:03<00:01, 13.3MB/s]
-     69%|█████████████████████████▋           | 47.1M/67.9M [00:04<00:01, 14.5MB/s]
-     72%|██████████████████████████▌          | 48.8M/67.9M [00:04<00:01, 15.2MB/s]
-     74%|███████████████████████████▍         | 50.3M/67.9M [00:04<00:01, 15.2MB/s]
-     76%|████████████████████████████▎        | 51.9M/67.9M [00:04<00:01, 14.7MB/s]
-     79%|█████████████████████████████        | 53.4M/67.9M [00:04<00:01, 13.8MB/s]
-     81%|██████████████████████████████       | 55.1M/67.9M [00:04<00:00, 14.8MB/s]
-     83%|██████████████████████████████▊      | 56.6M/67.9M [00:04<00:00, 14.4MB/s]
-     86%|███████████████████████████████▋     | 58.1M/67.9M [00:04<00:00, 14.7MB/s]
-     88%|████████████████████████████████▍    | 59.6M/67.9M [00:04<00:00, 14.5MB/s]
-     90%|█████████████████████████████████▎   | 61.1M/67.9M [00:04<00:00, 14.5MB/s]
-     92%|██████████████████████████████████   | 62.5M/67.9M [00:05<00:00, 13.2MB/s]
-     94%|██████████████████████████████████▉  | 64.0M/67.9M [00:05<00:00, 13.6MB/s]
-     96%|███████████████████████████████████▋ | 65.4M/67.9M [00:05<00:00, 13.0MB/s]
-     98%|████████████████████████████████████▎| 66.7M/67.9M [00:05<00:00, 12.3MB/s]
-      0%|                                              | 0.00/67.9M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 67.9M/67.9M [00:00<00:00, 410GB/s]
-    9it [00:06,  1.29it/s]    9it [00:06,  1.29it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/63.6M [00:00<?, ?B/s]
-      0%|                                      | 31.7k/63.6M [00:00<04:26, 238kB/s]
-      0%|                                      | 56.3k/63.6M [00:00<04:28, 236kB/s]
-      0%|                                      | 80.9k/63.6M [00:00<04:26, 238kB/s]
-      0%|                                       | 114k/63.6M [00:00<05:22, 197kB/s]
-      0%|                                       | 156k/63.6M [00:00<05:18, 199kB/s]
-      0%|▏                                      | 218k/63.6M [00:00<04:29, 236kB/s]
-      0%|▏                                      | 280k/63.6M [00:01<04:03, 259kB/s]
-      1%|▏                                      | 345k/63.6M [00:01<03:07, 338kB/s]
-      1%|▏                                      | 384k/63.6M [00:01<03:05, 341kB/s]
-      1%|▎                                      | 422k/63.6M [00:01<03:05, 340kB/s]
-      1%|▎                                      | 465k/63.6M [00:01<02:55, 360kB/s]
-      1%|▎                                      | 523k/63.6M [00:01<02:32, 414kB/s]
-      1%|▍                                      | 618k/63.6M [00:01<01:53, 554kB/s]
-      1%|▍                                      | 754k/63.6M [00:01<01:21, 774kB/s]
-      1%|▌                                     | 939k/63.6M [00:01<00:58, 1.08MB/s]
-      2%|▋                                    | 1.28M/63.6M [00:02<00:36, 1.70MB/s]
-      3%|█                                    | 1.82M/63.6M [00:02<00:22, 2.76MB/s]
-      4%|█▍                                   | 2.54M/63.6M [00:02<00:15, 4.04MB/s]
-      5%|█▉                                   | 3.39M/63.6M [00:02<00:11, 5.34MB/s]
-      7%|██▌                                  | 4.41M/63.6M [00:02<00:08, 6.65MB/s]
-      9%|███▏                                 | 5.49M/63.6M [00:02<00:07, 7.86MB/s]
-     10%|███▊                                 | 6.52M/63.6M [00:02<00:06, 8.32MB/s]
-     12%|████▍                                | 7.65M/63.6M [00:02<00:06, 9.15MB/s]
-     13%|████▉                                | 8.57M/63.6M [00:02<00:06, 9.05MB/s]
-     16%|█████▋                               | 9.86M/63.6M [00:03<00:05, 10.2MB/s]
-     17%|██████▎                              | 10.9M/63.6M [00:03<00:05, 10.1MB/s]
-     19%|██████▉                              | 12.0M/63.6M [00:03<00:05, 10.3MB/s]
-     20%|███████▌                             | 13.0M/63.6M [00:03<00:05, 9.14MB/s]
-     22%|████████▏                            | 14.1M/63.6M [00:03<00:05, 9.50MB/s]
-     24%|████████▊                            | 15.2M/63.6M [00:03<00:04, 9.72MB/s]
-     26%|█████████▍                           | 16.2M/63.6M [00:03<00:04, 9.89MB/s]
-     27%|██████████                           | 17.2M/63.6M [00:03<00:04, 9.91MB/s]
-     29%|██████████▋                          | 18.4M/63.6M [00:03<00:04, 10.2MB/s]
-     31%|███████████▍                         | 19.6M/63.6M [00:03<00:04, 10.7MB/s]
-     32%|████████████                         | 20.6M/63.6M [00:04<00:04, 10.2MB/s]
-     34%|████████████▌                        | 21.7M/63.6M [00:04<00:04, 10.2MB/s]
-     36%|█████████████▏                       | 22.7M/63.6M [00:04<00:04, 9.93MB/s]
-     38%|██████████████                       | 24.1M/63.6M [00:04<00:03, 10.9MB/s]
-     40%|██████████████▋                      | 25.2M/63.6M [00:04<00:03, 10.2MB/s]
-     41%|███████████████▎                     | 26.2M/63.6M [00:04<00:05, 6.50MB/s]
-     43%|████████████████                     | 27.6M/63.6M [00:04<00:04, 8.01MB/s]
-     46%|████████████████▉                    | 29.1M/63.6M [00:05<00:03, 9.53MB/s]
-     49%|██████████████████                   | 30.9M/63.6M [00:05<00:02, 11.5MB/s]
-     52%|███████████████████                  | 32.8M/63.6M [00:05<00:02, 13.3MB/s]
-     54%|███████████████████▉                 | 34.3M/63.6M [00:05<00:02, 10.1MB/s]
-     57%|█████████████████████▏               | 36.3M/63.6M [00:05<00:02, 12.3MB/s]
-     59%|█████████████████████▉               | 37.8M/63.6M [00:05<00:02, 11.9MB/s]
-     62%|███████████████████████              | 39.5M/63.6M [00:05<00:01, 13.1MB/s]
-     65%|███████████████████████▉             | 41.2M/63.6M [00:05<00:01, 13.8MB/s]
-     67%|████████████████████████▉            | 42.8M/63.6M [00:06<00:01, 14.4MB/s]
-     70%|█████████████████████████▊           | 44.4M/63.6M [00:06<00:01, 14.0MB/s]
-     72%|██████████████████████████▋          | 45.9M/63.6M [00:06<00:01, 14.4MB/s]
-     75%|███████████████████████████▊         | 47.7M/63.6M [00:06<00:01, 15.4MB/s]
-     78%|████████████████████████████▊        | 49.6M/63.6M [00:06<00:00, 16.1MB/s]
-     81%|█████████████████████████████▉       | 51.4M/63.6M [00:06<00:00, 16.6MB/s]
-     84%|███████████████████████████████      | 53.3M/63.6M [00:06<00:00, 17.4MB/s]
-     87%|████████████████████████████████     | 55.1M/63.6M [00:06<00:00, 17.3MB/s]
-     90%|█████████████████████████████████▏   | 57.1M/63.6M [00:06<00:00, 18.0MB/s]
-     93%|██████████████████████████████████▎  | 58.9M/63.6M [00:07<00:00, 13.0MB/s]
-     95%|███████████████████████████████████▏ | 60.4M/63.6M [00:07<00:00, 12.8MB/s]
-     98%|████████████████████████████████████ | 62.1M/63.6M [00:07<00:00, 13.6MB/s]
-      0%|                                              | 0.00/63.6M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 63.6M/63.6M [00:00<00:00, 397GB/s]
-    9it [00:08,  1.02it/s]    9it [00:08,  1.02it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/66.2M [00:00<?, ?B/s]
-      0%|                                     | 15.4k/66.2M [00:00<14:43, 74.9kB/s]
-      0%|                                      | 48.1k/66.2M [00:00<06:33, 168kB/s]
-      0%|                                       | 139k/66.2M [00:00<02:34, 429kB/s]
-      1%|▏                                     | 391k/66.2M [00:00<00:58, 1.12MB/s]
-      2%|▋                                    | 1.24M/66.2M [00:00<00:19, 3.42MB/s]
-      4%|█▍                                   | 2.57M/66.2M [00:00<00:09, 6.43MB/s]
-      6%|██                                   | 3.75M/66.2M [00:01<00:17, 3.67MB/s]
-      7%|██▌                                  | 4.63M/66.2M [00:01<00:15, 3.88MB/s]
-     10%|███▋                                 | 6.57M/66.2M [00:01<00:09, 6.48MB/s]
-     12%|████▌                                | 8.24M/66.2M [00:01<00:06, 8.44MB/s]
-     14%|█████▎                               | 9.58M/66.2M [00:01<00:05, 9.46MB/s]
-     17%|██████▏                              | 11.1M/66.2M [00:01<00:05, 10.7MB/s]
-     19%|██████▉                              | 12.5M/66.2M [00:01<00:04, 11.5MB/s]
-     21%|███████▋                             | 13.8M/66.2M [00:02<00:04, 11.6MB/s]
-     23%|████████▌                            | 15.3M/66.2M [00:02<00:04, 12.5MB/s]
-     25%|█████████▎                           | 16.7M/66.2M [00:02<00:03, 13.0MB/s]
-     28%|██████████▏                          | 18.2M/66.2M [00:02<00:03, 13.4MB/s]
-     30%|██████████▉                          | 19.6M/66.2M [00:02<00:03, 13.3MB/s]
-     32%|███████████▋                         | 21.0M/66.2M [00:02<00:03, 13.5MB/s]
-     34%|████████████▌                        | 22.4M/66.2M [00:02<00:03, 13.6MB/s]
-     36%|█████████████▍                       | 24.1M/66.2M [00:02<00:02, 14.7MB/s]
-     39%|██████████████▎                      | 25.6M/66.2M [00:02<00:02, 14.2MB/s]
-     41%|███████████████                      | 27.1M/66.2M [00:02<00:02, 13.5MB/s]
-     43%|████████████████                     | 28.7M/66.2M [00:03<00:02, 14.2MB/s]
-     45%|████████████████▊                    | 30.1M/66.2M [00:03<00:02, 14.3MB/s]
-     48%|█████████████████▋                   | 31.8M/66.2M [00:03<00:02, 14.8MB/s]
-     50%|██████████████████▌                  | 33.2M/66.2M [00:03<00:02, 14.7MB/s]
-     52%|███████████████████▍                 | 34.8M/66.2M [00:03<00:02, 14.8MB/s]
-     55%|████████████████████▎                | 36.2M/66.2M [00:03<00:02, 14.6MB/s]
-     57%|█████████████████████                | 37.7M/66.2M [00:03<00:01, 14.4MB/s]
-     59%|██████████████████████               | 39.4M/66.2M [00:03<00:01, 15.1MB/s]
-     62%|██████████████████████▊              | 40.9M/66.2M [00:03<00:01, 14.7MB/s]
-     64%|███████████████████████▊             | 42.6M/66.2M [00:04<00:01, 15.5MB/s]
-     67%|████████████████████████▉            | 44.5M/66.2M [00:04<00:01, 16.3MB/s]
-     70%|█████████████████████████▊           | 46.2M/66.2M [00:04<00:01, 14.9MB/s]
-     72%|██████████████████████████▋          | 47.7M/66.2M [00:04<00:01, 13.9MB/s]
-     74%|███████████████████████████▍         | 49.1M/66.2M [00:04<00:01, 13.6MB/s]
-     76%|████████████████████████████▏        | 50.5M/66.2M [00:04<00:01, 12.7MB/s]
-     78%|████████████████████████████▉        | 51.8M/66.2M [00:04<00:01, 12.8MB/s]
-     81%|█████████████████████████████▊       | 53.4M/66.2M [00:04<00:00, 13.8MB/s]
-     83%|██████████████████████████████▊      | 55.0M/66.2M [00:04<00:00, 14.3MB/s]
-     85%|███████████████████████████████▌     | 56.5M/66.2M [00:05<00:00, 14.1MB/s]
-     88%|████████████████████████████████▍    | 58.0M/66.2M [00:05<00:00, 14.2MB/s]
-     90%|█████████████████████████████████▍   | 59.7M/66.2M [00:05<00:00, 15.1MB/s]
-     93%|██████████████████████████████████▎  | 61.4M/66.2M [00:05<00:00, 15.5MB/s]
-     96%|███████████████████████████████████▍ | 63.3M/66.2M [00:05<00:00, 16.5MB/s]
-     98%|████████████████████████████████████▎| 65.0M/66.2M [00:05<00:00, 13.0MB/s]
-      0%|                                              | 0.00/66.2M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 66.2M/66.2M [00:00<00:00, 383GB/s]
-    9it [00:08,  1.04it/s]    9it [00:08,  1.04it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/31.2M [00:00<?, ?B/s]
-      0%|                                     | 15.4k/31.2M [00:00<06:58, 74.6kB/s]
-      0%|                                      | 48.1k/31.2M [00:00<04:04, 128kB/s]
-      0%|                                      | 80.9k/31.2M [00:00<03:41, 141kB/s]
-      0%|▏                                      | 114k/31.2M [00:00<03:29, 148kB/s]
-      0%|▏                                      | 152k/31.2M [00:01<03:11, 162kB/s]
-      1%|▏                                      | 168k/31.2M [00:01<03:52, 133kB/s]
-      1%|▏                                      | 186k/31.2M [00:01<04:19, 120kB/s]
-      1%|▎                                      | 219k/31.2M [00:01<03:55, 132kB/s]
-      1%|▎                                     | 244k/31.2M [00:02<06:29, 79.5kB/s]
-      1%|▎                                     | 270k/31.2M [00:02<05:42, 90.5kB/s]
-      1%|▎                                      | 300k/31.2M [00:02<04:59, 103kB/s]
-      1%|▍                                      | 341k/31.2M [00:02<03:31, 146kB/s]
-      1%|▍                                      | 373k/31.2M [00:02<02:56, 175kB/s]
-      1%|▍                                      | 397k/31.2M [00:02<02:44, 187kB/s]
-      1%|▌                                      | 458k/31.2M [00:03<01:52, 275kB/s]
-      2%|▋                                      | 524k/31.2M [00:03<01:24, 363kB/s]
-      2%|▊                                      | 622k/31.2M [00:03<00:59, 514kB/s]
-      2%|▉                                      | 779k/31.2M [00:03<00:38, 792kB/s]
-      3%|█▏                                    | 944k/31.2M [00:03<00:29, 1.02MB/s]
-      4%|█▎                                   | 1.12M/31.2M [00:03<00:24, 1.22MB/s]
-      4%|█▌                                    | 1.25M/31.2M [00:04<00:52, 566kB/s]
-      4%|█▋                                    | 1.35M/31.2M [00:04<00:55, 542kB/s]
-      5%|█▊                                    | 1.45M/31.2M [00:04<00:56, 528kB/s]
-      5%|█▉                                    | 1.62M/31.2M [00:04<00:47, 621kB/s]
-      6%|██▎                                  | 1.97M/31.2M [00:04<00:26, 1.09MB/s]
-      7%|██▌                                  | 2.16M/31.2M [00:04<00:23, 1.22MB/s]
-      8%|██▊                                  | 2.36M/31.2M [00:05<00:21, 1.33MB/s]
-      8%|███                                  | 2.57M/31.2M [00:05<00:19, 1.49MB/s]
-      9%|███▎                                 | 2.77M/31.2M [00:05<00:17, 1.60MB/s]
-     10%|███▋                                 | 3.06M/31.2M [00:05<00:14, 1.93MB/s]
-     11%|████▏                                | 3.54M/31.2M [00:05<00:10, 2.67MB/s]
-     13%|████▉                                | 4.19M/31.2M [00:05<00:07, 3.72MB/s]
-     17%|██████▏                              | 5.24M/31.2M [00:05<00:04, 5.58MB/s]
-     21%|███████▌                             | 6.42M/31.2M [00:05<00:03, 7.19MB/s]
-     25%|█████████▏                           | 7.75M/31.2M [00:05<00:02, 8.87MB/s]
-     29%|██████████▊                          | 9.11M/31.2M [00:05<00:02, 10.2MB/s]
-     33%|████████████▍                        | 10.5M/31.2M [00:06<00:01, 11.1MB/s]
-     38%|██████████████                       | 11.9M/31.2M [00:06<00:01, 12.0MB/s]
-     43%|███████████████▋                     | 13.3M/31.2M [00:06<00:01, 12.4MB/s]
-     47%|█████████████████▌                   | 14.8M/31.2M [00:06<00:01, 13.2MB/s]
-     52%|███████████████████▏                 | 16.2M/31.2M [00:06<00:01, 13.1MB/s]
-     56%|████████████████████▉                | 17.6M/31.2M [00:06<00:01, 13.5MB/s]
-     61%|██████████████████████▌              | 19.0M/31.2M [00:06<00:00, 13.3MB/s]
-     65%|████████████████████████             | 20.3M/31.2M [00:06<00:00, 12.6MB/s]
-     70%|█████████████████████████▊           | 21.8M/31.2M [00:06<00:00, 13.1MB/s]
-     74%|███████████████████████████▎         | 23.1M/31.2M [00:07<00:00, 12.9MB/s]
-     79%|█████████████████████████████▎       | 24.7M/31.2M [00:07<00:00, 13.9MB/s]
-     84%|███████████████████████████████▏     | 26.3M/31.2M [00:07<00:00, 14.4MB/s]
-     89%|████████████████████████████████▉    | 27.8M/31.2M [00:07<00:00, 13.7MB/s]
-     94%|██████████████████████████████████▉  | 29.5M/31.2M [00:07<00:00, 14.6MB/s]
-     99%|████████████████████████████████████▋| 31.0M/31.2M [00:07<00:00, 14.3MB/s]
-      0%|                                              | 0.00/31.2M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 31.2M/31.2M [00:00<00:00, 298GB/s]
-    9it [00:09,  1.08s/it]    9it [00:09,  1.08s/it]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/59.6M [00:00<?, ?B/s]
-      0%|                                     | 15.4k/59.6M [00:00<13:27, 73.8kB/s]
-      0%|                                      | 48.1k/59.6M [00:00<08:01, 124kB/s]
-      0%|                                      | 80.9k/59.6M [00:00<06:58, 142kB/s]
-      0%|                                       | 114k/59.6M [00:00<06:33, 151kB/s]
-      0%|                                       | 147k/59.6M [00:00<05:14, 189kB/s]
-      0%|                                       | 169k/59.6M [00:01<05:11, 191kB/s]
-      0%|▏                                      | 197k/59.6M [00:01<04:42, 210kB/s]
-      0%|▏                                      | 225k/59.6M [00:01<04:22, 227kB/s]
-      0%|▏                                      | 250k/59.6M [00:01<07:46, 127kB/s]
-      0%|▏                                      | 272k/59.6M [00:01<07:55, 125kB/s]
-      0%|▏                                      | 289k/59.6M [00:02<08:59, 110kB/s]
-      1%|▏                                      | 308k/59.6M [00:02<09:22, 105kB/s]
-      1%|▏                                      | 347k/59.6M [00:02<07:27, 132kB/s]
-      1%|▎                                      | 384k/59.6M [00:02<06:48, 145kB/s]
-      1%|▎                                      | 423k/59.6M [00:02<06:13, 159kB/s]
-      1%|▎                                      | 477k/59.6M [00:02<04:24, 224kB/s]
-      1%|▎                                      | 517k/59.6M [00:03<03:49, 257kB/s]
-      1%|▎                                      | 560k/59.6M [00:03<04:05, 241kB/s]
-      1%|▍                                      | 604k/59.6M [00:03<04:15, 231kB/s]
-      1%|▍                                      | 646k/59.6M [00:03<04:24, 223kB/s]
-      1%|▍                                      | 691k/59.6M [00:03<04:25, 222kB/s]
-      1%|▍                                      | 734k/59.6M [00:04<04:34, 214kB/s]
-      1%|▌                                      | 780k/59.6M [00:04<04:25, 221kB/s]
-      1%|▌                                      | 833k/59.6M [00:04<04:13, 232kB/s]
-      2%|▌                                      | 896k/59.6M [00:04<03:49, 256kB/s]
-      2%|▋                                      | 977k/59.6M [00:04<02:52, 339kB/s]
-      2%|▋                                     | 1.06M/59.6M [00:04<02:18, 424kB/s]
-      2%|▋                                     | 1.17M/59.6M [00:05<01:40, 583kB/s]
-      2%|▊                                     | 1.34M/59.6M [00:05<01:09, 837kB/s]
-      3%|▉                                    | 1.58M/59.6M [00:05<00:47, 1.21MB/s]
-      3%|█▏                                   | 1.90M/59.6M [00:05<00:33, 1.74MB/s]
-      4%|█▍                                   | 2.38M/59.6M [00:05<00:23, 2.45MB/s]
-      5%|█▉                                   | 3.06M/59.6M [00:05<00:15, 3.63MB/s]
-      7%|██▌                                  | 4.05M/59.6M [00:05<00:10, 5.27MB/s]
-      9%|███▎                                 | 5.36M/59.6M [00:05<00:07, 7.25MB/s]
-     11%|████                                 | 6.47M/59.6M [00:05<00:06, 8.28MB/s]
-     13%|████▉                                | 7.93M/59.6M [00:05<00:05, 10.1MB/s]
-     16%|█████▊                               | 9.39M/59.6M [00:06<00:04, 11.4MB/s]
-     18%|██████▋                              | 10.8M/59.6M [00:06<00:04, 12.1MB/s]
-     20%|███████▌                             | 12.2M/59.6M [00:06<00:03, 12.5MB/s]
-     23%|████████▍                            | 13.6M/59.6M [00:06<00:03, 12.9MB/s]
-     26%|█████████▌                           | 15.3M/59.6M [00:06<00:03, 14.2MB/s]
-     28%|██████████▍                          | 16.7M/59.6M [00:06<00:03, 14.1MB/s]
-     30%|███████████▎                         | 18.2M/59.6M [00:06<00:02, 14.0MB/s]
-     33%|████████████▏                        | 19.6M/59.6M [00:06<00:02, 13.8MB/s]
-     36%|█████████████▏                       | 21.2M/59.6M [00:06<00:02, 14.4MB/s]
-     38%|██████████████▏                      | 23.0M/59.6M [00:07<00:02, 15.3MB/s]
-     41%|███████████████▎                     | 24.7M/59.6M [00:07<00:02, 15.8MB/s]
-     44%|████████████████▎                    | 26.2M/59.6M [00:07<00:02, 15.7MB/s]
-     47%|█████████████████▎                   | 27.8M/59.6M [00:07<00:02, 15.5MB/s]
-     49%|██████████████████▏                  | 29.4M/59.6M [00:07<00:02, 14.9MB/s]
-     52%|███████████████████▎                 | 31.0M/59.6M [00:07<00:01, 15.4MB/s]
-     55%|████████████████████▏                | 32.6M/59.6M [00:07<00:01, 13.5MB/s]
-     57%|█████████████████████                | 34.0M/59.6M [00:07<00:01, 13.7MB/s]
-     59%|██████████████████████               | 35.5M/59.6M [00:07<00:01, 13.9MB/s]
-     62%|██████████████████████▉              | 37.0M/59.6M [00:07<00:01, 14.2MB/s]
-     64%|███████████████████████▊             | 38.4M/59.6M [00:08<00:01, 11.7MB/s]
-     67%|████████████████████████▋            | 39.8M/59.6M [00:08<00:01, 12.2MB/s]
-     69%|█████████████████████████▍           | 41.1M/59.6M [00:08<00:01, 12.3MB/s]
-     71%|██████████████████████████▎          | 42.4M/59.6M [00:08<00:01, 12.6MB/s]
-     73%|███████████████████████████          | 43.7M/59.6M [00:08<00:01, 12.6MB/s]
-     75%|███████████████████████████▉         | 45.0M/59.6M [00:08<00:01, 12.1MB/s]
-     78%|████████████████████████████▋        | 46.3M/59.6M [00:08<00:01, 12.3MB/s]
-     80%|█████████████████████████████▋       | 47.8M/59.6M [00:08<00:00, 12.8MB/s]
-     82%|██████████████████████████████▌      | 49.2M/59.6M [00:08<00:00, 12.9MB/s]
-     85%|███████████████████████████████▍     | 50.6M/59.6M [00:09<00:00, 13.3MB/s]
-     87%|████████████████████████████████▎    | 52.0M/59.6M [00:09<00:00, 12.9MB/s]
-     90%|█████████████████████████████████    | 53.4M/59.6M [00:09<00:00, 13.2MB/s]
-     92%|██████████████████████████████████   | 54.8M/59.6M [00:09<00:00, 13.5MB/s]
-     95%|███████████████████████████████████  | 56.4M/59.6M [00:09<00:00, 14.3MB/s]
-     97%|███████████████████████████████████▉ | 57.9M/59.6M [00:09<00:00, 14.3MB/s]
-    100%|████████████████████████████████████▊| 59.4M/59.6M [00:09<00:00, 14.1MB/s]
-      0%|                                              | 0.00/59.6M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 59.6M/59.6M [00:00<00:00, 559GB/s]
-    9it [00:12,  1.42s/it]    9it [00:12,  1.42s/it]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/71.8M [00:00<?, ?B/s]
-      0%|                                      | 78.8k/71.8M [00:00<01:31, 784kB/s]
-      0%|                                       | 158k/71.8M [00:00<02:48, 425kB/s]
-      0%|                                       | 209k/71.8M [00:00<03:08, 380kB/s]
-      0%|▏                                      | 252k/71.8M [00:00<04:00, 297kB/s]
-      0%|▏                                      | 333k/71.8M [00:00<03:33, 335kB/s]
-      1%|▎                                      | 467k/71.8M [00:01<02:39, 447kB/s]
-      1%|▎                                      | 654k/71.8M [00:01<01:38, 725kB/s]
-      1%|▍                                      | 752k/71.8M [00:01<01:31, 779kB/s]
-      1%|▍                                      | 852k/71.8M [00:01<01:25, 832kB/s]
-      1%|▌                                      | 948k/71.8M [00:01<01:22, 864kB/s]
-      1%|▌                                     | 1.04M/71.8M [00:01<01:19, 889kB/s]
-      2%|▌                                     | 1.15M/71.8M [00:01<01:18, 897kB/s]
-      2%|▋                                    | 1.34M/71.8M [00:01<00:59, 1.18MB/s]
-      2%|▊                                    | 1.62M/71.8M [00:01<00:43, 1.61MB/s]
-      3%|█                                    | 2.03M/71.8M [00:02<00:30, 2.31MB/s]
-      4%|█▎                                   | 2.52M/71.8M [00:02<00:22, 3.05MB/s]
-      4%|█▌                                   | 3.00M/71.8M [00:02<00:19, 3.52MB/s]
-      5%|█▊                                   | 3.49M/71.8M [00:02<00:17, 3.91MB/s]
-      6%|██                                   | 3.96M/71.8M [00:02<00:16, 4.16MB/s]
-      6%|██▎                                  | 4.38M/71.8M [00:02<00:16, 4.17MB/s]
-      7%|██▌                                  | 4.88M/71.8M [00:02<00:15, 4.20MB/s]
-      8%|██▊                                  | 5.45M/71.8M [00:02<00:14, 4.62MB/s]
-      8%|███                                  | 5.93M/71.8M [00:02<00:14, 4.66MB/s]
-      9%|███▎                                 | 6.42M/71.8M [00:02<00:14, 4.66MB/s]
-     10%|███▌                                 | 6.89M/71.8M [00:03<00:14, 4.54MB/s]
-     10%|███▊                                 | 7.39M/71.8M [00:03<00:13, 4.62MB/s]
-     11%|████                                 | 7.91M/71.8M [00:03<00:13, 4.76MB/s]
-     12%|████▎                                | 8.39M/71.8M [00:03<00:13, 4.66MB/s]
-     12%|████▌                                | 8.91M/71.8M [00:03<00:13, 4.79MB/s]
-     13%|████▊                                | 9.39M/71.8M [00:03<00:13, 4.78MB/s]
-     14%|█████                                | 9.87M/71.8M [00:03<00:13, 4.72MB/s]
-     14%|█████▎                               | 10.3M/71.8M [00:03<00:13, 4.70MB/s]
-     15%|█████▌                               | 10.8M/71.8M [00:03<00:12, 4.75MB/s]
-     16%|█████▊                               | 11.3M/71.8M [00:04<00:12, 4.74MB/s]
-     16%|██████                               | 11.8M/71.8M [00:04<00:13, 4.58MB/s]
-     17%|██████▎                              | 12.3M/71.8M [00:04<00:12, 4.76MB/s]
-     18%|██████▋                              | 12.9M/71.8M [00:04<00:11, 4.99MB/s]
-     19%|███████                              | 13.7M/71.8M [00:04<00:10, 5.79MB/s]
-     20%|███████▌                             | 14.6M/71.8M [00:04<00:08, 6.91MB/s]
-     22%|████████▏                            | 16.0M/71.8M [00:04<00:06, 8.86MB/s]
-     25%|█████████                            | 17.7M/71.8M [00:04<00:04, 11.0MB/s]
-     27%|█████████▉                           | 19.2M/71.8M [00:04<00:04, 12.0MB/s]
-     29%|██████████▊                          | 21.0M/71.8M [00:04<00:03, 13.6MB/s]
-     31%|███████████▌                         | 22.5M/71.8M [00:05<00:03, 14.0MB/s]
-     34%|████████████▍                        | 24.2M/71.8M [00:05<00:03, 14.9MB/s]
-     36%|█████████████▎                       | 25.8M/71.8M [00:05<00:03, 15.1MB/s]
-     38%|██████████████                       | 27.3M/71.8M [00:05<00:02, 15.0MB/s]
-     40%|██████████████▉                      | 29.0M/71.8M [00:05<00:02, 15.5MB/s]
-     43%|███████████████▋                     | 30.5M/71.8M [00:05<00:02, 15.2MB/s]
-     45%|████████████████▋                    | 32.4M/71.8M [00:05<00:02, 16.1MB/s]
-     47%|█████████████████▌                   | 34.0M/71.8M [00:05<00:02, 16.1MB/s]
-     50%|██████████████████▎                  | 35.6M/71.8M [00:05<00:02, 15.3MB/s]
-     52%|███████████████████▏                 | 37.3M/71.8M [00:05<00:02, 15.7MB/s]
-     54%|████████████████████▏                | 39.1M/71.8M [00:06<00:02, 16.3MB/s]
-     57%|████████████████████▉                | 40.7M/71.8M [00:06<00:01, 15.7MB/s]
-     59%|█████████████████████▊               | 42.3M/71.8M [00:06<00:01, 15.7MB/s]
-     62%|██████████████████████▊              | 44.2M/71.8M [00:06<00:01, 16.5MB/s]
-     64%|███████████████████████▌             | 45.8M/71.8M [00:06<00:01, 15.7MB/s]
-     66%|████████████████████████▍            | 47.5M/71.8M [00:06<00:01, 15.3MB/s]
-     68%|█████████████████████████▎           | 49.0M/71.8M [00:06<00:02, 11.0MB/s]
-     71%|██████████████████████████           | 50.6M/71.8M [00:06<00:01, 12.1MB/s]
-     73%|██████████████████████████▊          | 52.1M/71.8M [00:07<00:01, 12.7MB/s]
-     75%|███████████████████████████▊         | 53.9M/71.8M [00:07<00:01, 13.9MB/s]
-     77%|████████████████████████████▌        | 55.4M/71.8M [00:07<00:01, 13.7MB/s]
-     80%|█████████████████████████████▌       | 57.3M/71.8M [00:07<00:00, 15.1MB/s]
-     82%|██████████████████████████████▎      | 58.9M/71.8M [00:07<00:00, 15.2MB/s]
-     85%|███████████████████████████████▎     | 60.7M/71.8M [00:07<00:00, 16.1MB/s]
-     87%|████████████████████████████████▏    | 62.6M/71.8M [00:07<00:00, 16.8MB/s]
-     90%|█████████████████████████████████▏   | 64.3M/71.8M [00:07<00:00, 16.9MB/s]
-     92%|██████████████████████████████████   | 66.0M/71.8M [00:07<00:00, 16.9MB/s]
-     94%|██████████████████████████████████▉  | 67.7M/71.8M [00:08<00:00, 16.4MB/s]
-     97%|███████████████████████████████████▋ | 69.4M/71.8M [00:08<00:00, 16.2MB/s]
-     99%|████████████████████████████████████▌| 71.0M/71.8M [00:08<00:00, 14.2MB/s]
-      0%|                                              | 0.00/71.8M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 71.8M/71.8M [00:00<00:00, 655GB/s]
-    9it [00:10,  1.12s/it]    9it [00:10,  1.12s/it]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/66.0M [00:00<?, ?B/s]
-      0%|                                      | 80.9k/66.0M [00:00<01:43, 637kB/s]
-      0%|                                       | 179k/66.0M [00:00<01:23, 790kB/s]
-      1%|▏                                     | 376k/66.0M [00:00<00:51, 1.28MB/s]
-      1%|▍                                     | 651k/66.0M [00:00<00:36, 1.78MB/s]
-      2%|▊                                    | 1.44M/66.0M [00:00<00:16, 3.87MB/s]
-      4%|█▍                                   | 2.62M/66.0M [00:00<00:09, 6.47MB/s]
-      6%|██▏                                  | 3.83M/66.0M [00:00<00:07, 8.22MB/s]
-      9%|███▏                                 | 5.63M/66.0M [00:00<00:05, 10.6MB/s]
-     11%|████▏                                | 7.42M/66.0M [00:00<00:04, 12.6MB/s]
-     13%|████▊                                | 8.68M/66.0M [00:01<00:04, 12.2MB/s]
-     15%|█████▋                               | 10.2M/66.0M [00:01<00:04, 12.9MB/s]
-     18%|██████▌                              | 11.8M/66.0M [00:01<00:03, 13.7MB/s]
-     21%|███████▌                             | 13.6M/66.0M [00:01<00:03, 14.8MB/s]
-     23%|████████▌                            | 15.3M/66.0M [00:01<00:03, 15.6MB/s]
-     26%|█████████▌                           | 17.2M/66.0M [00:01<00:03, 16.1MB/s]
-     28%|██████████▌                          | 18.8M/66.0M [00:01<00:02, 16.1MB/s]
-     31%|███████████▌                         | 20.7M/66.0M [00:01<00:02, 16.8MB/s]
-     34%|████████████▌                        | 22.5M/66.0M [00:01<00:02, 17.2MB/s]
-     37%|█████████████▌                       | 24.2M/66.0M [00:02<00:02, 17.1MB/s]
-     39%|██████████████▌                      | 25.9M/66.0M [00:02<00:02, 16.8MB/s]
-     42%|███████████████▍                     | 27.6M/66.0M [00:02<00:02, 16.4MB/s]
-     45%|████████████████▌                    | 29.5M/66.0M [00:02<00:02, 17.2MB/s]
-     47%|█████████████████▌                   | 31.3M/66.0M [00:02<00:02, 15.8MB/s]
-     50%|██████████████████▍                  | 32.9M/66.0M [00:02<00:02, 15.8MB/s]
-     53%|███████████████████▍                 | 34.7M/66.0M [00:02<00:01, 16.4MB/s]
-     55%|████████████████████▍                | 36.5M/66.0M [00:02<00:01, 16.9MB/s]
-     58%|█████████████████████▍               | 38.2M/66.0M [00:02<00:01, 16.3MB/s]
-     61%|██████████████████████▍              | 39.9M/66.0M [00:02<00:01, 16.5MB/s]
-     63%|███████████████████████▍             | 41.7M/66.0M [00:03<00:01, 16.9MB/s]
-     66%|████████████████████████▍            | 43.5M/66.0M [00:03<00:01, 17.2MB/s]
-     69%|█████████████████████████▍           | 45.3M/66.0M [00:03<00:01, 17.1MB/s]
-     72%|██████████████████████████▍          | 47.2M/66.0M [00:03<00:01, 17.5MB/s]
-     74%|███████████████████████████▍         | 48.9M/66.0M [00:03<00:01, 16.2MB/s]
-     77%|████████████████████████████▍        | 50.7M/66.0M [00:03<00:00, 16.6MB/s]
-     80%|█████████████████████████████▍       | 52.6M/66.0M [00:03<00:00, 17.0MB/s]
-     82%|██████████████████████████████▍      | 54.3M/66.0M [00:03<00:00, 17.1MB/s]
-     85%|███████████████████████████████▌     | 56.4M/66.0M [00:03<00:00, 18.1MB/s]
-     88%|████████████████████████████████▋    | 58.2M/66.0M [00:04<00:00, 17.8MB/s]
-     91%|█████████████████████████████████▋   | 60.0M/66.0M [00:04<00:00, 16.8MB/s]
-     94%|██████████████████████████████████▌  | 61.7M/66.0M [00:04<00:00, 16.8MB/s]
-     97%|███████████████████████████████████▋ | 63.7M/66.0M [00:04<00:00, 17.6MB/s]
-     99%|████████████████████████████████████▊| 65.6M/66.0M [00:04<00:00, 17.9MB/s]
-      0%|                                              | 0.00/66.0M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 66.0M/66.0M [00:00<00:00, 722GB/s]
-    9it [00:06,  1.48it/s]    9it [00:06,  1.48it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]
-      0%|                                              | 0.00/54.2M [00:00<?, ?B/s]
-      0%|                                      | 97.3k/54.2M [00:00<00:55, 968kB/s]
-      0%|▏                                      | 196k/54.2M [00:00<00:58, 931kB/s]
-      1%|▎                                     | 409k/54.2M [00:00<00:37, 1.43MB/s]
-      1%|▌                                     | 802k/54.2M [00:00<00:22, 2.33MB/s]
-      2%|▊                                    | 1.26M/54.2M [00:00<00:17, 3.08MB/s]
-      4%|█▍                                   | 2.11M/54.2M [00:00<00:10, 4.81MB/s]
-      5%|█▉                                   | 2.90M/54.2M [00:00<00:08, 5.73MB/s]
-      7%|██▋                                  | 4.02M/54.2M [00:00<00:07, 6.51MB/s]
-      9%|███▍                                 | 5.01M/54.2M [00:00<00:06, 7.38MB/s]
-     12%|████▍                                | 6.42M/54.2M [00:01<00:05, 9.27MB/s]
-     14%|█████▏                               | 7.65M/54.2M [00:01<00:04, 10.1MB/s]
-     17%|██████▎                              | 9.17M/54.2M [00:01<00:03, 11.6MB/s]
-     20%|███████▎                             | 10.7M/54.2M [00:01<00:03, 12.4MB/s]
-     22%|████████▎                            | 12.2M/54.2M [00:01<00:03, 13.2MB/s]
-     25%|█████████▏                           | 13.5M/54.2M [00:01<00:03, 13.1MB/s]
-     28%|██████████▎                          | 15.1M/54.2M [00:01<00:02, 13.5MB/s]
-     31%|███████████▎                         | 16.7M/54.2M [00:01<00:02, 14.3MB/s]
-     33%|████████████▎                        | 18.1M/54.2M [00:01<00:02, 14.3MB/s]
-     36%|█████████████▎                       | 19.5M/54.2M [00:02<00:02, 14.0MB/s]
-     39%|██████████████▍                      | 21.1M/54.2M [00:02<00:02, 14.3MB/s]
-     42%|███████████████▍                     | 22.6M/54.2M [00:02<00:02, 14.5MB/s]
-     45%|████████████████▌                    | 24.2M/54.2M [00:02<00:02, 14.9MB/s]
-     47%|█████████████████▌                   | 25.7M/54.2M [00:02<00:01, 14.8MB/s]
-     50%|██████████████████▌                  | 27.2M/54.2M [00:02<00:01, 14.8MB/s]
-     53%|███████████████████▌                 | 28.7M/54.2M [00:02<00:01, 14.4MB/s]
-     56%|████████████████████▌                | 30.2M/54.2M [00:02<00:01, 14.6MB/s]
-     58%|█████████████████████▌               | 31.7M/54.2M [00:02<00:01, 14.3MB/s]
-     61%|██████████████████████▋              | 33.3M/54.2M [00:02<00:01, 14.8MB/s]
-     64%|███████████████████████▋             | 34.8M/54.2M [00:03<00:01, 14.8MB/s]
-     67%|████████████████████████▋            | 36.3M/54.2M [00:03<00:01, 14.7MB/s]
-     70%|█████████████████████████▊           | 37.8M/54.2M [00:03<00:01, 14.9MB/s]
-     73%|██████████████████████████▊          | 39.4M/54.2M [00:03<00:00, 15.0MB/s]
-     75%|███████████████████████████▊         | 40.8M/54.2M [00:03<00:00, 14.7MB/s]
-     78%|████████████████████████████▊        | 42.3M/54.2M [00:03<00:00, 13.9MB/s]
-     81%|█████████████████████████████▉       | 43.9M/54.2M [00:03<00:00, 14.4MB/s]
-     84%|██████████████████████████████▉      | 45.4M/54.2M [00:03<00:00, 14.7MB/s]
-     87%|████████████████████████████████     | 47.1M/54.2M [00:03<00:00, 15.0MB/s]
-     90%|█████████████████████████████████▏   | 48.7M/54.2M [00:03<00:00, 15.4MB/s]
-     93%|██████████████████████████████████▎  | 50.3M/54.2M [00:04<00:00, 15.4MB/s]
-     96%|███████████████████████████████████▍ | 51.9M/54.2M [00:04<00:00, 15.7MB/s]
-     99%|████████████████████████████████████▌| 53.6M/54.2M [00:04<00:00, 16.0MB/s]
-      0%|                                              | 0.00/54.2M [00:00<?, ?B/s]    100%|██████████████████████████████████████| 54.2M/54.2M [00:00<00:00, 472GB/s]
-    9it [00:05,  1.50it/s]    9it [00:05,  1.50it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    0it [00:00, ?it/s]    9it [00:00, 34100.03it/s]
+    0it [00:00, ?it/s]    9it [00:00, 33554.43it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -3782,40 +598,40 @@ Example: Cross-subject classification with riemannian classifier
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    keywords_train    [A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11,...
+    keywords_train                                             [A1, A2]
     keywords_test                                                   A21
     classifier                                                     tslr
-    accuracy                                                       0.79
+    accuracy                                                      0.645
     labels            [0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, ...
-    preds             [1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, ...
-    probas            [[0.49860514408137924, 0.5013948559186208], [0...
+    preds             [0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, ...
+    probas            [[0.5003567863234535, 0.4996432136765465], [0....
     desc                                                           None
     Name: 0, dtype: object
-    keywords_train    [A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11,...
+    keywords_train                                             [A1, A2]
     keywords_test                                                   A21
     classifier                                                      mdm
-    accuracy                                                       0.79
+    accuracy                                                      0.645
     labels            [0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, ...
-    preds             [1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, ...
-    probas            [[0.4999974132839402, 0.5000025867160599], [0....
+    preds             [0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, ...
+    probas            [[0.5000073742437376, 0.49999262575626235], [0...
     desc                                                           None
     Name: 1, dtype: object
-    keywords_train    [A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11,...
+    keywords_train                                             [A1, A2]
     keywords_test                                                   A56
     classifier                                                     tslr
-    accuracy                                                       0.99
+    accuracy                                                       0.98
     labels            [1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, ...
     preds             [1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, ...
-    probas            [[0.47723520307527056, 0.5227647969247294], [0...
+    probas            [[0.4978618428968655, 0.5021381571031345], [0....
     desc                                                           None
     Name: 2, dtype: object
-    keywords_train    [A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11,...
+    keywords_train                                             [A1, A2]
     keywords_test                                                   A56
     classifier                                                      mdm
-    accuracy                                                       0.99
+    accuracy                                                       0.98
     labels            [1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, ...
     preds             [1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, ...
-    probas            [[0.499946105848059, 0.500053894151941], [0.49...
+    probas            [[0.49995668184131603, 0.500043318158684], [0....
     desc                                                           None
     Name: 3, dtype: object
 
@@ -3825,7 +641,7 @@ Example: Cross-subject classification with riemannian classifier
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (4 minutes 6.727 seconds)
+   **Total running time of the script:** (0 minutes 5.078 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_cross-subject-classification-riemannian.py:

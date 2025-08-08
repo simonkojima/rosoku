@@ -55,4 +55,7 @@ rosoku.utils
    rosoku.utils.nd_to_tensor
    rosoku.utils.tensor_to_dataset
    rosoku.utils.dataset_to_dataloader
+   rosoku.utils.load_data
+   rosoku.utils.convert_epochs_to_ndarray
+
 

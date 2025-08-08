@@ -73,7 +73,6 @@ def func_load_ndarray(
                 markers, {"left": ["left_hand"], "right": ["right_hand"]}
             )
             markers = tm.add_tag(markers, f"run:{name}")
-            # markers = tm.add_tag(markers, f"rtype:{rtype}")
 
             samples, markers = tm.remove(samples, markers, "event:misc")
 
@@ -108,9 +107,8 @@ def func_load_ndarray(
         y.append(y_subject)
         X.append(X_subject)
 
-    if mode != "test":
-        X = np.concatenate(X, axis=0)
-        y = np.concatenate(y, axis=0)
+    X = np.concatenate(X, axis=0)
+    y = np.concatenate(y, axis=0)
 
     return X, y
 
@@ -140,7 +138,7 @@ def convert_epochs_to_ndarray(
 label_keys = {"event:left": 0, "event:right": 1}
 
 results = rosoku.conventional(
-    keywords_train=[f"A{num}" for num in range(1, 21)],
+    keywords_train=[f"A{num}" for num in range(1, 3)],
     keywords_test=["A21", "A56"],
     func_load_ndarray=functools.partial(
         func_load_ndarray,
@@ -153,7 +151,6 @@ results = rosoku.conventional(
         resample=128,
         label_keys={"event:left": 0, "event:right": 1},
     ),
-    compile_test=False,
 )
 
 for m in range(results.shape[0]):

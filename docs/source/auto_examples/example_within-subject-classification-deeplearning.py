@@ -172,7 +172,6 @@ results = rosoku.deeplearning(
     keywords_valid=["run:3"],
     keywords_test=["run:4"],
     func_load_epochs=functools.partial(func_load_epochs, epochs=epochs),
-    apply_func_proc_per_obj=True,
     batch_size=batch_size,
     n_epochs=n_epochs,
     criterion=criterion,
@@ -198,4 +197,5 @@ results = rosoku.deeplearning(
     seed=seed,
 )
 
-print(results.loc[0])
+for m in range(results.shape[0]):
+    print(results.loc[m])

@@ -74,7 +74,7 @@ Example: Cross-subject classification with deep learning
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 40-138
+.. GENERATED FROM PYTHON SOURCE LINES 40-134
 
 .. code-block:: Python
 
@@ -155,10 +155,7 @@ Example: Cross-subject classification with deep learning
 
             epochs_subject = tm.concatenate_epochs(epochs_subject)
 
-            print(epochs_subject)
-
             epochs_subject = epochs_subject.crop(tmin=tmin, tmax=tmax).pick(picks="eeg")
-            print(epochs_subject.get_data().shape)
 
             y_subject = rosoku.utils.get_labels_from_epochs(
                 epochs_subject, label_keys=label_keys
@@ -169,9 +166,8 @@ Example: Cross-subject classification with deep learning
             y.append(y_subject)
             X.append(X_subject)
 
-        if mode != "test":
-            X = np.concatenate(X, axis=0)
-            y = np.concatenate(y, axis=0)
+        X = np.concatenate(X, axis=0)
+        y = np.concatenate(y, axis=0)
 
         return X, y
 
@@ -183,7 +179,7 @@ Example: Cross-subject classification with deep learning
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 139-160
+.. GENERATED FROM PYTHON SOURCE LINES 135-156
 
 .. code-block:: Python
 
@@ -215,11 +211,11 @@ Example: Cross-subject classification with deep learning
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 161-162
+.. GENERATED FROM PYTHON SOURCE LINES 157-158
 
 label_keys = {"event:left": 0, "event:right": 1}
 
-.. GENERATED FROM PYTHON SOURCE LINES 162-213
+.. GENERATED FROM PYTHON SOURCE LINES 158-208
 
 .. code-block:: Python
 
@@ -256,7 +252,6 @@ label_keys = {"event:left": 0, "event:right": 1}
         scheduler_params=scheduler_params,
         device=device,
         enable_ddp=enable_ddp,
-        compile_test=False,
         func_proc_epochs=None,
         early_stopping=early_stopping,
         enable_normalization=enable_normalization,
@@ -282,7 +277,7 @@ label_keys = {"event:left": 0, "event:right": 1}
 
  .. code-block:: none
 
-    0it [00:00, ?it/s]    9it [00:00, 39158.44it/s]
+    0it [00:00, ?it/s]    9it [00:00, 41031.23it/s]
     Reading 0 ... 230399  =      0.000 ...   449.998 secs...
     Reading 0 ... 230399  =      0.000 ...   449.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -378,19 +373,7 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:left_hand/subject:1/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:1/event:right/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:1/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:1/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:1/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:1/event:left/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:1/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:1/event:right/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:1/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:1/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 34285.86it/s]
+    0it [00:00, ?it/s]    9it [00:00, 33376.42it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -486,234 +469,6 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:2/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:2/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:2/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:2/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:2/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:2/event:left/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:2/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:2/event:right/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:2/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:2/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 35679.33it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:3/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:3/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:3/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:3/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:3/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:3/event:left/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:3/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:3/event:right/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:3/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:3/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 35378.38it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:4/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:4/event:left/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:4/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:4/event:right/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:4/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:4/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:4/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:4/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:4/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:4/event:left/run:4R5online'): 20>
-    (200, 27, 513)
     0it [00:00, ?it/s]    9it [00:00, 33916.20it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -810,19 +565,7 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:5/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:5/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:5/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:5/event:left/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:5/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:5/event:right/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:5/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:5/event:left/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:5/event:left/run:4R5online'): 20
-     np.str_('marker:right_hand/subject:5/event:right/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 34600.12it/s]
+    0it [00:00, ?it/s]    9it [00:00, 35213.37it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -918,19 +661,7 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:left_hand/subject:6/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:6/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:6/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:6/event:right/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:6/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:6/event:left/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:6/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:6/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:6/event:left/run:4R5online'): 20
-     np.str_('marker:right_hand/subject:6/event:right/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 36192.46it/s]
+    0it [00:00, ?it/s]    9it [00:00, 34887.93it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1026,19 +757,7 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:7/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:7/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:7/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:7/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:7/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:7/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:7/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:7/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:7/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:7/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 35882.83it/s]
+    0it [00:00, ?it/s]    9it [00:00, 35411.57it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1134,19 +853,7 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:8/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:8/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:8/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:8/event:left/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:8/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:8/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:8/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:8/event:right/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:8/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:8/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 33288.13it/s]
+    0it [00:00, ?it/s]    9it [00:00, 35951.18it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1242,19 +949,7 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:left_hand/subject:9/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:9/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:9/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:9/event:right/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:9/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:9/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:9/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:9/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:9/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:9/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 36157.79it/s]
+    0it [00:00, ?it/s]    9it [00:00, 35612.02it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1350,127 +1045,295 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:left_hand/subject:10/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:10/event:right/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:10/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:10/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:10/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:10/event:left/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:10/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:10/event:right/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:10/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:10/event:left/run:4R5online'): 20>
-    (200, 27, 513)
+    0it [00:00, ?it/s]    9it [00:00, 35082.47it/s]
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
+      return mne.concatenate_epochs(epochs_list, add_offset)
+    Not setting metadata
+    200 matching events found
+    No baseline correction applied
+    0it [00:00, ?it/s]    9it [00:00, 33554.43it/s]
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
+      return mne.concatenate_epochs(epochs_list, add_offset)
+    Not setting metadata
+    200 matching events found
+    No baseline correction applied
+    0it [00:00, ?it/s]    9it [00:00, 35713.09it/s]
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
+      return mne.concatenate_epochs(epochs_list, add_offset)
+    Not setting metadata
+    200 matching events found
+    No baseline correction applied
     0it [00:00, ?it/s]    9it [00:00, 35916.97it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:left_hand/subject:11/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:11/event:right/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:11/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:11/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:11/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:11/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:11/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:11/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:11/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:11/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 33142.00it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 232447  =      0.000 ...   453.998 secs...
@@ -1566,19 +1429,7 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:12/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:12/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:12/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:12/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:12/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:12/event:left/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:12/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:12/event:right/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:12/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:12/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 36437.00it/s]
+    0it [00:00, ?it/s]    9it [00:00, 35645.64it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -1674,774 +1525,6 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:13/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:13/event:left/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:13/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:13/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:13/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:13/event:right/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:13/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:13/event:left/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:13/event:left/run:4R5online'): 20
-     np.str_('marker:right_hand/subject:13/event:right/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 35916.97it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:left_hand/subject:14/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:14/event:right/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:14/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:14/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:14/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:14/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:14/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:14/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:14/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:14/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 36401.87it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:15/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:15/event:left/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:15/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:15/event:right/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:15/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:15/event:left/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:15/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:15/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:15/event:left/run:4R5online'): 20
-     np.str_('marker:right_hand/subject:15/event:right/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 34192.70it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:16/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:16/event:left/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:16/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:16/event:right/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:16/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:16/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:16/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:16/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:16/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:16/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 33112.93it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:17/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:17/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:17/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:17/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:17/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:17/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:17/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:17/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:17/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:17/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 33764.52it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:18/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:18/event:left/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:18/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:18/event:right/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:18/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:18/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:18/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:18/event:left/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:18/event:left/run:4R5online'): 20
-     np.str_('marker:right_hand/subject:18/event:right/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 34823.56it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:19/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:19/event:left/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:19/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:19/event:right/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:19/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:19/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:19/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:19/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:19/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:19/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 34791.46it/s]
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    No stim channel nor annotations found, skipping setting annotations.
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    Filtering raw data in 1 contiguous segment
-    Setting up band-pass filter from 8 - 30 Hz
-
-    IIR filter parameters
-    ---------------------
-    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
-    - Filter order 16 (effective, after forward-backward)
-    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
-
-    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
-    Not setting metadata
-    40 matching events found
-    No baseline correction applied
-    0 projection items activated
-    Using data from preloaded Raw for 40 events and 3073 original time points ...
-    0 bad epochs dropped
-    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
-      return mne.concatenate_epochs(epochs_list, add_offset)
-    Not setting metadata
-    200 matching events found
-    No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:left_hand/subject:20/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:20/event:right/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:20/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:20/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:20/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:20/event:left/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:20/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:20/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:20/event:left/run:4R5online'): 20
-     np.str_('marker:right_hand/subject:20/event:right/run:4R5online'): 20>
-    (200, 27, 513)
     0it [00:00, ?it/s]    9it [00:00, 35180.56it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2538,19 +1621,679 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:left_hand/subject:21/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:21/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:21/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:21/event:right/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:21/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:21/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:21/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:21/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:21/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:21/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    0it [00:00, ?it/s]    9it [00:00, 35279.19it/s]
+    0it [00:00, ?it/s]    9it [00:00, 35345.26it/s]
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
+      return mne.concatenate_epochs(epochs_list, add_offset)
+    Not setting metadata
+    200 matching events found
+    No baseline correction applied
+    0it [00:00, ?it/s]    9it [00:00, 35017.38it/s]
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
+      return mne.concatenate_epochs(epochs_list, add_offset)
+    Not setting metadata
+    200 matching events found
+    No baseline correction applied
+    0it [00:00, ?it/s]    9it [00:00, 35049.89it/s]
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
+      return mne.concatenate_epochs(epochs_list, add_offset)
+    Not setting metadata
+    200 matching events found
+    No baseline correction applied
+    0it [00:00, ?it/s]    9it [00:00, 31990.45it/s]
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
+      return mne.concatenate_epochs(epochs_list, add_offset)
+    Not setting metadata
+    200 matching events found
+    No baseline correction applied
+    0it [00:00, ?it/s]    9it [00:00, 35951.18it/s]
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
+      return mne.concatenate_epochs(epochs_list, add_offset)
+    Not setting metadata
+    200 matching events found
+    No baseline correction applied
+    0it [00:00, ?it/s]    9it [00:00, 34192.70it/s]
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
+      return mne.concatenate_epochs(epochs_list, add_offset)
+    Not setting metadata
+    200 matching events found
+    No baseline correction applied
+    0it [00:00, ?it/s]    9it [00:00, 35713.09it/s]
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    Reading 0 ... 230911  =      0.000 ...   450.998 secs...
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    No stim channel nor annotations found, skipping setting annotations.
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    Filtering raw data in 1 contiguous segment
+    Setting up band-pass filter from 8 - 30 Hz
+
+    IIR filter parameters
+    ---------------------
+    Butterworth bandpass zero-phase (two-pass forward and reverse) non-causal filter:
+    - Filter order 16 (effective, after forward-backward)
+    - Cutoffs at 8.00, 30.00 Hz: -6.02, -6.02 dB
+
+    Used Annotations descriptions: [np.str_('1010'), np.str_('32769'), np.str_('32770'), np.str_('33281'), np.str_('33282'), np.str_('768'), np.str_('781'), np.str_('786'), np.str_('800'), np.str_('left_hand'), np.str_('right_hand')]
+    Not setting metadata
+    40 matching events found
+    No baseline correction applied
+    0 projection items activated
+    Using data from preloaded Raw for 40 events and 3073 original time points ...
+    0 bad epochs dropped
+    /home/skojima/miniconda3/envs/sphinx/lib/python3.11/site-packages/tag_mne/mne_utils.py:14: RuntimeWarning: Concatenation of Annotations within Epochs is not supported yet. All annotations will be dropped.
+      return mne.concatenate_epochs(epochs_list, add_offset)
+    Not setting metadata
+    200 matching events found
+    No baseline correction applied
+    0it [00:00, ?it/s]    9it [00:00, 35444.82it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -2646,113 +2389,101 @@ label_keys = {"event:left": 0, "event:right": 1}
     Not setting metadata
     200 matching events found
     No baseline correction applied
-    <EpochsArray | 200 events (all good), -0.5 – 5.492 s (baseline off), ~37.5 MiB, data loaded,
-     np.str_('marker:right_hand/subject:56/event:right/run:0R1acquisition'): 20
-     np.str_('marker:left_hand/subject:56/event:left/run:0R1acquisition'): 20
-     np.str_('marker:right_hand/subject:56/event:right/run:1R2acquisition'): 20
-     np.str_('marker:left_hand/subject:56/event:left/run:1R2acquisition'): 20
-     np.str_('marker:right_hand/subject:56/event:right/run:2R3online'): 20
-     np.str_('marker:left_hand/subject:56/event:left/run:2R3online'): 20
-     np.str_('marker:right_hand/subject:56/event:right/run:3R4online'): 20
-     np.str_('marker:left_hand/subject:56/event:left/run:3R4online'): 20
-     np.str_('marker:right_hand/subject:56/event:right/run:4R5online'): 20
-     np.str_('marker:left_hand/subject:56/event:left/run:4R5online'): 20>
-    (200, 27, 513)
-    epoch 000, train_loss: 0.6929, train_acc: 0.50, valid_loss: 0.6929, valid_acc: 0.50, lr: 9.9999e-04, et: 0.3475, checkpoint saved
-    epoch 001, train_loss: 0.6925, train_acc: 0.50, valid_loss: 0.6926, valid_acc: 0.50, lr: 9.9996e-04, et: 0.3249, checkpoint saved
-    epoch 002, train_loss: 0.6914, train_acc: 0.51, valid_loss: 0.6913, valid_acc: 0.52, lr: 9.9991e-04, et: 0.3249, checkpoint saved
-    epoch 003, train_loss: 0.6877, train_acc: 0.54, valid_loss: 0.6848, valid_acc: 0.57, lr: 9.9984e-04, et: 0.3345, checkpoint saved
-    epoch 004, train_loss: 0.6719, train_acc: 0.62, valid_loss: 0.6584, valid_acc: 0.63, lr: 9.9975e-04, et: 0.3432, checkpoint saved
-    epoch 005, train_loss: 0.6263, train_acc: 0.66, valid_loss: 0.5786, valid_acc: 0.69, lr: 9.9965e-04, et: 0.3275, checkpoint saved
-    epoch 006, train_loss: 0.5810, train_acc: 0.69, valid_loss: 0.5151, valid_acc: 0.72, lr: 9.9952e-04, et: 0.3298, checkpoint saved
-    epoch 007, train_loss: 0.5630, train_acc: 0.70, valid_loss: 0.4809, valid_acc: 0.73, lr: 9.9937e-04, et: 0.3443, checkpoint saved
-    epoch 008, train_loss: 0.5340, train_acc: 0.73, valid_loss: 0.4627, valid_acc: 0.74, lr: 9.9920e-04, et: 0.3332, checkpoint saved
-    epoch 009, train_loss: 0.5296, train_acc: 0.73, valid_loss: 0.4553, valid_acc: 0.75, lr: 9.9901e-04, et: 0.3273, checkpoint saved
-    epoch 010, train_loss: 0.5226, train_acc: 0.73, valid_loss: 0.4501, valid_acc: 0.74, lr: 9.9881e-04, et: 0.3243, checkpoint saved
-    epoch 011, train_loss: 0.5206, train_acc: 0.73, valid_loss: 0.4569, valid_acc: 0.75, lr: 9.9858e-04, et: 0.3263
-    epoch 012, train_loss: 0.5150, train_acc: 0.74, valid_loss: 0.4550, valid_acc: 0.76, lr: 9.9833e-04, et: 0.3286
-    epoch 013, train_loss: 0.5132, train_acc: 0.73, valid_loss: 0.4499, valid_acc: 0.76, lr: 9.9807e-04, et: 0.3268, checkpoint saved
-    epoch 014, train_loss: 0.5123, train_acc: 0.73, valid_loss: 0.4521, valid_acc: 0.75, lr: 9.9778e-04, et: 0.3284
-    epoch 015, train_loss: 0.5092, train_acc: 0.74, valid_loss: 0.4515, valid_acc: 0.75, lr: 9.9748e-04, et: 0.3272
-    epoch 016, train_loss: 0.5069, train_acc: 0.75, valid_loss: 0.4503, valid_acc: 0.76, lr: 9.9715e-04, et: 0.3270
-    epoch 017, train_loss: 0.5038, train_acc: 0.74, valid_loss: 0.4472, valid_acc: 0.75, lr: 9.9681e-04, et: 0.3270, checkpoint saved
-    epoch 018, train_loss: 0.5022, train_acc: 0.75, valid_loss: 0.4499, valid_acc: 0.76, lr: 9.9644e-04, et: 0.3275
-    epoch 019, train_loss: 0.5010, train_acc: 0.75, valid_loss: 0.4478, valid_acc: 0.75, lr: 9.9606e-04, et: 0.3268
-    epoch 020, train_loss: 0.5081, train_acc: 0.73, valid_loss: 0.4730, valid_acc: 0.74, lr: 9.9566e-04, et: 0.3278
-    epoch 021, train_loss: 0.4926, train_acc: 0.76, valid_loss: 0.4516, valid_acc: 0.76, lr: 9.9524e-04, et: 0.3295
-    epoch 022, train_loss: 0.5029, train_acc: 0.75, valid_loss: 0.4540, valid_acc: 0.75, lr: 9.9479e-04, et: 0.3272
-    epoch 023, train_loss: 0.5119, train_acc: 0.73, valid_loss: 0.4729, valid_acc: 0.75, lr: 9.9433e-04, et: 0.3301
-    epoch 024, train_loss: 0.4909, train_acc: 0.75, valid_loss: 0.4538, valid_acc: 0.75, lr: 9.9385e-04, et: 0.3281
-    epoch 025, train_loss: 0.4815, train_acc: 0.76, valid_loss: 0.4495, valid_acc: 0.76, lr: 9.9335e-04, et: 0.3281
-    epoch 026, train_loss: 0.4790, train_acc: 0.77, valid_loss: 0.4523, valid_acc: 0.75, lr: 9.9283e-04, et: 0.3273
-    epoch 027, train_loss: 0.4845, train_acc: 0.75, valid_loss: 0.4647, valid_acc: 0.74, lr: 9.9229e-04, et: 0.3272
-    epoch 028, train_loss: 0.4793, train_acc: 0.77, valid_loss: 0.4575, valid_acc: 0.76, lr: 9.9173e-04, et: 0.3428
-    epoch 029, train_loss: 0.4720, train_acc: 0.77, valid_loss: 0.4548, valid_acc: 0.75, lr: 9.9115e-04, et: 0.3458
-    epoch 030, train_loss: 0.4745, train_acc: 0.77, valid_loss: 0.4634, valid_acc: 0.75, lr: 9.9055e-04, et: 0.3458
-    epoch 031, train_loss: 0.4686, train_acc: 0.78, valid_loss: 0.4586, valid_acc: 0.75, lr: 9.8994e-04, et: 0.3494
-    epoch 032, train_loss: 0.4652, train_acc: 0.78, valid_loss: 0.4582, valid_acc: 0.74, lr: 9.8930e-04, et: 0.3508
-    epoch 033, train_loss: 0.4687, train_acc: 0.78, valid_loss: 0.4632, valid_acc: 0.76, lr: 9.8865e-04, et: 0.3505
-    epoch 034, train_loss: 0.4624, train_acc: 0.78, valid_loss: 0.4759, valid_acc: 0.75, lr: 9.8797e-04, et: 0.3468
-    epoch 035, train_loss: 0.4597, train_acc: 0.78, valid_loss: 0.4622, valid_acc: 0.75, lr: 9.8728e-04, et: 0.3450
-    epoch 036, train_loss: 0.4593, train_acc: 0.78, valid_loss: 0.4694, valid_acc: 0.76, lr: 9.8656e-04, et: 0.3437
-    epoch 037, train_loss: 0.4572, train_acc: 0.78, valid_loss: 0.4703, valid_acc: 0.75, lr: 9.8583e-04, et: 0.3453
-    epoch 038, train_loss: 0.4558, train_acc: 0.78, valid_loss: 0.4638, valid_acc: 0.75, lr: 9.8508e-04, et: 0.3471
-    epoch 039, train_loss: 0.4540, train_acc: 0.78, valid_loss: 0.4670, valid_acc: 0.74, lr: 9.8431e-04, et: 0.3288
-    epoch 040, train_loss: 0.4595, train_acc: 0.78, valid_loss: 0.4772, valid_acc: 0.75, lr: 9.8352e-04, et: 0.3276
-    epoch 041, train_loss: 0.4499, train_acc: 0.79, valid_loss: 0.4696, valid_acc: 0.75, lr: 9.8271e-04, et: 0.3375
-    epoch 042, train_loss: 0.4474, train_acc: 0.78, valid_loss: 0.4616, valid_acc: 0.75, lr: 9.8188e-04, et: 0.3326
-    epoch 043, train_loss: 0.4481, train_acc: 0.79, valid_loss: 0.4733, valid_acc: 0.75, lr: 9.8103e-04, et: 0.3273
-    epoch 044, train_loss: 0.4452, train_acc: 0.79, valid_loss: 0.4649, valid_acc: 0.75, lr: 9.8017e-04, et: 0.3295
-    epoch 045, train_loss: 0.4438, train_acc: 0.79, valid_loss: 0.4656, valid_acc: 0.76, lr: 9.7928e-04, et: 0.3457
-    epoch 046, train_loss: 0.4495, train_acc: 0.79, valid_loss: 0.4758, valid_acc: 0.75, lr: 9.7838e-04, et: 0.3329
-    epoch 047, train_loss: 0.4428, train_acc: 0.79, valid_loss: 0.4650, valid_acc: 0.76, lr: 9.7745e-04, et: 0.3291
-    epoch 048, train_loss: 0.4414, train_acc: 0.79, valid_loss: 0.4698, valid_acc: 0.75, lr: 9.7651e-04, et: 0.3308
-    epoch 049, train_loss: 0.4385, train_acc: 0.79, valid_loss: 0.4717, valid_acc: 0.75, lr: 9.7555e-04, et: 0.3298
-    epoch 050, train_loss: 0.4379, train_acc: 0.79, valid_loss: 0.4665, valid_acc: 0.75, lr: 9.7457e-04, et: 0.3298
-    epoch 051, train_loss: 0.4368, train_acc: 0.79, valid_loss: 0.4653, valid_acc: 0.75, lr: 9.7358e-04, et: 0.3275
-    epoch 052, train_loss: 0.4369, train_acc: 0.79, valid_loss: 0.4829, valid_acc: 0.74, lr: 9.7256e-04, et: 0.3270
-    epoch 053, train_loss: 0.4405, train_acc: 0.79, valid_loss: 0.4791, valid_acc: 0.74, lr: 9.7152e-04, et: 0.3270
-    epoch 054, train_loss: 0.4361, train_acc: 0.80, valid_loss: 0.4789, valid_acc: 0.75, lr: 9.7047e-04, et: 0.3276
-    epoch 055, train_loss: 0.4355, train_acc: 0.79, valid_loss: 0.4629, valid_acc: 0.76, lr: 9.6940e-04, et: 0.3263
-    epoch 056, train_loss: 0.4349, train_acc: 0.80, valid_loss: 0.4764, valid_acc: 0.74, lr: 9.6831e-04, et: 0.3266
-    epoch 057, train_loss: 0.4340, train_acc: 0.80, valid_loss: 0.4715, valid_acc: 0.76, lr: 9.6720e-04, et: 0.3299
-    epoch 058, train_loss: 0.4326, train_acc: 0.80, valid_loss: 0.4689, valid_acc: 0.76, lr: 9.6607e-04, et: 0.3290
-    epoch 059, train_loss: 0.4335, train_acc: 0.79, valid_loss: 0.4681, valid_acc: 0.74, lr: 9.6492e-04, et: 0.3297
-    epoch 060, train_loss: 0.4326, train_acc: 0.80, valid_loss: 0.4699, valid_acc: 0.75, lr: 9.6376e-04, et: 0.3323
-    epoch 061, train_loss: 0.4359, train_acc: 0.80, valid_loss: 0.4780, valid_acc: 0.75, lr: 9.6258e-04, et: 0.3290
-    epoch 062, train_loss: 0.4307, train_acc: 0.80, valid_loss: 0.4699, valid_acc: 0.76, lr: 9.6138e-04, et: 0.3294
-    epoch 063, train_loss: 0.4319, train_acc: 0.80, valid_loss: 0.4783, valid_acc: 0.74, lr: 9.6016e-04, et: 0.3301
-    epoch 064, train_loss: 0.4410, train_acc: 0.79, valid_loss: 0.4945, valid_acc: 0.73, lr: 9.5892e-04, et: 0.3293
-    epoch 065, train_loss: 0.4287, train_acc: 0.80, valid_loss: 0.4693, valid_acc: 0.76, lr: 9.5766e-04, et: 0.3307
-    epoch 066, train_loss: 0.4274, train_acc: 0.80, valid_loss: 0.4712, valid_acc: 0.75, lr: 9.5639e-04, et: 0.3273
-    epoch 067, train_loss: 0.4308, train_acc: 0.80, valid_loss: 0.4896, valid_acc: 0.73, lr: 9.5510e-04, et: 0.3274
-    epoch 068, train_loss: 0.4257, train_acc: 0.80, valid_loss: 0.4776, valid_acc: 0.74, lr: 9.5379e-04, et: 0.3272
-    epoch 069, train_loss: 0.4248, train_acc: 0.80, valid_loss: 0.4857, valid_acc: 0.74, lr: 9.5246e-04, et: 0.3285
-    epoch 070, train_loss: 0.4257, train_acc: 0.80, valid_loss: 0.4736, valid_acc: 0.75, lr: 9.5112e-04, et: 0.3301
-    epoch 071, train_loss: 0.4285, train_acc: 0.80, valid_loss: 0.4794, valid_acc: 0.75, lr: 9.4975e-04, et: 0.3268
-    epoch 072, train_loss: 0.4326, train_acc: 0.80, valid_loss: 0.4911, valid_acc: 0.74, lr: 9.4837e-04, et: 0.3304
-    epoch 073, train_loss: 0.4266, train_acc: 0.80, valid_loss: 0.4815, valid_acc: 0.75, lr: 9.4697e-04, et: 0.3262
-    epoch 074, train_loss: 0.4231, train_acc: 0.81, valid_loss: 0.4787, valid_acc: 0.75, lr: 9.4556e-04, et: 0.3268
-    epoch 075, train_loss: 0.4220, train_acc: 0.81, valid_loss: 0.4784, valid_acc: 0.76, lr: 9.4412e-04, et: 0.3281
-    epoch 076, train_loss: 0.4217, train_acc: 0.81, valid_loss: 0.4761, valid_acc: 0.75, lr: 9.4267e-04, et: 0.3273
-    epoch 077, train_loss: 0.4230, train_acc: 0.81, valid_loss: 0.4825, valid_acc: 0.75, lr: 9.4120e-04, et: 0.3271
-    epoch 078, train_loss: 0.4224, train_acc: 0.81, valid_loss: 0.4815, valid_acc: 0.74, lr: 9.3972e-04, et: 0.3280
-    epoch 079, train_loss: 0.4217, train_acc: 0.80, valid_loss: 0.4800, valid_acc: 0.74, lr: 9.3822e-04, et: 0.3265
-    epoch 080, train_loss: 0.4226, train_acc: 0.81, valid_loss: 0.4759, valid_acc: 0.75, lr: 9.3669e-04, et: 0.3277
-    epoch 081, train_loss: 0.4203, train_acc: 0.81, valid_loss: 0.4739, valid_acc: 0.75, lr: 9.3516e-04, et: 0.3389
-    epoch 082, train_loss: 0.4202, train_acc: 0.81, valid_loss: 0.4782, valid_acc: 0.75, lr: 9.3360e-04, et: 0.3414
-    epoch 083, train_loss: 0.4254, train_acc: 0.81, valid_loss: 0.4869, valid_acc: 0.74, lr: 9.3203e-04, et: 0.3301
-    epoch 084, train_loss: 0.4217, train_acc: 0.81, valid_loss: 0.4766, valid_acc: 0.75, lr: 9.3044e-04, et: 0.3297
-    epoch 085, train_loss: 0.4187, train_acc: 0.81, valid_loss: 0.4679, valid_acc: 0.76, lr: 9.2883e-04, et: 0.3480
-    epoch 086, train_loss: 0.4206, train_acc: 0.81, valid_loss: 0.4938, valid_acc: 0.74, lr: 9.2721e-04, et: 0.3307
-    epoch 087, train_loss: 0.4174, train_acc: 0.81, valid_loss: 0.4803, valid_acc: 0.74, lr: 9.2557e-04, et: 0.3285
-    epoch 088, train_loss: 0.4179, train_acc: 0.81, valid_loss: 0.4815, valid_acc: 0.75, lr: 9.2392e-04, et: 0.3287
-    epoch 089, train_loss: 0.4170, train_acc: 0.81, valid_loss: 0.4799, valid_acc: 0.75, lr: 9.2224e-04, et: 0.3298
-    epoch 090, train_loss: 0.4168, train_acc: 0.81, valid_loss: 0.4848, valid_acc: 0.75, lr: 9.2055e-04, et: 0.3329
-    epoch 091, train_loss: 0.4269, train_acc: 0.80, valid_loss: 0.4958, valid_acc: 0.74, lr: 9.1885e-04, et: 0.3462
-    epoch 092, train_loss: 0.4177, train_acc: 0.81, valid_loss: 0.4779, valid_acc: 0.75, lr: 9.1712e-04, et: 0.3325
+    epoch 000, train_loss: 0.6929, train_acc: 0.50, valid_loss: 0.6929, valid_acc: 0.50, lr: 9.9999e-04, et: 0.3641, checkpoint saved
+    epoch 001, train_loss: 0.6925, train_acc: 0.50, valid_loss: 0.6926, valid_acc: 0.50, lr: 9.9996e-04, et: 0.3512, checkpoint saved
+    epoch 002, train_loss: 0.6914, train_acc: 0.51, valid_loss: 0.6913, valid_acc: 0.52, lr: 9.9991e-04, et: 0.3379, checkpoint saved
+    epoch 003, train_loss: 0.6877, train_acc: 0.54, valid_loss: 0.6848, valid_acc: 0.57, lr: 9.9984e-04, et: 0.3335, checkpoint saved
+    epoch 004, train_loss: 0.6719, train_acc: 0.62, valid_loss: 0.6584, valid_acc: 0.63, lr: 9.9975e-04, et: 0.3316, checkpoint saved
+    epoch 005, train_loss: 0.6263, train_acc: 0.66, valid_loss: 0.5786, valid_acc: 0.69, lr: 9.9965e-04, et: 0.3314, checkpoint saved
+    epoch 006, train_loss: 0.5810, train_acc: 0.69, valid_loss: 0.5151, valid_acc: 0.72, lr: 9.9952e-04, et: 0.3332, checkpoint saved
+    epoch 007, train_loss: 0.5630, train_acc: 0.70, valid_loss: 0.4809, valid_acc: 0.73, lr: 9.9937e-04, et: 0.3317, checkpoint saved
+    epoch 008, train_loss: 0.5340, train_acc: 0.73, valid_loss: 0.4627, valid_acc: 0.74, lr: 9.9920e-04, et: 0.3504, checkpoint saved
+    epoch 009, train_loss: 0.5296, train_acc: 0.73, valid_loss: 0.4553, valid_acc: 0.75, lr: 9.9901e-04, et: 0.3510, checkpoint saved
+    epoch 010, train_loss: 0.5226, train_acc: 0.73, valid_loss: 0.4501, valid_acc: 0.74, lr: 9.9881e-04, et: 0.3431, checkpoint saved
+    epoch 011, train_loss: 0.5206, train_acc: 0.73, valid_loss: 0.4569, valid_acc: 0.75, lr: 9.9858e-04, et: 0.3309
+    epoch 012, train_loss: 0.5150, train_acc: 0.74, valid_loss: 0.4550, valid_acc: 0.76, lr: 9.9833e-04, et: 0.3336
+    epoch 013, train_loss: 0.5132, train_acc: 0.73, valid_loss: 0.4499, valid_acc: 0.76, lr: 9.9807e-04, et: 0.3319, checkpoint saved
+    epoch 014, train_loss: 0.5123, train_acc: 0.73, valid_loss: 0.4521, valid_acc: 0.75, lr: 9.9778e-04, et: 0.3396
+    epoch 015, train_loss: 0.5092, train_acc: 0.74, valid_loss: 0.4515, valid_acc: 0.75, lr: 9.9748e-04, et: 0.3506
+    epoch 016, train_loss: 0.5069, train_acc: 0.75, valid_loss: 0.4503, valid_acc: 0.76, lr: 9.9715e-04, et: 0.3462
+    epoch 017, train_loss: 0.5038, train_acc: 0.74, valid_loss: 0.4472, valid_acc: 0.75, lr: 9.9681e-04, et: 0.3453, checkpoint saved
+    epoch 018, train_loss: 0.5022, train_acc: 0.75, valid_loss: 0.4499, valid_acc: 0.76, lr: 9.9644e-04, et: 0.3383
+    epoch 019, train_loss: 0.5010, train_acc: 0.75, valid_loss: 0.4478, valid_acc: 0.75, lr: 9.9606e-04, et: 0.3318
+    epoch 020, train_loss: 0.5081, train_acc: 0.73, valid_loss: 0.4730, valid_acc: 0.74, lr: 9.9566e-04, et: 0.3414
+    epoch 021, train_loss: 0.4926, train_acc: 0.76, valid_loss: 0.4516, valid_acc: 0.76, lr: 9.9524e-04, et: 0.3519
+    epoch 022, train_loss: 0.5029, train_acc: 0.75, valid_loss: 0.4540, valid_acc: 0.75, lr: 9.9479e-04, et: 0.3500
+    epoch 023, train_loss: 0.5119, train_acc: 0.73, valid_loss: 0.4729, valid_acc: 0.75, lr: 9.9433e-04, et: 0.3419
+    epoch 024, train_loss: 0.4909, train_acc: 0.75, valid_loss: 0.4538, valid_acc: 0.75, lr: 9.9385e-04, et: 0.3331
+    epoch 025, train_loss: 0.4815, train_acc: 0.76, valid_loss: 0.4495, valid_acc: 0.76, lr: 9.9335e-04, et: 0.3393
+    epoch 026, train_loss: 0.4790, train_acc: 0.77, valid_loss: 0.4523, valid_acc: 0.75, lr: 9.9283e-04, et: 0.3391
+    epoch 027, train_loss: 0.4845, train_acc: 0.75, valid_loss: 0.4647, valid_acc: 0.74, lr: 9.9229e-04, et: 0.3305
+    epoch 028, train_loss: 0.4793, train_acc: 0.77, valid_loss: 0.4575, valid_acc: 0.76, lr: 9.9173e-04, et: 0.3406
+    epoch 029, train_loss: 0.4720, train_acc: 0.77, valid_loss: 0.4548, valid_acc: 0.75, lr: 9.9115e-04, et: 0.3431
+    epoch 030, train_loss: 0.4745, train_acc: 0.77, valid_loss: 0.4634, valid_acc: 0.75, lr: 9.9055e-04, et: 0.3348
+    epoch 031, train_loss: 0.4686, train_acc: 0.78, valid_loss: 0.4586, valid_acc: 0.75, lr: 9.8994e-04, et: 0.3301
+    epoch 032, train_loss: 0.4652, train_acc: 0.78, valid_loss: 0.4582, valid_acc: 0.74, lr: 9.8930e-04, et: 0.3354
+    epoch 033, train_loss: 0.4687, train_acc: 0.78, valid_loss: 0.4632, valid_acc: 0.76, lr: 9.8865e-04, et: 0.3467
+    epoch 034, train_loss: 0.4624, train_acc: 0.78, valid_loss: 0.4759, valid_acc: 0.75, lr: 9.8797e-04, et: 0.3482
+    epoch 035, train_loss: 0.4597, train_acc: 0.78, valid_loss: 0.4622, valid_acc: 0.75, lr: 9.8728e-04, et: 0.3438
+    epoch 036, train_loss: 0.4593, train_acc: 0.78, valid_loss: 0.4694, valid_acc: 0.76, lr: 9.8656e-04, et: 0.3503
+    epoch 037, train_loss: 0.4572, train_acc: 0.78, valid_loss: 0.4703, valid_acc: 0.75, lr: 9.8583e-04, et: 0.3367
+    epoch 038, train_loss: 0.4558, train_acc: 0.78, valid_loss: 0.4638, valid_acc: 0.75, lr: 9.8508e-04, et: 0.3290
+    epoch 039, train_loss: 0.4540, train_acc: 0.78, valid_loss: 0.4670, valid_acc: 0.74, lr: 9.8431e-04, et: 0.3289
+    epoch 040, train_loss: 0.4595, train_acc: 0.78, valid_loss: 0.4772, valid_acc: 0.75, lr: 9.8352e-04, et: 0.3447
+    epoch 041, train_loss: 0.4499, train_acc: 0.79, valid_loss: 0.4696, valid_acc: 0.75, lr: 9.8271e-04, et: 0.3339
+    epoch 042, train_loss: 0.4474, train_acc: 0.78, valid_loss: 0.4616, valid_acc: 0.75, lr: 9.8188e-04, et: 0.3280
+    epoch 043, train_loss: 0.4481, train_acc: 0.79, valid_loss: 0.4733, valid_acc: 0.75, lr: 9.8103e-04, et: 0.3285
+    epoch 044, train_loss: 0.4452, train_acc: 0.79, valid_loss: 0.4649, valid_acc: 0.75, lr: 9.8017e-04, et: 0.3287
+    epoch 045, train_loss: 0.4438, train_acc: 0.79, valid_loss: 0.4656, valid_acc: 0.76, lr: 9.7928e-04, et: 0.3293
+    epoch 046, train_loss: 0.4495, train_acc: 0.79, valid_loss: 0.4758, valid_acc: 0.75, lr: 9.7838e-04, et: 0.3280
+    epoch 047, train_loss: 0.4428, train_acc: 0.79, valid_loss: 0.4650, valid_acc: 0.76, lr: 9.7745e-04, et: 0.3290
+    epoch 048, train_loss: 0.4414, train_acc: 0.79, valid_loss: 0.4698, valid_acc: 0.75, lr: 9.7651e-04, et: 0.3302
+    epoch 049, train_loss: 0.4385, train_acc: 0.79, valid_loss: 0.4717, valid_acc: 0.75, lr: 9.7555e-04, et: 0.3304
+    epoch 050, train_loss: 0.4379, train_acc: 0.79, valid_loss: 0.4665, valid_acc: 0.75, lr: 9.7457e-04, et: 0.3292
+    epoch 051, train_loss: 0.4368, train_acc: 0.79, valid_loss: 0.4653, valid_acc: 0.75, lr: 9.7358e-04, et: 0.3301
+    epoch 052, train_loss: 0.4369, train_acc: 0.79, valid_loss: 0.4829, valid_acc: 0.74, lr: 9.7256e-04, et: 0.3304
+    epoch 053, train_loss: 0.4405, train_acc: 0.79, valid_loss: 0.4791, valid_acc: 0.74, lr: 9.7152e-04, et: 0.3291
+    epoch 054, train_loss: 0.4361, train_acc: 0.80, valid_loss: 0.4789, valid_acc: 0.75, lr: 9.7047e-04, et: 0.3295
+    epoch 055, train_loss: 0.4355, train_acc: 0.79, valid_loss: 0.4629, valid_acc: 0.76, lr: 9.6940e-04, et: 0.3299
+    epoch 056, train_loss: 0.4349, train_acc: 0.80, valid_loss: 0.4764, valid_acc: 0.74, lr: 9.6831e-04, et: 0.3317
+    epoch 057, train_loss: 0.4340, train_acc: 0.80, valid_loss: 0.4715, valid_acc: 0.76, lr: 9.6720e-04, et: 0.3300
+    epoch 058, train_loss: 0.4326, train_acc: 0.80, valid_loss: 0.4689, valid_acc: 0.76, lr: 9.6607e-04, et: 0.3306
+    epoch 059, train_loss: 0.4335, train_acc: 0.79, valid_loss: 0.4681, valid_acc: 0.74, lr: 9.6492e-04, et: 0.3309
+    epoch 060, train_loss: 0.4326, train_acc: 0.80, valid_loss: 0.4699, valid_acc: 0.75, lr: 9.6376e-04, et: 0.3303
+    epoch 061, train_loss: 0.4359, train_acc: 0.80, valid_loss: 0.4780, valid_acc: 0.75, lr: 9.6258e-04, et: 0.3302
+    epoch 062, train_loss: 0.4307, train_acc: 0.80, valid_loss: 0.4699, valid_acc: 0.76, lr: 9.6138e-04, et: 0.3300
+    epoch 063, train_loss: 0.4319, train_acc: 0.80, valid_loss: 0.4783, valid_acc: 0.74, lr: 9.6016e-04, et: 0.3306
+    epoch 064, train_loss: 0.4410, train_acc: 0.79, valid_loss: 0.4945, valid_acc: 0.73, lr: 9.5892e-04, et: 0.3294
+    epoch 065, train_loss: 0.4287, train_acc: 0.80, valid_loss: 0.4693, valid_acc: 0.76, lr: 9.5766e-04, et: 0.3305
+    epoch 066, train_loss: 0.4274, train_acc: 0.80, valid_loss: 0.4712, valid_acc: 0.75, lr: 9.5639e-04, et: 0.3308
+    epoch 067, train_loss: 0.4308, train_acc: 0.80, valid_loss: 0.4896, valid_acc: 0.73, lr: 9.5510e-04, et: 0.3301
+    epoch 068, train_loss: 0.4257, train_acc: 0.80, valid_loss: 0.4776, valid_acc: 0.74, lr: 9.5379e-04, et: 0.3305
+    epoch 069, train_loss: 0.4248, train_acc: 0.80, valid_loss: 0.4857, valid_acc: 0.74, lr: 9.5246e-04, et: 0.3301
+    epoch 070, train_loss: 0.4257, train_acc: 0.80, valid_loss: 0.4736, valid_acc: 0.75, lr: 9.5112e-04, et: 0.3306
+    epoch 071, train_loss: 0.4285, train_acc: 0.80, valid_loss: 0.4794, valid_acc: 0.75, lr: 9.4975e-04, et: 0.3304
+    epoch 072, train_loss: 0.4326, train_acc: 0.80, valid_loss: 0.4911, valid_acc: 0.74, lr: 9.4837e-04, et: 0.3301
+    epoch 073, train_loss: 0.4266, train_acc: 0.80, valid_loss: 0.4815, valid_acc: 0.75, lr: 9.4697e-04, et: 0.3309
+    epoch 074, train_loss: 0.4231, train_acc: 0.81, valid_loss: 0.4787, valid_acc: 0.75, lr: 9.4556e-04, et: 0.3302
+    epoch 075, train_loss: 0.4220, train_acc: 0.81, valid_loss: 0.4784, valid_acc: 0.76, lr: 9.4412e-04, et: 0.3304
+    epoch 076, train_loss: 0.4217, train_acc: 0.81, valid_loss: 0.4761, valid_acc: 0.75, lr: 9.4267e-04, et: 0.3297
+    epoch 077, train_loss: 0.4230, train_acc: 0.81, valid_loss: 0.4825, valid_acc: 0.75, lr: 9.4120e-04, et: 0.3305
+    epoch 078, train_loss: 0.4224, train_acc: 0.81, valid_loss: 0.4815, valid_acc: 0.74, lr: 9.3972e-04, et: 0.3302
+    epoch 079, train_loss: 0.4217, train_acc: 0.80, valid_loss: 0.4800, valid_acc: 0.74, lr: 9.3822e-04, et: 0.3297
+    epoch 080, train_loss: 0.4226, train_acc: 0.81, valid_loss: 0.4759, valid_acc: 0.75, lr: 9.3669e-04, et: 0.3300
+    epoch 081, train_loss: 0.4203, train_acc: 0.81, valid_loss: 0.4739, valid_acc: 0.75, lr: 9.3516e-04, et: 0.3318
+    epoch 082, train_loss: 0.4202, train_acc: 0.81, valid_loss: 0.4782, valid_acc: 0.75, lr: 9.3360e-04, et: 0.3302
+    epoch 083, train_loss: 0.4254, train_acc: 0.81, valid_loss: 0.4869, valid_acc: 0.74, lr: 9.3203e-04, et: 0.3300
+    epoch 084, train_loss: 0.4217, train_acc: 0.81, valid_loss: 0.4766, valid_acc: 0.75, lr: 9.3044e-04, et: 0.3307
+    epoch 085, train_loss: 0.4187, train_acc: 0.81, valid_loss: 0.4679, valid_acc: 0.76, lr: 9.2883e-04, et: 0.3295
+    epoch 086, train_loss: 0.4206, train_acc: 0.81, valid_loss: 0.4938, valid_acc: 0.74, lr: 9.2721e-04, et: 0.3294
+    epoch 087, train_loss: 0.4174, train_acc: 0.81, valid_loss: 0.4803, valid_acc: 0.74, lr: 9.2557e-04, et: 0.3301
+    epoch 088, train_loss: 0.4179, train_acc: 0.81, valid_loss: 0.4815, valid_acc: 0.75, lr: 9.2392e-04, et: 0.3303
+    epoch 089, train_loss: 0.4170, train_acc: 0.81, valid_loss: 0.4799, valid_acc: 0.75, lr: 9.2224e-04, et: 0.3295
+    epoch 090, train_loss: 0.4168, train_acc: 0.81, valid_loss: 0.4848, valid_acc: 0.75, lr: 9.2055e-04, et: 0.3296
+    epoch 091, train_loss: 0.4269, train_acc: 0.80, valid_loss: 0.4958, valid_acc: 0.74, lr: 9.1885e-04, et: 0.3315
+    epoch 092, train_loss: 0.4177, train_acc: 0.81, valid_loss: 0.4779, valid_acc: 0.75, lr: 9.1712e-04, et: 0.3295
     Early stopping was triggered: epoch #93
-    Elapsed Time: 30.92s
+    Elapsed Time: 31.14s
     keywords_train        [A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11,...
     keywords_valid                                [A16, A17, A18, A19, A20]
     keywords_test                                                       A21
@@ -2786,7 +2517,7 @@ label_keys = {"event:left": 0, "event:right": 1}
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 50.844 seconds)
+   **Total running time of the script:** (0 minutes 51.275 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_cross-subject-classification-deeplearning.py:

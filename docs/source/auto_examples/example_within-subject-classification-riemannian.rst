@@ -75,7 +75,7 @@ Example: Within-subject classification with riemannian classifier
                 l_freq=l_freq,
                 h_freq=h_freq,
                 method="iir",
-                iir_params={"ftype": "butter", "order": 4, "btype": "bandpass"},
+                iir_params={"ftype": "butter", "order": order_filter, "btype": "bandpass"},
             )
 
             # eog and emg mapping
@@ -156,7 +156,7 @@ Example: Within-subject classification with riemannian classifier
 
  .. code-block:: none
 
-    0it [00:00, ?it/s]    9it [00:00, 35312.19it/s]
+    0it [00:00, ?it/s]    9it [00:00, 36088.66it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -269,7 +269,7 @@ Example: Within-subject classification with riemannian classifier
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 111-140
+.. GENERATED FROM PYTHON SOURCE LINES 111-134
 
 .. code-block:: Python
 
@@ -285,21 +285,15 @@ Example: Within-subject classification with riemannian classifier
 
 
     def convert_epochs_to_ndarray(
-        epochs_train,
-        epochs_test,
+        epochs,
         label_keys,
     ):
 
-        X_train = epochs_train.get_data()
-        X_test = epochs_test.get_data()
+        X = epochs.get_data()
+        X = pyriemann.estimation.Covariances().transform(X)
+        y = rosoku.utils.get_labels_from_epochs(epochs, label_keys)
 
-        X_train = pyriemann.estimation.Covariances().transform(X_train)
-        X_test = pyriemann.estimation.Covariances().transform(X_test)
-
-        y_train = rosoku.utils.get_labels_from_epochs(epochs_train, label_keys)
-        y_test = rosoku.utils.get_labels_from_epochs(epochs_test, label_keys)
-
-        return X_train, X_test, y_train, y_test
+        return X, y
 
 
 
@@ -309,7 +303,7 @@ Example: Within-subject classification with riemannian classifier
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 141-154
+.. GENERATED FROM PYTHON SOURCE LINES 135-149
 
 .. code-block:: Python
 
@@ -317,7 +311,7 @@ Example: Within-subject classification with riemannian classifier
 
     results = rosoku.conventional(
         keywords_train=["run:1", "run:2"],
-        keywords_test=["run:3", "run:4", "run:5"],
+        keywords_test=[["run:3", "run:4", "run:5"]],
         func_load_epochs=functools.partial(func_load_epochs, epochs=epochs),
         func_proc_epochs=func_proc_epochs,
         func_convert_epochs_to_ndarray=functools.partial(
@@ -325,7 +319,8 @@ Example: Within-subject classification with riemannian classifier
         ),
     )
 
-    print(results)
+    for m in range(results.shape[0]):
+        print(results.loc[m])
 
 
 
@@ -334,11 +329,24 @@ Example: Within-subject classification with riemannian classifier
 
  .. code-block:: none
 
-       keywords_train keywords_test classifier  ...                                              preds                                             probas  desc
-    0  [run:1, run:2]         run:3       tslr  ...  [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, ...  [[0.21452739068104754, 0.7854726093189525], [0...  None
-    1  [run:1, run:2]         run:3        mdm  ...  [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, ...  [[0.16316916967233025, 0.8368308303276697], [0...  None
-
-    [2 rows x 8 columns]
+    keywords_train                                       [run:1, run:2]
+    keywords_test                                 [run:3, run:4, run:5]
+    classifier                                                     tslr
+    accuracy                                                   0.991667
+    labels            [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, ...
+    preds             [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, ...
+    probas            [[0.21452739068104754, 0.7854726093189525], [0...
+    desc                                                           None
+    Name: 0, dtype: object
+    keywords_train                                       [run:1, run:2]
+    keywords_test                                 [run:3, run:4, run:5]
+    classifier                                                      mdm
+    accuracy                                                   0.991667
+    labels            [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, ...
+    preds             [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, ...
+    probas            [[0.16316916967233025, 0.8368308303276697], [0...
+    desc                                                           None
+    Name: 1, dtype: object
 
 
 
@@ -346,7 +354,7 @@ Example: Within-subject classification with riemannian classifier
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.193 seconds)
+   **Total running time of the script:** (0 minutes 1.187 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_within-subject-classification-riemannian.py:

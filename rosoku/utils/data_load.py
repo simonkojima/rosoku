@@ -71,27 +71,27 @@ def load_data(
     keywords_train : list
     keywords_valid : list
     keywords_test : list
-        例えば，"A29"と"A3"を別々にテストにしたい場合には，keywords_test=["A29", "A3"].
+        例えば，"A29"と"A3"を別々にテストにしたい場合には， ``keywords_test=["A29", "A3"]`` .
 
-        "A29"と"A3"を合わせたデータをテストしたい場合には，keywords_test = [["A29", "A3"]]
+        "A29"と"A3"を合わせたデータをテストしたい場合には， ``keywords_test = [["A29", "A3"]]``
     func_load_epochs : callable
     func_load_ndarray : callable
     func_proc_epochs : callable
     func_proc_ndarray : callable
-    func_proc_mode : str, default = "per_split"
-        "per_split" or "per_function"
+    func_proc_mode : str, default = ``"per_split"``
+        ``"per_split"`` or ``"per_function"``
 
         per_splitでは，func_procに対して，train, valid, testのスプリット毎に関数がコールバックされる．
 
         per_functionでは，func_procに対して，train, valid, testがまとめて渡される．
 
-    func_convert_epochs_to_ndarray : callable, default=rosoku.utils.convert_epochs_to_ndarray
+    func_convert_epochs_to_ndarray : callable, default= ``rosoku.utils.convert_epochs_to_ndarray``
 
     Notes
     -----
-    ``func_load_epochs``か``func_load_ndarray``のどちらかが必要．
+    ``func_load_epochs`` か ``func_load_ndarray`` のどちらかが必要．
 
-    ``func_load_ndarray=None``の場合の流れは以下のような感じ．
+    ``func_load_ndarray=None`` の場合の流れは以下のような感じ．
 
     .. code-block:: text
 
@@ -103,15 +103,13 @@ def load_data(
         ↓
         func_proc_ndarray()
 
-    ``func_load_epochs=None``の場合の流れは以下のような感じ．
+    ``func_load_epochs=None`` の場合の流れは以下のような感じ．
 
     .. code-block:: text
 
         func_load_ndarray()
         ↓
         func_proc_ndarray()
-
-
 
     Returns
     -------
