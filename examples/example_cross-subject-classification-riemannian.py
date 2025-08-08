@@ -108,9 +108,8 @@ def func_load_ndarray(
         y.append(y_subject)
         X.append(X_subject)
 
-    if mode != "test":
-        X = np.concatenate(X, axis=0)
-        y = np.concatenate(y, axis=0)
+    X = np.concatenate(X, axis=0)
+    y = np.concatenate(y, axis=0)
 
     return X, y
 
@@ -140,7 +139,7 @@ def convert_epochs_to_ndarray(
 label_keys = {"event:left": 0, "event:right": 1}
 
 results = rosoku.conventional(
-    keywords_train=[f"A{num}" for num in range(1, 21)],
+    keywords_train=[f"A{num}" for num in range(1, 3)],
     keywords_test=["A21", "A56"],
     func_load_ndarray=functools.partial(
         func_load_ndarray,

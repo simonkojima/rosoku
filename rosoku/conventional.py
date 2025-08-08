@@ -286,6 +286,11 @@ def conventional(
         compile_test=compile_test,
     )
 
+    if compile_test:
+        keywords_test = ["[" + ", ".join(keywords_test) + "]"]
+    else:
+        keywords_test = ["[" + keyword + "]" for keyword in keywords_test]
+
     # train classifiers
     for clf in classifiers:
         clf.fit(X_train, y_train)
@@ -295,6 +300,9 @@ def conventional(
     if isinstance(X_test, list) is False:
         X_test = [X_test]
         y_test = [y_test]
+
+    if len(keywords_test) != len(X_test):
+        raise RuntimeError("len(keywords_test) != len(X_test)")
 
     df_list = list()
     for X, y, keywords in zip(X_test, y_test, keywords_test):

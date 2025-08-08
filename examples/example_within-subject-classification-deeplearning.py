@@ -198,4 +198,5 @@ results = rosoku.deeplearning(
     seed=seed,
 )
 
-print(results.loc[0])
+for m in range(results.shape[0]):
+    print(results.loc[m])
