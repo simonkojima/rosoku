@@ -735,7 +735,7 @@ def deeplearning(
     n_epochs=500,
     optimizer=torch.optim.AdamW,
     *,
-    apply_func_proc_per_obj=True,
+    func_proc_mode="per_split",
     func_proc_epochs=None,
     func_proc_ndarray=None,
     func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
@@ -748,15 +748,12 @@ def deeplearning(
     enable_ddp=False,
     enable_dp=False,
     num_workers=0,
-    # label_keys={"event:left": 0, "event:right": 1},
-    compile_test=False,
     enable_wandb_logging=False,
     wandb_params=None,
     checkpoint_fname=None,
     history_fname=None,
     early_stopping=None,
     name_classifier=None,
-    # enable_euclidean_alignment=False,
     enable_normalization=False,
     seed=None,
     desc=None,
@@ -941,15 +938,9 @@ def deeplearning(
         func_load_ndarray=func_load_ndarray,
         func_proc_epochs=func_proc_epochs,
         func_proc_ndarray=func_proc_ndarray,
-        apply_func_proc_per_obj=apply_func_proc_per_obj,
+        func_proc_mode=func_proc_mode,
         func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
-        compile_test=compile_test,
     )
-
-    if compile_test:
-        keywords_test = ["[" + ", ".join(keywords_test) + "]"]
-    else:
-        keywords_test = ["[" + keyword + "]" for keyword in keywords_test]
 
     if len(keywords_test) != len(X_test):
         raise RuntimeError("len(keywords_test) != len(X_test)")
@@ -977,7 +968,6 @@ def deeplearning(
         "scheduler_params": scheduler_params,
         "func_proc_epochs": func_proc_epochs,
         # "label_keys": label_keys,
-        "compile_test": compile_test,
         "enable_wandb_logging": enable_wandb_logging,
         "wandb_params": wandb_params,
         "checkpoint_fname": checkpoint_fname,

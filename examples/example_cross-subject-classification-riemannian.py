@@ -73,7 +73,6 @@ def func_load_ndarray(
                 markers, {"left": ["left_hand"], "right": ["right_hand"]}
             )
             markers = tm.add_tag(markers, f"run:{name}")
-            # markers = tm.add_tag(markers, f"rtype:{rtype}")
 
             samples, markers = tm.remove(samples, markers, "event:misc")
 
@@ -152,7 +151,6 @@ results = rosoku.conventional(
         resample=128,
         label_keys={"event:left": 0, "event:right": 1},
     ),
-    compile_test=False,
 )
 
 for m in range(results.shape[0]):

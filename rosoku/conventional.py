@@ -215,7 +215,7 @@ def conventional(
     func_load_ndarray=None,
     func_proc_epochs=None,
     func_proc_ndarray=None,
-    apply_func_proc_per_obj=True,
+    func_proc_mode="per_split",
     classifiers=[
         pyriemann.classification.TSClassifier(),
         pyriemann.classification.MDM(),
@@ -223,7 +223,7 @@ def conventional(
     classifier_names=["tslr", "mdm"],
     name_classifiers=None,
     func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
-    compile_test=False,
+    # compile_test=False,
     desc=None,
 ):
     """
@@ -273,7 +273,7 @@ def conventional(
 
     # load data
 
-    X_train, X_test, y_train, y_test = utils.load_data(
+    X_train, _, X_test, y_train, _, y_test = utils.load_data(
         keywords_train=keywords_train,
         keywords_valid=None,
         keywords_test=keywords_test,
@@ -281,15 +281,9 @@ def conventional(
         func_load_ndarray=func_load_ndarray,
         func_proc_epochs=func_proc_epochs,
         func_proc_ndarray=func_proc_ndarray,
-        apply_func_proc_per_obj=apply_func_proc_per_obj,
+        func_proc_mode=func_proc_mode,
         func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
-        compile_test=compile_test,
     )
-
-    if compile_test:
-        keywords_test = ["[" + ", ".join(keywords_test) + "]"]
-    else:
-        keywords_test = ["[" + keyword + "]" for keyword in keywords_test]
 
     # train classifiers
     for clf in classifiers:

@@ -136,13 +136,12 @@ label_keys = {"event:left": 0, "event:right": 1}
 
 results = rosoku.conventional(
     keywords_train=["run:1", "run:2"],
-    keywords_test=["run:3", "run:4", "run:5"],
+    keywords_test=[["run:3", "run:4", "run:5"]],
     func_load_epochs=functools.partial(func_load_epochs, epochs=epochs),
     func_proc_epochs=func_proc_epochs,
     func_convert_epochs_to_ndarray=functools.partial(
         convert_epochs_to_ndarray, label_keys=label_keys
     ),
-    compile_test=True,
 )
 
 for m in range(results.shape[0]):

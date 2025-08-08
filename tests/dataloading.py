@@ -1,5 +1,6 @@
 # %%
 import functools
+import numpy as np
 
 from pathlib import Path
 
@@ -75,8 +76,15 @@ def load_epochs(keywords, mode, epochs):
     return epochs[keywords]
 
 
+def load_ndarray(keywords, mode, epochs):
+    return epochs[keywords]
+
+def proc_ndarray()
+
 def convert_epochs_to_ndarray(epochs):
     print(epochs)
+
+    return epochs.get_data(), rosoku.utils.convert_epochs_to_ndarray(epochs)
 
 
 if __name__ == "__main__":
@@ -132,7 +140,7 @@ if __name__ == "__main__":
         "run:1/event:right",
         "run:2",
     ]
-    keywords_test = ["run:3", "run:4", "run:5"]
+    keywords_test = [["run:3", "run:4", "run:5"]]
 
     func_load_epochs = functools.partial(load_epochs, epochs=epochs)
     func_load_ndarray = None
@@ -157,7 +165,7 @@ if __name__ == "__main__":
     )
     """
 
-    X_train, X_valid, X_test, y_train, y_valid, y_test = rosoku.utils.load_data_2(
+    X_train, X_valid, X_test, y_train, y_valid, y_test = rosoku.utils.load_data(
         keywords_train=keywords_train,
         keywords_valid=keywords_valid,
         keywords_test=keywords_test,
@@ -165,11 +173,11 @@ if __name__ == "__main__":
         func_load_ndarray=func_load_ndarray,
         func_proc_epochs=func_proc_epochs,
         func_proc_ndarray=func_proc_ndarray,
-        apply_func_proc_per_obj=apply_func_proc_per_obj,
         func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
-        compile_test=compile_test,
+        func_proc_mode="per_split",
     )
 
     print(X_train.shape)
     print(X_valid.shape)
-    print(X_test.shape)
+    print(len(X_test))
+    print(np.array(X_test).shape)

@@ -188,7 +188,6 @@ results = rosoku.deeplearning(
     scheduler_params=scheduler_params,
     device=device,
     enable_ddp=enable_ddp,
-    compile_test=False,
     func_proc_epochs=None,
     early_stopping=early_stopping,
     enable_normalization=enable_normalization,
