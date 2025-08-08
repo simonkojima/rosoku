@@ -6,16 +6,12 @@ Example: Cross-subject classification with riemannian classifier
 # %%
 import functools
 import numpy as np
-import matplotlib.pyplot as plt
-
-from pathlib import Path
 
 import mne
 import tag_mne as tm
 
 import moabb.datasets
 
-import torch
 import pyriemann
 import rosoku
 

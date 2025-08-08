@@ -275,6 +275,7 @@ def conventional(
 
     X_train, X_test, y_train, y_test = utils.load_data(
         keywords_train=keywords_train,
+        keywords_valid=None,
         keywords_test=keywords_test,
         func_load_epochs=func_load_epochs,
         func_load_ndarray=func_load_ndarray,

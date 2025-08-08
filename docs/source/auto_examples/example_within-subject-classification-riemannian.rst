@@ -21,22 +21,17 @@
 Example: Within-subject classification with riemannian classifier
 =================================================================
 
-.. GENERATED FROM PYTHON SOURCE LINES 7-22
+.. GENERATED FROM PYTHON SOURCE LINES 7-17
 
 .. code-block:: Python
 
     import functools
-    import numpy as np
-    import matplotlib.pyplot as plt
-
-    from pathlib import Path
 
     import mne
     import tag_mne as tm
 
     import moabb.datasets
 
-    import torch
     import pyriemann
     import rosoku
 
@@ -47,7 +42,7 @@ Example: Within-subject classification with riemannian classifier
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 23-27
+.. GENERATED FROM PYTHON SOURCE LINES 18-22
 
 .. code-block:: Python
 
@@ -62,7 +57,7 @@ Example: Within-subject classification with riemannian classifier
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 28-115
+.. GENERATED FROM PYTHON SOURCE LINES 23-110
 
 .. code-block:: Python
 
@@ -161,7 +156,7 @@ Example: Within-subject classification with riemannian classifier
 
  .. code-block:: none
 
-    0it [00:00, ?it/s]    9it [00:00, 21472.55it/s]
+    0it [00:00, ?it/s]    9it [00:00, 35312.19it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -274,7 +269,7 @@ Example: Within-subject classification with riemannian classifier
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 116-145
+.. GENERATED FROM PYTHON SOURCE LINES 111-140
 
 .. code-block:: Python
 
@@ -314,7 +309,7 @@ Example: Within-subject classification with riemannian classifier
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 146-159
+.. GENERATED FROM PYTHON SOURCE LINES 141-154
 
 .. code-block:: Python
 
@@ -339,9 +334,11 @@ Example: Within-subject classification with riemannian classifier
 
  .. code-block:: none
 
-       keywords_train keywords_test classifier  accuracy                                             labels                                              preds                                             probas  desc
-    0  [run:1, run:2]         run:3       tslr  0.991667  [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, ...  [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, ...  [[0.21452739068104754, 0.7854726093189525], [0...  None
-    1  [run:1, run:2]         run:3        mdm  0.991667  [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, ...  [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, ...  [[0.16316916967233025, 0.8368308303276697], [0...  None
+       keywords_train keywords_test classifier  ...                                              preds                                             probas  desc
+    0  [run:1, run:2]         run:3       tslr  ...  [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, ...  [[0.21452739068104754, 0.7854726093189525], [0...  None
+    1  [run:1, run:2]         run:3        mdm  ...  [1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, ...  [[0.16316916967233025, 0.8368308303276697], [0...  None
+
+    [2 rows x 8 columns]
 
 
 
@@ -349,7 +346,7 @@ Example: Within-subject classification with riemannian classifier
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 1.707 seconds)
+   **Total running time of the script:** (0 minutes 1.193 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_within-subject-classification-riemannian.py:

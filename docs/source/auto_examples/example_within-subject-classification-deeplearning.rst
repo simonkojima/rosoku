@@ -21,14 +21,11 @@
 Example: Within-subject classification with deep learning
 =========================================================
 
-.. GENERATED FROM PYTHON SOURCE LINES 7-23
+.. GENERATED FROM PYTHON SOURCE LINES 7-20
 
 .. code-block:: Python
 
-    import random
     import functools
-    import numpy as np
-    import matplotlib.pyplot as plt
 
     from pathlib import Path
 
@@ -48,7 +45,7 @@ Example: Within-subject classification with deep learning
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 24-45
+.. GENERATED FROM PYTHON SOURCE LINES 21-42
 
 .. code-block:: Python
 
@@ -80,7 +77,7 @@ Example: Within-subject classification with deep learning
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 46-134
+.. GENERATED FROM PYTHON SOURCE LINES 43-131
 
 .. code-block:: Python
 
@@ -180,7 +177,7 @@ Example: Within-subject classification with deep learning
 
  .. code-block:: none
 
-    0it [00:00, ?it/s]    9it [00:00, 24120.60it/s]
+    0it [00:00, ?it/s]    9it [00:00, 41255.45it/s]
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
     Reading 0 ... 230911  =      0.000 ...   450.998 secs...
@@ -293,7 +290,7 @@ Example: Within-subject classification with deep learning
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 135-165
+.. GENERATED FROM PYTHON SOURCE LINES 132-162
 
 .. code-block:: Python
 
@@ -334,7 +331,7 @@ Example: Within-subject classification with deep learning
 
 
 
-.. GENERATED FROM PYTHON SOURCE LINES 166-205
+.. GENERATED FROM PYTHON SOURCE LINES 163-202
 
 .. code-block:: Python
 
@@ -385,145 +382,145 @@ Example: Within-subject classification with deep learning
 
  .. code-block:: none
 
-    epoch 000, train_loss: 0.6928, train_acc: 0.49, valid_loss: 0.6924, valid_acc: 0.50, lr: 9.9999e-04, et: 0.4955, checkpoint saved
-    epoch 001, train_loss: 0.6926, train_acc: 0.51, valid_loss: 0.6924, valid_acc: 0.50, lr: 9.9996e-04, et: 0.0321, checkpoint saved
-    epoch 002, train_loss: 0.6923, train_acc: 0.54, valid_loss: 0.6923, valid_acc: 0.50, lr: 9.9991e-04, et: 0.0330, checkpoint saved
-    epoch 003, train_loss: 0.6920, train_acc: 0.56, valid_loss: 0.6924, valid_acc: 0.50, lr: 9.9984e-04, et: 0.0319
-    epoch 004, train_loss: 0.6915, train_acc: 0.56, valid_loss: 0.6924, valid_acc: 0.50, lr: 9.9975e-04, et: 0.0316
-    epoch 005, train_loss: 0.6908, train_acc: 0.61, valid_loss: 0.6921, valid_acc: 0.50, lr: 9.9965e-04, et: 0.0327, checkpoint saved
-    epoch 006, train_loss: 0.6901, train_acc: 0.59, valid_loss: 0.6920, valid_acc: 0.47, lr: 9.9952e-04, et: 0.0303, checkpoint saved
-    epoch 007, train_loss: 0.6891, train_acc: 0.62, valid_loss: 0.6917, valid_acc: 0.45, lr: 9.9937e-04, et: 0.0321, checkpoint saved
-    epoch 008, train_loss: 0.6879, train_acc: 0.75, valid_loss: 0.6914, valid_acc: 0.53, lr: 9.9920e-04, et: 0.0326, checkpoint saved
-    epoch 009, train_loss: 0.6864, train_acc: 0.79, valid_loss: 0.6914, valid_acc: 0.50, lr: 9.9901e-04, et: 0.0361, checkpoint saved
-    epoch 010, train_loss: 0.6847, train_acc: 0.79, valid_loss: 0.6908, valid_acc: 0.47, lr: 9.9881e-04, et: 0.0356, checkpoint saved
-    epoch 011, train_loss: 0.6828, train_acc: 0.86, valid_loss: 0.6903, valid_acc: 0.50, lr: 9.9858e-04, et: 0.0301, checkpoint saved
-    epoch 012, train_loss: 0.6800, train_acc: 0.86, valid_loss: 0.6903, valid_acc: 0.62, lr: 9.9833e-04, et: 0.0316
-    epoch 013, train_loss: 0.6768, train_acc: 0.85, valid_loss: 0.6897, valid_acc: 0.62, lr: 9.9807e-04, et: 0.0301, checkpoint saved
-    epoch 014, train_loss: 0.6714, train_acc: 0.90, valid_loss: 0.6879, valid_acc: 0.68, lr: 9.9778e-04, et: 0.0293, checkpoint saved
-    epoch 015, train_loss: 0.6638, train_acc: 0.91, valid_loss: 0.6835, valid_acc: 0.57, lr: 9.9748e-04, et: 0.0294, checkpoint saved
-    epoch 016, train_loss: 0.6538, train_acc: 0.91, valid_loss: 0.6771, valid_acc: 0.55, lr: 9.9715e-04, et: 0.0296, checkpoint saved
-    epoch 017, train_loss: 0.6383, train_acc: 0.93, valid_loss: 0.6660, valid_acc: 0.62, lr: 9.9681e-04, et: 0.0291, checkpoint saved
-    epoch 018, train_loss: 0.6194, train_acc: 0.88, valid_loss: 0.6522, valid_acc: 0.62, lr: 9.9644e-04, et: 0.0296, checkpoint saved
-    epoch 019, train_loss: 0.5945, train_acc: 0.85, valid_loss: 0.6333, valid_acc: 0.62, lr: 9.9606e-04, et: 0.0292, checkpoint saved
-    epoch 020, train_loss: 0.5651, train_acc: 0.88, valid_loss: 0.6103, valid_acc: 0.65, lr: 9.9566e-04, et: 0.0288, checkpoint saved
-    epoch 021, train_loss: 0.5241, train_acc: 0.89, valid_loss: 0.5802, valid_acc: 0.68, lr: 9.9524e-04, et: 0.0292, checkpoint saved
-    epoch 022, train_loss: 0.4843, train_acc: 0.85, valid_loss: 0.5538, valid_acc: 0.68, lr: 9.9479e-04, et: 0.0284, checkpoint saved
-    epoch 023, train_loss: 0.4393, train_acc: 0.88, valid_loss: 0.5259, valid_acc: 0.70, lr: 9.9433e-04, et: 0.0288, checkpoint saved
-    epoch 024, train_loss: 0.4150, train_acc: 0.86, valid_loss: 0.5348, valid_acc: 0.68, lr: 9.9385e-04, et: 0.0297
-    epoch 025, train_loss: 0.4132, train_acc: 0.79, valid_loss: 0.5635, valid_acc: 0.65, lr: 9.9335e-04, et: 0.0311
-    epoch 026, train_loss: 0.3616, train_acc: 0.88, valid_loss: 0.5232, valid_acc: 0.72, lr: 9.9283e-04, et: 0.0293, checkpoint saved
-    epoch 027, train_loss: 0.2985, train_acc: 0.94, valid_loss: 0.4685, valid_acc: 0.78, lr: 9.9229e-04, et: 0.0293, checkpoint saved
-    epoch 028, train_loss: 0.2749, train_acc: 0.94, valid_loss: 0.4541, valid_acc: 0.80, lr: 9.9173e-04, et: 0.0308, checkpoint saved
-    epoch 029, train_loss: 0.2348, train_acc: 0.94, valid_loss: 0.4065, valid_acc: 0.85, lr: 9.9115e-04, et: 0.0290, checkpoint saved
-    epoch 030, train_loss: 0.1788, train_acc: 0.96, valid_loss: 0.3426, valid_acc: 0.85, lr: 9.9055e-04, et: 0.0288, checkpoint saved
-    epoch 031, train_loss: 0.1968, train_acc: 0.96, valid_loss: 0.3970, valid_acc: 0.85, lr: 9.8994e-04, et: 0.0281
-    epoch 032, train_loss: 0.1778, train_acc: 0.96, valid_loss: 0.3670, valid_acc: 0.85, lr: 9.8930e-04, et: 0.0295
-    epoch 033, train_loss: 0.1423, train_acc: 0.97, valid_loss: 0.3155, valid_acc: 0.88, lr: 9.8865e-04, et: 0.0301, checkpoint saved
-    epoch 034, train_loss: 0.0884, train_acc: 1.00, valid_loss: 0.2156, valid_acc: 0.90, lr: 9.8797e-04, et: 0.0296, checkpoint saved
-    epoch 035, train_loss: 0.0930, train_acc: 0.99, valid_loss: 0.2419, valid_acc: 0.88, lr: 9.8728e-04, et: 0.0287
-    epoch 036, train_loss: 0.0916, train_acc: 0.99, valid_loss: 0.2393, valid_acc: 0.90, lr: 9.8656e-04, et: 0.0291
-    epoch 037, train_loss: 0.0641, train_acc: 1.00, valid_loss: 0.1958, valid_acc: 0.93, lr: 9.8583e-04, et: 0.0312, checkpoint saved
-    epoch 038, train_loss: 0.0646, train_acc: 0.99, valid_loss: 0.2310, valid_acc: 0.90, lr: 9.8508e-04, et: 0.0297
-    epoch 039, train_loss: 0.0615, train_acc: 0.99, valid_loss: 0.2615, valid_acc: 0.88, lr: 9.8431e-04, et: 0.0293
-    epoch 040, train_loss: 0.0546, train_acc: 0.99, valid_loss: 0.2472, valid_acc: 0.88, lr: 9.8352e-04, et: 0.0282
-    epoch 041, train_loss: 0.0572, train_acc: 0.99, valid_loss: 0.2433, valid_acc: 0.88, lr: 9.8271e-04, et: 0.0306
-    epoch 042, train_loss: 0.0465, train_acc: 0.99, valid_loss: 0.2220, valid_acc: 0.88, lr: 9.8188e-04, et: 0.0279
-    epoch 043, train_loss: 0.0420, train_acc: 1.00, valid_loss: 0.2209, valid_acc: 0.88, lr: 9.8103e-04, et: 0.0289
-    epoch 044, train_loss: 0.0478, train_acc: 0.99, valid_loss: 0.2598, valid_acc: 0.88, lr: 9.8017e-04, et: 0.0284
-    epoch 045, train_loss: 0.0506, train_acc: 0.99, valid_loss: 0.2680, valid_acc: 0.88, lr: 9.7928e-04, et: 0.0285
-    epoch 046, train_loss: 0.0479, train_acc: 0.99, valid_loss: 0.2658, valid_acc: 0.88, lr: 9.7838e-04, et: 0.0296
-    epoch 047, train_loss: 0.0374, train_acc: 1.00, valid_loss: 0.2626, valid_acc: 0.90, lr: 9.7745e-04, et: 0.0293
-    epoch 048, train_loss: 0.0326, train_acc: 1.00, valid_loss: 0.2374, valid_acc: 0.90, lr: 9.7651e-04, et: 0.0288
-    epoch 049, train_loss: 0.0331, train_acc: 1.00, valid_loss: 0.2360, valid_acc: 0.90, lr: 9.7555e-04, et: 0.0284
-    epoch 050, train_loss: 0.0299, train_acc: 1.00, valid_loss: 0.2097, valid_acc: 0.90, lr: 9.7457e-04, et: 0.0292
-    epoch 051, train_loss: 0.0506, train_acc: 0.97, valid_loss: 0.2882, valid_acc: 0.88, lr: 9.7358e-04, et: 0.0298
-    epoch 052, train_loss: 0.0533, train_acc: 0.99, valid_loss: 0.3117, valid_acc: 0.88, lr: 9.7256e-04, et: 0.0281
-    epoch 053, train_loss: 0.0299, train_acc: 1.00, valid_loss: 0.2328, valid_acc: 0.88, lr: 9.7152e-04, et: 0.0284
-    epoch 054, train_loss: 0.0277, train_acc: 1.00, valid_loss: 0.2131, valid_acc: 0.90, lr: 9.7047e-04, et: 0.0291
-    epoch 055, train_loss: 0.0286, train_acc: 1.00, valid_loss: 0.2176, valid_acc: 0.90, lr: 9.6940e-04, et: 0.0295
-    epoch 056, train_loss: 0.0280, train_acc: 1.00, valid_loss: 0.2085, valid_acc: 0.93, lr: 9.6831e-04, et: 0.0277
-    epoch 057, train_loss: 0.0309, train_acc: 1.00, valid_loss: 0.1947, valid_acc: 0.93, lr: 9.6720e-04, et: 0.0278, checkpoint saved
-    epoch 058, train_loss: 0.0302, train_acc: 1.00, valid_loss: 0.1637, valid_acc: 0.93, lr: 9.6607e-04, et: 0.0274, checkpoint saved
-    epoch 059, train_loss: 0.0280, train_acc: 1.00, valid_loss: 0.1426, valid_acc: 0.93, lr: 9.6492e-04, et: 0.0272, checkpoint saved
-    epoch 060, train_loss: 0.0426, train_acc: 1.00, valid_loss: 0.1016, valid_acc: 0.95, lr: 9.6376e-04, et: 0.0279, checkpoint saved
-    epoch 061, train_loss: 0.0385, train_acc: 1.00, valid_loss: 0.0965, valid_acc: 0.97, lr: 9.6258e-04, et: 0.0283, checkpoint saved
-    epoch 062, train_loss: 0.0213, train_acc: 1.00, valid_loss: 0.1288, valid_acc: 0.95, lr: 9.6138e-04, et: 0.0280
-    epoch 063, train_loss: 0.0241, train_acc: 1.00, valid_loss: 0.1843, valid_acc: 0.93, lr: 9.6016e-04, et: 0.0298
-    epoch 064, train_loss: 0.0281, train_acc: 1.00, valid_loss: 0.2053, valid_acc: 0.93, lr: 9.5892e-04, et: 0.0282
-    epoch 065, train_loss: 0.0265, train_acc: 1.00, valid_loss: 0.2427, valid_acc: 0.93, lr: 9.5766e-04, et: 0.0285
-    epoch 066, train_loss: 0.0280, train_acc: 0.99, valid_loss: 0.2609, valid_acc: 0.93, lr: 9.5639e-04, et: 0.0291
-    epoch 067, train_loss: 0.0224, train_acc: 1.00, valid_loss: 0.2423, valid_acc: 0.88, lr: 9.5510e-04, et: 0.0288
-    epoch 068, train_loss: 0.0156, train_acc: 1.00, valid_loss: 0.2227, valid_acc: 0.90, lr: 9.5379e-04, et: 0.0272
-    epoch 069, train_loss: 0.0169, train_acc: 1.00, valid_loss: 0.1925, valid_acc: 0.90, lr: 9.5246e-04, et: 0.0275
-    epoch 070, train_loss: 0.0165, train_acc: 1.00, valid_loss: 0.1744, valid_acc: 0.90, lr: 9.5112e-04, et: 0.0285
-    epoch 071, train_loss: 0.0183, train_acc: 1.00, valid_loss: 0.1560, valid_acc: 0.93, lr: 9.4975e-04, et: 0.0305
-    epoch 072, train_loss: 0.0208, train_acc: 1.00, valid_loss: 0.1629, valid_acc: 0.93, lr: 9.4837e-04, et: 0.0315
-    epoch 073, train_loss: 0.0207, train_acc: 1.00, valid_loss: 0.1580, valid_acc: 0.93, lr: 9.4697e-04, et: 0.0306
-    epoch 074, train_loss: 0.0168, train_acc: 1.00, valid_loss: 0.2121, valid_acc: 0.90, lr: 9.4556e-04, et: 0.0301
-    epoch 075, train_loss: 0.0300, train_acc: 1.00, valid_loss: 0.3191, valid_acc: 0.90, lr: 9.4412e-04, et: 0.0310
-    epoch 076, train_loss: 0.0261, train_acc: 1.00, valid_loss: 0.2946, valid_acc: 0.90, lr: 9.4267e-04, et: 0.0303
-    epoch 077, train_loss: 0.0193, train_acc: 1.00, valid_loss: 0.2136, valid_acc: 0.93, lr: 9.4120e-04, et: 0.0309
-    epoch 078, train_loss: 0.0211, train_acc: 1.00, valid_loss: 0.2163, valid_acc: 0.93, lr: 9.3972e-04, et: 0.0289
-    epoch 079, train_loss: 0.0203, train_acc: 1.00, valid_loss: 0.2002, valid_acc: 0.93, lr: 9.3822e-04, et: 0.0292
-    epoch 080, train_loss: 0.0219, train_acc: 1.00, valid_loss: 0.1832, valid_acc: 0.90, lr: 9.3669e-04, et: 0.0299
-    epoch 081, train_loss: 0.0194, train_acc: 1.00, valid_loss: 0.1491, valid_acc: 0.93, lr: 9.3516e-04, et: 0.0291
-    epoch 082, train_loss: 0.0194, train_acc: 1.00, valid_loss: 0.1362, valid_acc: 0.95, lr: 9.3360e-04, et: 0.0297
-    epoch 083, train_loss: 0.0179, train_acc: 1.00, valid_loss: 0.1463, valid_acc: 0.95, lr: 9.3203e-04, et: 0.0279
-    epoch 084, train_loss: 0.0195, train_acc: 1.00, valid_loss: 0.1985, valid_acc: 0.95, lr: 9.3044e-04, et: 0.0291
-    epoch 085, train_loss: 0.0295, train_acc: 0.99, valid_loss: 0.2646, valid_acc: 0.95, lr: 9.2883e-04, et: 0.0290
-    epoch 086, train_loss: 0.0230, train_acc: 1.00, valid_loss: 0.2560, valid_acc: 0.93, lr: 9.2721e-04, et: 0.0280
-    epoch 087, train_loss: 0.0201, train_acc: 1.00, valid_loss: 0.2425, valid_acc: 0.93, lr: 9.2557e-04, et: 0.0290
-    epoch 088, train_loss: 0.0356, train_acc: 0.99, valid_loss: 0.2616, valid_acc: 0.90, lr: 9.2392e-04, et: 0.0288
-    epoch 089, train_loss: 0.0412, train_acc: 0.99, valid_loss: 0.3150, valid_acc: 0.90, lr: 9.2224e-04, et: 0.0278
-    epoch 090, train_loss: 0.0229, train_acc: 1.00, valid_loss: 0.2350, valid_acc: 0.90, lr: 9.2055e-04, et: 0.0292
-    epoch 091, train_loss: 0.0174, train_acc: 1.00, valid_loss: 0.1678, valid_acc: 0.93, lr: 9.1885e-04, et: 0.0290
-    epoch 092, train_loss: 0.0175, train_acc: 1.00, valid_loss: 0.1528, valid_acc: 0.93, lr: 9.1712e-04, et: 0.0287
-    epoch 093, train_loss: 0.0150, train_acc: 1.00, valid_loss: 0.1735, valid_acc: 0.93, lr: 9.1538e-04, et: 0.0280
-    epoch 094, train_loss: 0.0140, train_acc: 1.00, valid_loss: 0.1848, valid_acc: 0.93, lr: 9.1363e-04, et: 0.0285
-    epoch 095, train_loss: 0.0131, train_acc: 1.00, valid_loss: 0.2083, valid_acc: 0.93, lr: 9.1185e-04, et: 0.0288
-    epoch 096, train_loss: 0.0137, train_acc: 1.00, valid_loss: 0.2258, valid_acc: 0.90, lr: 9.1007e-04, et: 0.0285
-    epoch 097, train_loss: 0.0156, train_acc: 1.00, valid_loss: 0.2380, valid_acc: 0.90, lr: 9.0826e-04, et: 0.0288
-    epoch 098, train_loss: 0.0167, train_acc: 1.00, valid_loss: 0.2385, valid_acc: 0.88, lr: 9.0644e-04, et: 0.0291
-    epoch 099, train_loss: 0.0144, train_acc: 1.00, valid_loss: 0.2197, valid_acc: 0.88, lr: 9.0460e-04, et: 0.0290
-    epoch 100, train_loss: 0.0135, train_acc: 1.00, valid_loss: 0.2133, valid_acc: 0.88, lr: 9.0275e-04, et: 0.0281
-    epoch 101, train_loss: 0.0135, train_acc: 1.00, valid_loss: 0.2112, valid_acc: 0.90, lr: 9.0088e-04, et: 0.0293
-    epoch 102, train_loss: 0.0137, train_acc: 1.00, valid_loss: 0.2160, valid_acc: 0.90, lr: 8.9900e-04, et: 0.0290
-    epoch 103, train_loss: 0.0159, train_acc: 1.00, valid_loss: 0.2262, valid_acc: 0.88, lr: 8.9710e-04, et: 0.0290
-    epoch 104, train_loss: 0.0144, train_acc: 1.00, valid_loss: 0.2034, valid_acc: 0.88, lr: 8.9518e-04, et: 0.0281
-    epoch 105, train_loss: 0.0144, train_acc: 1.00, valid_loss: 0.2031, valid_acc: 0.88, lr: 8.9325e-04, et: 0.0299
-    epoch 106, train_loss: 0.0161, train_acc: 1.00, valid_loss: 0.2447, valid_acc: 0.88, lr: 8.9130e-04, et: 0.0289
-    epoch 107, train_loss: 0.0168, train_acc: 1.00, valid_loss: 0.2577, valid_acc: 0.90, lr: 8.8934e-04, et: 0.0280
-    epoch 108, train_loss: 0.0130, train_acc: 1.00, valid_loss: 0.2232, valid_acc: 0.90, lr: 8.8736e-04, et: 0.0288
-    epoch 109, train_loss: 0.0133, train_acc: 1.00, valid_loss: 0.1888, valid_acc: 0.90, lr: 8.8537e-04, et: 0.0291
-    epoch 110, train_loss: 0.0127, train_acc: 1.00, valid_loss: 0.1772, valid_acc: 0.93, lr: 8.8336e-04, et: 0.0287
-    epoch 111, train_loss: 0.0127, train_acc: 1.00, valid_loss: 0.1801, valid_acc: 0.93, lr: 8.8134e-04, et: 0.0285
-    epoch 112, train_loss: 0.0110, train_acc: 1.00, valid_loss: 0.1915, valid_acc: 0.93, lr: 8.7930e-04, et: 0.0282
-    epoch 113, train_loss: 0.0131, train_acc: 1.00, valid_loss: 0.2018, valid_acc: 0.93, lr: 8.7725e-04, et: 0.0289
-    epoch 114, train_loss: 0.0114, train_acc: 1.00, valid_loss: 0.1847, valid_acc: 0.93, lr: 8.7518e-04, et: 0.0290
-    epoch 115, train_loss: 0.0112, train_acc: 1.00, valid_loss: 0.1636, valid_acc: 0.93, lr: 8.7310e-04, et: 0.0278
-    epoch 116, train_loss: 0.0128, train_acc: 1.00, valid_loss: 0.1353, valid_acc: 0.95, lr: 8.7100e-04, et: 0.0287
-    epoch 117, train_loss: 0.0153, train_acc: 1.00, valid_loss: 0.1250, valid_acc: 0.95, lr: 8.6889e-04, et: 0.0293
-    epoch 118, train_loss: 0.0159, train_acc: 1.00, valid_loss: 0.1214, valid_acc: 0.97, lr: 8.6676e-04, et: 0.0291
-    epoch 119, train_loss: 0.0161, train_acc: 1.00, valid_loss: 0.1232, valid_acc: 0.97, lr: 8.6462e-04, et: 0.0296
-    epoch 120, train_loss: 0.0152, train_acc: 1.00, valid_loss: 0.1333, valid_acc: 0.95, lr: 8.6246e-04, et: 0.0306
-    epoch 121, train_loss: 0.0133, train_acc: 1.00, valid_loss: 0.1516, valid_acc: 0.93, lr: 8.6029e-04, et: 0.0323
-    epoch 122, train_loss: 0.0117, train_acc: 1.00, valid_loss: 0.1511, valid_acc: 0.93, lr: 8.5811e-04, et: 0.0317
-    epoch 123, train_loss: 0.0113, train_acc: 1.00, valid_loss: 0.1714, valid_acc: 0.93, lr: 8.5591e-04, et: 0.0312
-    epoch 124, train_loss: 0.0125, train_acc: 1.00, valid_loss: 0.1712, valid_acc: 0.90, lr: 8.5370e-04, et: 0.0321
-    epoch 125, train_loss: 0.0350, train_acc: 1.00, valid_loss: 0.2994, valid_acc: 0.85, lr: 8.5147e-04, et: 0.0306
-    epoch 126, train_loss: 0.0360, train_acc: 1.00, valid_loss: 0.3004, valid_acc: 0.85, lr: 8.4923e-04, et: 0.0297
-    epoch 127, train_loss: 0.0229, train_acc: 1.00, valid_loss: 0.2489, valid_acc: 0.90, lr: 8.4698e-04, et: 0.0295
-    epoch 128, train_loss: 0.0139, train_acc: 1.00, valid_loss: 0.2151, valid_acc: 0.93, lr: 8.4471e-04, et: 0.0294
-    epoch 129, train_loss: 0.0128, train_acc: 1.00, valid_loss: 0.2176, valid_acc: 0.93, lr: 8.4243e-04, et: 0.0302
-    epoch 130, train_loss: 0.0136, train_acc: 1.00, valid_loss: 0.2251, valid_acc: 0.90, lr: 8.4014e-04, et: 0.0281
-    epoch 131, train_loss: 0.0147, train_acc: 1.00, valid_loss: 0.2264, valid_acc: 0.90, lr: 8.3783e-04, et: 0.0287
-    epoch 132, train_loss: 0.0124, train_acc: 1.00, valid_loss: 0.1960, valid_acc: 0.90, lr: 8.3551e-04, et: 0.0298
-    epoch 133, train_loss: 0.0135, train_acc: 1.00, valid_loss: 0.2008, valid_acc: 0.88, lr: 8.3317e-04, et: 0.0289
-    epoch 134, train_loss: 0.0155, train_acc: 1.00, valid_loss: 0.1960, valid_acc: 0.88, lr: 8.3083e-04, et: 0.0288
-    epoch 135, train_loss: 0.0149, train_acc: 1.00, valid_loss: 0.2062, valid_acc: 0.88, lr: 8.2846e-04, et: 0.0294
-    epoch 136, train_loss: 0.0128, train_acc: 1.00, valid_loss: 0.2071, valid_acc: 0.90, lr: 8.2609e-04, et: 0.0302
+    epoch 000, train_loss: 0.6928, train_acc: 0.49, valid_loss: 0.6924, valid_acc: 0.53, lr: 9.9999e-04, et: 0.2845, checkpoint saved
+    epoch 001, train_loss: 0.6926, train_acc: 0.51, valid_loss: 0.6924, valid_acc: 0.50, lr: 9.9996e-04, et: 0.0246, checkpoint saved
+    epoch 002, train_loss: 0.6923, train_acc: 0.54, valid_loss: 0.6923, valid_acc: 0.50, lr: 9.9991e-04, et: 0.0240, checkpoint saved
+    epoch 003, train_loss: 0.6920, train_acc: 0.57, valid_loss: 0.6924, valid_acc: 0.50, lr: 9.9984e-04, et: 0.0240
+    epoch 004, train_loss: 0.6915, train_acc: 0.57, valid_loss: 0.6924, valid_acc: 0.50, lr: 9.9975e-04, et: 0.0239
+    epoch 005, train_loss: 0.6908, train_acc: 0.62, valid_loss: 0.6921, valid_acc: 0.50, lr: 9.9965e-04, et: 0.0244, checkpoint saved
+    epoch 006, train_loss: 0.6901, train_acc: 0.59, valid_loss: 0.6920, valid_acc: 0.47, lr: 9.9952e-04, et: 0.0240, checkpoint saved
+    epoch 007, train_loss: 0.6891, train_acc: 0.62, valid_loss: 0.6917, valid_acc: 0.45, lr: 9.9937e-04, et: 0.0239, checkpoint saved
+    epoch 008, train_loss: 0.6879, train_acc: 0.75, valid_loss: 0.6914, valid_acc: 0.53, lr: 9.9920e-04, et: 0.0239, checkpoint saved
+    epoch 009, train_loss: 0.6864, train_acc: 0.79, valid_loss: 0.6914, valid_acc: 0.50, lr: 9.9901e-04, et: 0.0246, checkpoint saved
+    epoch 010, train_loss: 0.6847, train_acc: 0.79, valid_loss: 0.6908, valid_acc: 0.47, lr: 9.9881e-04, et: 0.0234, checkpoint saved
+    epoch 011, train_loss: 0.6828, train_acc: 0.85, valid_loss: 0.6903, valid_acc: 0.50, lr: 9.9858e-04, et: 0.0229, checkpoint saved
+    epoch 012, train_loss: 0.6800, train_acc: 0.88, valid_loss: 0.6903, valid_acc: 0.60, lr: 9.9833e-04, et: 0.0230
+    epoch 013, train_loss: 0.6767, train_acc: 0.85, valid_loss: 0.6897, valid_acc: 0.62, lr: 9.9807e-04, et: 0.0244, checkpoint saved
+    epoch 014, train_loss: 0.6714, train_acc: 0.90, valid_loss: 0.6879, valid_acc: 0.68, lr: 9.9778e-04, et: 0.0230, checkpoint saved
+    epoch 015, train_loss: 0.6637, train_acc: 0.91, valid_loss: 0.6835, valid_acc: 0.57, lr: 9.9748e-04, et: 0.0230, checkpoint saved
+    epoch 016, train_loss: 0.6538, train_acc: 0.91, valid_loss: 0.6771, valid_acc: 0.55, lr: 9.9715e-04, et: 0.0230, checkpoint saved
+    epoch 017, train_loss: 0.6383, train_acc: 0.93, valid_loss: 0.6660, valid_acc: 0.62, lr: 9.9681e-04, et: 0.0236, checkpoint saved
+    epoch 018, train_loss: 0.6194, train_acc: 0.88, valid_loss: 0.6522, valid_acc: 0.62, lr: 9.9644e-04, et: 0.0230, checkpoint saved
+    epoch 019, train_loss: 0.5945, train_acc: 0.85, valid_loss: 0.6333, valid_acc: 0.62, lr: 9.9606e-04, et: 0.0230, checkpoint saved
+    epoch 020, train_loss: 0.5651, train_acc: 0.88, valid_loss: 0.6102, valid_acc: 0.65, lr: 9.9566e-04, et: 0.0229, checkpoint saved
+    epoch 021, train_loss: 0.5238, train_acc: 0.89, valid_loss: 0.5797, valid_acc: 0.68, lr: 9.9524e-04, et: 0.0235, checkpoint saved
+    epoch 022, train_loss: 0.4832, train_acc: 0.85, valid_loss: 0.5521, valid_acc: 0.68, lr: 9.9479e-04, et: 0.0230, checkpoint saved
+    epoch 023, train_loss: 0.4380, train_acc: 0.88, valid_loss: 0.5237, valid_acc: 0.70, lr: 9.9433e-04, et: 0.0229, checkpoint saved
+    epoch 024, train_loss: 0.4137, train_acc: 0.86, valid_loss: 0.5327, valid_acc: 0.70, lr: 9.9385e-04, et: 0.0230
+    epoch 025, train_loss: 0.4110, train_acc: 0.79, valid_loss: 0.5600, valid_acc: 0.65, lr: 9.9335e-04, et: 0.0234
+    epoch 026, train_loss: 0.3593, train_acc: 0.88, valid_loss: 0.5194, valid_acc: 0.72, lr: 9.9283e-04, et: 0.0230, checkpoint saved
+    epoch 027, train_loss: 0.2968, train_acc: 0.94, valid_loss: 0.4654, valid_acc: 0.78, lr: 9.9229e-04, et: 0.0229, checkpoint saved
+    epoch 028, train_loss: 0.2737, train_acc: 0.94, valid_loss: 0.4519, valid_acc: 0.80, lr: 9.9173e-04, et: 0.0229, checkpoint saved
+    epoch 029, train_loss: 0.2340, train_acc: 0.94, valid_loss: 0.4048, valid_acc: 0.85, lr: 9.9115e-04, et: 0.0234, checkpoint saved
+    epoch 030, train_loss: 0.1783, train_acc: 0.96, valid_loss: 0.3413, valid_acc: 0.85, lr: 9.9055e-04, et: 0.0230, checkpoint saved
+    epoch 031, train_loss: 0.1968, train_acc: 0.96, valid_loss: 0.3968, valid_acc: 0.85, lr: 9.8994e-04, et: 0.0230
+    epoch 032, train_loss: 0.1778, train_acc: 0.96, valid_loss: 0.3669, valid_acc: 0.85, lr: 9.8930e-04, et: 0.0229
+    epoch 033, train_loss: 0.1424, train_acc: 0.97, valid_loss: 0.3155, valid_acc: 0.88, lr: 9.8865e-04, et: 0.0229, checkpoint saved
+    epoch 034, train_loss: 0.0884, train_acc: 1.00, valid_loss: 0.2153, valid_acc: 0.90, lr: 9.8797e-04, et: 0.0246, checkpoint saved
+    epoch 035, train_loss: 0.0928, train_acc: 0.99, valid_loss: 0.2408, valid_acc: 0.88, lr: 9.8728e-04, et: 0.0230
+    epoch 036, train_loss: 0.0915, train_acc: 0.99, valid_loss: 0.2386, valid_acc: 0.90, lr: 9.8656e-04, et: 0.0230
+    epoch 037, train_loss: 0.0642, train_acc: 1.00, valid_loss: 0.1919, valid_acc: 0.93, lr: 9.8583e-04, et: 0.0229, checkpoint saved
+    epoch 038, train_loss: 0.0644, train_acc: 0.99, valid_loss: 0.2288, valid_acc: 0.90, lr: 9.8508e-04, et: 0.0235
+    epoch 039, train_loss: 0.0619, train_acc: 0.99, valid_loss: 0.2630, valid_acc: 0.88, lr: 9.8431e-04, et: 0.0231
+    epoch 040, train_loss: 0.0544, train_acc: 0.99, valid_loss: 0.2440, valid_acc: 0.88, lr: 9.8352e-04, et: 0.0229
+    epoch 041, train_loss: 0.0574, train_acc: 0.99, valid_loss: 0.2437, valid_acc: 0.88, lr: 9.8271e-04, et: 0.0229
+    epoch 042, train_loss: 0.0464, train_acc: 0.99, valid_loss: 0.2213, valid_acc: 0.88, lr: 9.8188e-04, et: 0.0234
+    epoch 043, train_loss: 0.0418, train_acc: 1.00, valid_loss: 0.2192, valid_acc: 0.88, lr: 9.8103e-04, et: 0.0230
+    epoch 044, train_loss: 0.0474, train_acc: 0.99, valid_loss: 0.2575, valid_acc: 0.88, lr: 9.8017e-04, et: 0.0229
+    epoch 045, train_loss: 0.0498, train_acc: 0.99, valid_loss: 0.2641, valid_acc: 0.88, lr: 9.7928e-04, et: 0.0229
+    epoch 046, train_loss: 0.0472, train_acc: 0.99, valid_loss: 0.2619, valid_acc: 0.88, lr: 9.7838e-04, et: 0.0234
+    epoch 047, train_loss: 0.0373, train_acc: 1.00, valid_loss: 0.2615, valid_acc: 0.90, lr: 9.7745e-04, et: 0.0229
+    epoch 048, train_loss: 0.0331, train_acc: 1.00, valid_loss: 0.2406, valid_acc: 0.90, lr: 9.7651e-04, et: 0.0229
+    epoch 049, train_loss: 0.0336, train_acc: 1.00, valid_loss: 0.2389, valid_acc: 0.90, lr: 9.7555e-04, et: 0.0229
+    epoch 050, train_loss: 0.0303, train_acc: 1.00, valid_loss: 0.2151, valid_acc: 0.90, lr: 9.7457e-04, et: 0.0229
+    epoch 051, train_loss: 0.0488, train_acc: 0.97, valid_loss: 0.2799, valid_acc: 0.88, lr: 9.7358e-04, et: 0.0234
+    epoch 052, train_loss: 0.0521, train_acc: 0.99, valid_loss: 0.3070, valid_acc: 0.88, lr: 9.7256e-04, et: 0.0229
+    epoch 053, train_loss: 0.0303, train_acc: 1.00, valid_loss: 0.2375, valid_acc: 0.88, lr: 9.7152e-04, et: 0.0229
+    epoch 054, train_loss: 0.0278, train_acc: 1.00, valid_loss: 0.2136, valid_acc: 0.90, lr: 9.7047e-04, et: 0.0229
+    epoch 055, train_loss: 0.0284, train_acc: 1.00, valid_loss: 0.2160, valid_acc: 0.90, lr: 9.6940e-04, et: 0.0243
+    epoch 056, train_loss: 0.0281, train_acc: 1.00, valid_loss: 0.2119, valid_acc: 0.93, lr: 9.6831e-04, et: 0.0234
+    epoch 057, train_loss: 0.0310, train_acc: 1.00, valid_loss: 0.1989, valid_acc: 0.93, lr: 9.6720e-04, et: 0.0230
+    epoch 058, train_loss: 0.0299, train_acc: 1.00, valid_loss: 0.1663, valid_acc: 0.93, lr: 9.6607e-04, et: 0.0230, checkpoint saved
+    epoch 059, train_loss: 0.0280, train_acc: 1.00, valid_loss: 0.1425, valid_acc: 0.93, lr: 9.6492e-04, et: 0.0236, checkpoint saved
+    epoch 060, train_loss: 0.0455, train_acc: 1.00, valid_loss: 0.0966, valid_acc: 0.97, lr: 9.6376e-04, et: 0.0231, checkpoint saved
+    epoch 061, train_loss: 0.0415, train_acc: 1.00, valid_loss: 0.0895, valid_acc: 0.97, lr: 9.6258e-04, et: 0.0230, checkpoint saved
+    epoch 062, train_loss: 0.0223, train_acc: 1.00, valid_loss: 0.1248, valid_acc: 0.95, lr: 9.6138e-04, et: 0.0230
+    epoch 063, train_loss: 0.0243, train_acc: 1.00, valid_loss: 0.1840, valid_acc: 0.93, lr: 9.6016e-04, et: 0.0235
+    epoch 064, train_loss: 0.0276, train_acc: 1.00, valid_loss: 0.2071, valid_acc: 0.93, lr: 9.5892e-04, et: 0.0230
+    epoch 065, train_loss: 0.0265, train_acc: 1.00, valid_loss: 0.2447, valid_acc: 0.93, lr: 9.5766e-04, et: 0.0230
+    epoch 066, train_loss: 0.0280, train_acc: 0.99, valid_loss: 0.2605, valid_acc: 0.93, lr: 9.5639e-04, et: 0.0230
+    epoch 067, train_loss: 0.0224, train_acc: 1.00, valid_loss: 0.2407, valid_acc: 0.88, lr: 9.5510e-04, et: 0.0229
+    epoch 068, train_loss: 0.0156, train_acc: 1.00, valid_loss: 0.2200, valid_acc: 0.90, lr: 9.5379e-04, et: 0.0234
+    epoch 069, train_loss: 0.0166, train_acc: 1.00, valid_loss: 0.1855, valid_acc: 0.90, lr: 9.5246e-04, et: 0.0230
+    epoch 070, train_loss: 0.0165, train_acc: 1.00, valid_loss: 0.1714, valid_acc: 0.90, lr: 9.5112e-04, et: 0.0230
+    epoch 071, train_loss: 0.0183, train_acc: 1.00, valid_loss: 0.1561, valid_acc: 0.93, lr: 9.4975e-04, et: 0.0229
+    epoch 072, train_loss: 0.0209, train_acc: 1.00, valid_loss: 0.1626, valid_acc: 0.93, lr: 9.4837e-04, et: 0.0234
+    epoch 073, train_loss: 0.0208, train_acc: 1.00, valid_loss: 0.1577, valid_acc: 0.93, lr: 9.4697e-04, et: 0.0230
+    epoch 074, train_loss: 0.0166, train_acc: 1.00, valid_loss: 0.2052, valid_acc: 0.90, lr: 9.4556e-04, et: 0.0229
+    epoch 075, train_loss: 0.0281, train_acc: 1.00, valid_loss: 0.3025, valid_acc: 0.90, lr: 9.4412e-04, et: 0.0229
+    epoch 076, train_loss: 0.0252, train_acc: 1.00, valid_loss: 0.2806, valid_acc: 0.90, lr: 9.4267e-04, et: 0.0236
+    epoch 077, train_loss: 0.0197, train_acc: 1.00, valid_loss: 0.2086, valid_acc: 0.93, lr: 9.4120e-04, et: 0.0242
+    epoch 078, train_loss: 0.0213, train_acc: 1.00, valid_loss: 0.2092, valid_acc: 0.93, lr: 9.3972e-04, et: 0.0230
+    epoch 079, train_loss: 0.0204, train_acc: 1.00, valid_loss: 0.1937, valid_acc: 0.93, lr: 9.3822e-04, et: 0.0229
+    epoch 080, train_loss: 0.0219, train_acc: 1.00, valid_loss: 0.1780, valid_acc: 0.90, lr: 9.3669e-04, et: 0.0230
+    epoch 081, train_loss: 0.0195, train_acc: 1.00, valid_loss: 0.1481, valid_acc: 0.95, lr: 9.3516e-04, et: 0.0236
+    epoch 082, train_loss: 0.0193, train_acc: 1.00, valid_loss: 0.1364, valid_acc: 0.95, lr: 9.3360e-04, et: 0.0230
+    epoch 083, train_loss: 0.0178, train_acc: 1.00, valid_loss: 0.1465, valid_acc: 0.95, lr: 9.3203e-04, et: 0.0230
+    epoch 084, train_loss: 0.0196, train_acc: 1.00, valid_loss: 0.1963, valid_acc: 0.95, lr: 9.3044e-04, et: 0.0229
+    epoch 085, train_loss: 0.0287, train_acc: 1.00, valid_loss: 0.2533, valid_acc: 0.95, lr: 9.2883e-04, et: 0.0234
+    epoch 086, train_loss: 0.0225, train_acc: 1.00, valid_loss: 0.2450, valid_acc: 0.93, lr: 9.2721e-04, et: 0.0231
+    epoch 087, train_loss: 0.0198, train_acc: 1.00, valid_loss: 0.2345, valid_acc: 0.93, lr: 9.2557e-04, et: 0.0229
+    epoch 088, train_loss: 0.0346, train_acc: 0.99, valid_loss: 0.2531, valid_acc: 0.90, lr: 9.2392e-04, et: 0.0229
+    epoch 089, train_loss: 0.0386, train_acc: 0.99, valid_loss: 0.2964, valid_acc: 0.90, lr: 9.2224e-04, et: 0.0234
+    epoch 090, train_loss: 0.0225, train_acc: 1.00, valid_loss: 0.2285, valid_acc: 0.90, lr: 9.2055e-04, et: 0.0230
+    epoch 091, train_loss: 0.0174, train_acc: 1.00, valid_loss: 0.1670, valid_acc: 0.93, lr: 9.1885e-04, et: 0.0230
+    epoch 092, train_loss: 0.0174, train_acc: 1.00, valid_loss: 0.1534, valid_acc: 0.93, lr: 9.1712e-04, et: 0.0229
+    epoch 093, train_loss: 0.0151, train_acc: 1.00, valid_loss: 0.1694, valid_acc: 0.95, lr: 9.1538e-04, et: 0.0230
+    epoch 094, train_loss: 0.0142, train_acc: 1.00, valid_loss: 0.1811, valid_acc: 0.93, lr: 9.1363e-04, et: 0.0235
+    epoch 095, train_loss: 0.0132, train_acc: 1.00, valid_loss: 0.2057, valid_acc: 0.93, lr: 9.1185e-04, et: 0.0230
+    epoch 096, train_loss: 0.0138, train_acc: 1.00, valid_loss: 0.2246, valid_acc: 0.90, lr: 9.1007e-04, et: 0.0230
+    epoch 097, train_loss: 0.0157, train_acc: 1.00, valid_loss: 0.2382, valid_acc: 0.90, lr: 9.0826e-04, et: 0.0230
+    epoch 098, train_loss: 0.0166, train_acc: 1.00, valid_loss: 0.2366, valid_acc: 0.90, lr: 9.0644e-04, et: 0.0244
+    epoch 099, train_loss: 0.0143, train_acc: 1.00, valid_loss: 0.2165, valid_acc: 0.88, lr: 9.0460e-04, et: 0.0233
+    epoch 100, train_loss: 0.0134, train_acc: 1.00, valid_loss: 0.2097, valid_acc: 0.88, lr: 9.0275e-04, et: 0.0230
+    epoch 101, train_loss: 0.0135, train_acc: 1.00, valid_loss: 0.2100, valid_acc: 0.90, lr: 9.0088e-04, et: 0.0230
+    epoch 102, train_loss: 0.0138, train_acc: 1.00, valid_loss: 0.2157, valid_acc: 0.90, lr: 8.9900e-04, et: 0.0236
+    epoch 103, train_loss: 0.0160, train_acc: 1.00, valid_loss: 0.2263, valid_acc: 0.88, lr: 8.9710e-04, et: 0.0230
+    epoch 104, train_loss: 0.0145, train_acc: 1.00, valid_loss: 0.2033, valid_acc: 0.88, lr: 8.9518e-04, et: 0.0230
+    epoch 105, train_loss: 0.0144, train_acc: 1.00, valid_loss: 0.2023, valid_acc: 0.88, lr: 8.9325e-04, et: 0.0229
+    epoch 106, train_loss: 0.0161, train_acc: 1.00, valid_loss: 0.2440, valid_acc: 0.88, lr: 8.9130e-04, et: 0.0230
+    epoch 107, train_loss: 0.0171, train_acc: 1.00, valid_loss: 0.2628, valid_acc: 0.90, lr: 8.8934e-04, et: 0.0232
+    epoch 108, train_loss: 0.0130, train_acc: 1.00, valid_loss: 0.2281, valid_acc: 0.90, lr: 8.8736e-04, et: 0.0230
+    epoch 109, train_loss: 0.0133, train_acc: 1.00, valid_loss: 0.1938, valid_acc: 0.90, lr: 8.8537e-04, et: 0.0230
+    epoch 110, train_loss: 0.0126, train_acc: 1.00, valid_loss: 0.1790, valid_acc: 0.93, lr: 8.8336e-04, et: 0.0230
+    epoch 111, train_loss: 0.0126, train_acc: 1.00, valid_loss: 0.1815, valid_acc: 0.93, lr: 8.8134e-04, et: 0.0235
+    epoch 112, train_loss: 0.0110, train_acc: 1.00, valid_loss: 0.1908, valid_acc: 0.93, lr: 8.7930e-04, et: 0.0230
+    epoch 113, train_loss: 0.0135, train_acc: 1.00, valid_loss: 0.1980, valid_acc: 0.90, lr: 8.7725e-04, et: 0.0229
+    epoch 114, train_loss: 0.0118, train_acc: 1.00, valid_loss: 0.1795, valid_acc: 0.93, lr: 8.7518e-04, et: 0.0230
+    epoch 115, train_loss: 0.0115, train_acc: 1.00, valid_loss: 0.1596, valid_acc: 0.93, lr: 8.7310e-04, et: 0.0235
+    epoch 116, train_loss: 0.0128, train_acc: 1.00, valid_loss: 0.1354, valid_acc: 0.95, lr: 8.7100e-04, et: 0.0232
+    epoch 117, train_loss: 0.0148, train_acc: 1.00, valid_loss: 0.1266, valid_acc: 0.95, lr: 8.6889e-04, et: 0.0230
+    epoch 118, train_loss: 0.0153, train_acc: 1.00, valid_loss: 0.1259, valid_acc: 0.95, lr: 8.6676e-04, et: 0.0229
+    epoch 119, train_loss: 0.0156, train_acc: 1.00, valid_loss: 0.1259, valid_acc: 0.97, lr: 8.6462e-04, et: 0.0229
+    epoch 120, train_loss: 0.0150, train_acc: 1.00, valid_loss: 0.1349, valid_acc: 0.95, lr: 8.6246e-04, et: 0.0241
+    epoch 121, train_loss: 0.0134, train_acc: 1.00, valid_loss: 0.1506, valid_acc: 0.93, lr: 8.6029e-04, et: 0.0231
+    epoch 122, train_loss: 0.0117, train_acc: 1.00, valid_loss: 0.1509, valid_acc: 0.93, lr: 8.5811e-04, et: 0.0229
+    epoch 123, train_loss: 0.0114, train_acc: 1.00, valid_loss: 0.1718, valid_acc: 0.93, lr: 8.5591e-04, et: 0.0230
+    epoch 124, train_loss: 0.0126, train_acc: 1.00, valid_loss: 0.1706, valid_acc: 0.90, lr: 8.5370e-04, et: 0.0235
+    epoch 125, train_loss: 0.0368, train_acc: 1.00, valid_loss: 0.3021, valid_acc: 0.85, lr: 8.5147e-04, et: 0.0229
+    epoch 126, train_loss: 0.0372, train_acc: 1.00, valid_loss: 0.3019, valid_acc: 0.85, lr: 8.4923e-04, et: 0.0229
+    epoch 127, train_loss: 0.0224, train_acc: 1.00, valid_loss: 0.2490, valid_acc: 0.90, lr: 8.4698e-04, et: 0.0231
+    epoch 128, train_loss: 0.0138, train_acc: 1.00, valid_loss: 0.2161, valid_acc: 0.93, lr: 8.4471e-04, et: 0.0234
+    epoch 129, train_loss: 0.0129, train_acc: 1.00, valid_loss: 0.2163, valid_acc: 0.93, lr: 8.4243e-04, et: 0.0229
+    epoch 130, train_loss: 0.0136, train_acc: 1.00, valid_loss: 0.2227, valid_acc: 0.90, lr: 8.4014e-04, et: 0.0229
+    epoch 131, train_loss: 0.0146, train_acc: 1.00, valid_loss: 0.2229, valid_acc: 0.90, lr: 8.3783e-04, et: 0.0229
+    epoch 132, train_loss: 0.0124, train_acc: 1.00, valid_loss: 0.1908, valid_acc: 0.90, lr: 8.3551e-04, et: 0.0235
+    epoch 133, train_loss: 0.0132, train_acc: 1.00, valid_loss: 0.1926, valid_acc: 0.88, lr: 8.3317e-04, et: 0.0229
+    epoch 134, train_loss: 0.0149, train_acc: 1.00, valid_loss: 0.1868, valid_acc: 0.88, lr: 8.3083e-04, et: 0.0229
+    epoch 135, train_loss: 0.0145, train_acc: 1.00, valid_loss: 0.2007, valid_acc: 0.88, lr: 8.2846e-04, et: 0.0229
+    epoch 136, train_loss: 0.0128, train_acc: 1.00, valid_loss: 0.2058, valid_acc: 0.90, lr: 8.2609e-04, et: 0.0229
     Early stopping was triggered: epoch #137
-    Elapsed Time: 4.59s
+    Elapsed Time: 3.49s
     keywords_train                                           [run:1, run:2]
     keywords_valid                                                  [run:3]
     keywords_test                                                     run:4
@@ -531,8 +528,8 @@ Example: Within-subject classification with deep learning
     accuracy                                                            1.0
     labels                [1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, ...
     preds                 [1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, ...
-    probas                [[0.03796487, 0.9620352], [0.9995403, 0.000459...
-    logits                [[-1.9252256, 1.3071641], [3.8360136, -3.84838...
+    probas                [[0.04590258, 0.95409745], [0.9996177, 0.00038...
+    logits                [[-1.8190584, 1.2151861], [3.9325767, -3.93634...
     desc                                           eegnet4.2/drop_prob=0.25
     normalization_mean    [-2.3615324294836586e-09, -2.639076960061989e-...
     normalization_std     [5.420392625839235e-06, 5.727636352954266e-06,...
@@ -544,7 +541,7 @@ Example: Within-subject classification with deep learning
 
 .. rst-class:: sphx-glr-timing
 
-   **Total running time of the script:** (0 minutes 7.660 seconds)
+   **Total running time of the script:** (0 minutes 5.620 seconds)
 
 
 .. _sphx_glr_download_auto_examples_example_within-subject-classification-deeplearning.py:
