@@ -173,7 +173,7 @@ def load_data(
         if epochs_valid is None:
             X_valid, y_valid = None, None
         else:
-            X_valid, y_valid = func_convert_epochs_to_ndarray(epochs_train)
+            X_valid, y_valid = func_convert_epochs_to_ndarray(epochs_valid)
         X_test, y_test = [], []
         for e in epochs_test:
             X, y = func_convert_epochs_to_ndarray(e)
@@ -213,7 +213,7 @@ def load_data(
 
         X_train, y_train = train["X"], train["y"]
         X_valid, y_valid = valid["X"], valid["y"]
-        X_test, y_test = [d["X"] for d in dict_test], [d["y"] for d in dict_test]
+        X_test, y_test = [d["X"] for d in test], [d["y"] for d in test]
 
     return X_train, X_valid, X_test, y_train, y_valid, y_test
 
