@@ -221,7 +221,6 @@ def conventional(
         pyriemann.classification.MDM(),
     ],
     classifier_names=["tslr", "mdm"],
-    name_classifiers=None,
     func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
     # compile_test=False,
     desc=None,
