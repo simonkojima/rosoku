@@ -9,7 +9,7 @@ def get_labels_from_epochs(epochs, label_keys={"event:left": 0, "event:right": 1
 
     for marker in markers:
         for key, val in label_keys.items():
-            if key in marker:
+            if key in marker.split("/"):
                 y.append(val)
 
     if len(epochs) != len(y):
@@ -17,7 +17,7 @@ def get_labels_from_epochs(epochs, label_keys={"event:left": 0, "event:right": 1
             f"lenth of epochs is not match with length of y.\n len(epochs): {len(epochs)}, len(y): {len(y)}"
         )
 
-    return y
+    return np.array(y)
 
 
 def apply_func_proc(func_proc, func_proc_mode, train, valid, test):
@@ -169,14 +169,14 @@ def load_data(
             )
 
         # convert epochs to ndarray
-        X_train, y_train = func_convert_epochs_to_ndarray(epochs_train)
+        X_train, y_train = func_convert_epochs_to_ndarray(epochs_train, "train")
         if epochs_valid is None:
             X_valid, y_valid = None, None
         else:
-            X_valid, y_valid = func_convert_epochs_to_ndarray(epochs_valid)
+            X_valid, y_valid = func_convert_epochs_to_ndarray(epochs_valid, "valid")
         X_test, y_test = [], []
         for e in epochs_test:
-            X, y = func_convert_epochs_to_ndarray(e)
+            X, y = func_convert_epochs_to_ndarray(e, "test")
             X_test.append(X)
             y_test.append(y)
     else:
