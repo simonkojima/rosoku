@@ -9,8 +9,12 @@ def get_labels_from_epochs(epochs, label_keys={"event:left": 0, "event:right": 1
 
     for marker in markers:
         for key, val in label_keys.items():
-            if key in marker.split("/"):
-                y.append(val)
+            if "/" in marker:
+                if key in marker.split("/"):
+                    y.append(val)
+            else:
+                if key in marker:
+                    y.append(val)
 
     if len(epochs) != len(y):
         raise RuntimeError(
