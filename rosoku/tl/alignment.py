@@ -1,5 +1,6 @@
 import numpy as np
 import scipy
+import tqdm
 
 
 def euclidean_alignment(X):
@@ -31,20 +32,7 @@ def euclidean_alignment(X):
     return X_aligned
 
 
-def riemannian_alignment(covariances, scaling=False):
-    """
-    Riemannian Procrustes Analysisのrecentering, rescalingを行う関数
-    scaling = Falseのとき，recenteringのみ
-
-    covariances: nd.array
-        shape of (n_trials, n_channels, n_channels)
-    scaling: bool
-        rescalingを行うかどうか
-
-    References:
-    P. L. C. Rodrigues, C. Jutten and M. Congedo, "Riemannian Procrustes Analysis: Transfer Learning for Brain–Computer Interfaces," in IEEE Transactions on Biomedical Engineering, vol. 66, no. 8, pp. 2390-2401, Aug. 2019, doi: 10.1109/TBME.2018.2889705.
-
-    """
+def _riemannian_alignment(covariances, scaling=False):
     import pyriemann
 
     mean_cov = pyriemann.utils.mean.mean_covariance(covariances)
@@ -71,3 +59,31 @@ def riemannian_alignment(covariances, scaling=False):
             )
 
     return aligned_covs
+
+
+def riemannian_alignment(covariances, scaling=False, online=False, enable_tqdm=True):
+    """
+    Riemannian Procrustes Analysisのrecentering, rescalingを行う関数
+    scaling = Falseのとき，recenteringのみ
+
+    covariances: nd.array
+        shape of (n_trials, n_channels, n_channels)
+    scaling: bool
+        rescalingを行うかどうか
+
+    References:
+    P. L. C. Rodrigues, C. Jutten and M. Congedo, "Riemannian Procrustes Analysis: Transfer Learning for Brain–Computer Interfaces," in IEEE Transactions on Biomedical Engineering, vol. 66, no. 8, pp. 2390-2401, Aug. 2019, doi: 10.1109/TBME.2018.2889705.
+
+    """
+
+    if online is False:
+        return _riemannian_alignment(covariances=covariances, scaling=scaling)
+    else:
+        new_covariances = []
+        for n in tqdm.tqdm(range(covariances.shape[0]), disable=not enable_tqdm):
+            new_covariances.append(
+                _riemannian_alignment(covariances[0 : (n + 1), :, :], scaling=scaling)[
+                    -1, :, :
+                ]
+            )
+        return np.stack(new_covariances, axis=0)
