@@ -3,18 +3,7 @@ import scipy
 import tqdm
 
 
-def euclidean_alignment(X):
-    """
-    EA (Euclidean Alignment)を行う関数
-    recenteringがユークリッド空間で行われる
-
-    X: nd.array
-        shape of (n_trials, n_channels, n_times)
-
-    References:
-    H. He and D. Wu, "Transfer Learning for Brain–Computer Interfaces: A Euclidean Space Data Alignment Approach," in IEEE Transactions on Biomedical Engineering, vol. 67, no. 2, pp. 399-410, Feb. 2020, doi: 10.1109/TBME.2019.2913914.
-    """
-
+def _euclidean_alignment(X):
     n_trials, n_channels, _ = X.shape
 
     covariances = np.zeros((n_trials, n_channels, n_channels))
@@ -30,6 +19,26 @@ def euclidean_alignment(X):
         X_aligned[n, :, :] = R_inv_sqrt @ X[n, :, :]
 
     return X_aligned
+
+
+def euclidean_alignment(X, online=False, enable_tqdm=True):
+    """
+    EA (Euclidean Alignment)を行う関数
+    recenteringがユークリッド空間で行われる
+
+    X: nd.array
+        shape of (n_trials, n_channels, n_times)
+
+    References:
+    H. He and D. Wu, "Transfer Learning for Brain–Computer Interfaces: A Euclidean Space Data Alignment Approach," in IEEE Transactions on Biomedical Engineering, vol. 67, no. 2, pp. 399-410, Feb. 2020, doi: 10.1109/TBME.2019.2913914.
+    """
+    if online is False:
+        return _euclidean_alignment(X=X)
+    else:
+        new_X = []
+        for n in tqdm.tqdm(range(X.shape[0]), disable=not enable_tqdm):
+            new_X.append(_euclidean_alignment(X[0 : (n + 1), :, :])[-1, :, :])
+        return np.stack(new_X, axis=0)
 
 
 def _riemannian_alignment(covariances, scaling=False):
