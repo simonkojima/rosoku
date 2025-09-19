@@ -156,12 +156,6 @@ def deeplearning_train(
     if rank == 0:
         print(f"Elapsed Time: {elapsed_time:.2f}s")
 
-    """
-    if enable_wandb_logging:
-        if (enable_ddp and rank == 0) or (enable_ddp is False):
-            wandb.finish()
-    """
-
     if history_fname is not None and rank == 0:
         df_save = pd.DataFrame(history)
         df_save.to_pickle(f"{history_fname}.pkl")
@@ -201,8 +195,6 @@ def load_data(
 
 
 def main(
-    # rank,
-    # world_size,
     enable_ddp,
     enable_dp,
     num_workers,
@@ -240,25 +232,6 @@ def main(
     # setup DDP
     if enable_ddp:
 
-        """
-        # os.environ["MASTER_ADDR"] = "127.0.0.1"
-        # os.environ["MASTER_ADDR"] = "sirocco07"
-        # os.environ["MASTER_ADDR"] = "sirocco07.plafrim.cluster"
-        # os.environ["MASTER_ADDR"] = "localhost"
-        os.environ["MASTER_ADDR"] = "10.151.5.23"
-        os.environ["MASTER_PORT"] = "29627"
-
-        # print(f"[rank {rank}] MASTER_ADDR={os.environ['MASTER_ADDR']}"
-        # print(f"[rank {rank}] MASTER_PORT={os.environ['MASTER_PORT']}")
-
-        init_method = f"tcp://{os.environ['MASTER_ADDR']}:{os.environ['MASTER_PORT']}"
-
-        backend = "nccl"
-        # backend = "gloo"
-        torch.distributed.init_process_group(
-            backend=backend, rank=rank, world_size=world_size, init_method=init_method
-        )
-        """
         params = utils.get_ddp_params()
 
         rank = params["rank"]
@@ -284,7 +257,6 @@ def main(
             raise RuntimeError(f"[Rank {rank}] Distributed not initialized: NG")
 
         device = torch.device(f"cuda:{local_rank}")
-        # device = torch.device("cuda:0")
     else:
         # non DDP
         rank = 0
@@ -877,59 +849,6 @@ def deeplearning(
 
     # load data
 
-    """
-    ## training data
-    if func_load_epochs is not None:
-        epochs_train = func_load_epochs(keywords_train, "train")
-        epochs_valid = func_load_epochs(keywords_valid, "valid")
-        epochs_test = func_load_epochs(keywords_test, "test")
-
-        if func_proc_epochs is not None:
-            if apply_func_proc_per_obj:
-                epochs_train = func_proc_epochs(epochs_train, "train")
-                epochs_valid = func_proc_epochs(epochs_valid, "valid")
-                epochs_test = func_proc_epochs(epochs_test, "test")
-            else:
-                epochs_train, epochs_valid, epochs_test = func_proc_epochs(
-                    epochs_train,
-                    epochs_valid,
-                    epochs_test,
-                )
-
-        X_train, X_valid, X_test, y_train, y_valid, y_test = (
-            func_convert_epochs_to_ndarray(epochs_train, epochs_valid, epochs_test)
-        )
-
-    elif func_load_ndarray is not None:
-        X_train, y_train = func_load_ndarray(keywords_train, "train")
-        X_valid, y_valid = func_load_ndarray(keywords_valid, "valid")
-        X_test, y_test = func_load_ndarray(keywords_test, "test")
-    else:
-        raise ValueError(
-            "either func_load_epochs or func_load_ndarray should not be None"
-        )
-
-    if compile_test_subjects:
-        # compile y
-        y_test = [np.concatenate(y_test, axis=0)]
-
-        # compile X
-        X_test = [np.concatenate(X_test, axis=0)]
-
-        # compile subjects_test list
-        subjects_test = [subjects_test]
-
-    if func_proc_ndarray is not None:
-        if apply_func_proc_per_obj:
-            X_train, y_train = func_proc_ndarray(X_train, y_train, "train")
-            X_valid, y_valid = func_proc_ndarray(X_valid, y_valid, "valid")
-            X_test, y_test = func_proc_ndarray(X_test, y_test, "test")
-        else:
-            X_train, X_valid, X_test, y_train, y_valid, y_test = func_proc_ndarray(
-                X_train, X_valid, X_test, y_train, y_valid, y_test
-            )
-    """
-
     X_train, X_valid, X_test, y_train, y_valid, y_test = utils.load_data(
         keywords_train=keywords_train,
         keywords_valid=keywords_valid,
@@ -951,15 +870,6 @@ def deeplearning(
             preprocessing.normalize(X_train, X_valid, X_test, return_params=True)
         )
 
-    """
-    X_train = np.zeros((40, 27, 128 * 4))
-    y_train = 0
-    X_valid = 0
-    y_valid = 0
-    X_test = 0
-    y_test = 0
-    """
-
     kwargs = {
         "optimizer_params": optimizer_params,
         "model": model,
@@ -967,7 +877,6 @@ def deeplearning(
         "scheduler": scheduler,
         "scheduler_params": scheduler_params,
         "func_proc_epochs": func_proc_epochs,
-        # "label_keys": label_keys,
         "enable_wandb_logging": enable_wandb_logging,
         "wandb_params": wandb_params,
         "checkpoint_fname": checkpoint_fname,
@@ -1047,7 +956,6 @@ def deeplearning(
     model.eval()
     with torch.no_grad():
         for dataloader, keywords_test_single in zip(dataloader_test, keywords_test):
-            # accuracy = utils.accuracy_score_dataloader(model, dataloader_test)
 
             preds, labels, logits, probas = utils.get_predictions(
                 model,
@@ -1069,7 +977,6 @@ def deeplearning(
             df_results["preds"] = [preds]
             df_results["probas"] = [probas]
             df_results["logits"] = [logits]
-            # df_results["elapsed_time"] = [elapsed_time]
             df_results["desc"] = [desc]
             if enable_normalization:
                 df_results["normalization_mean"] = [normalization_mean.flatten()]
