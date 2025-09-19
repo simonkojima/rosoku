@@ -90,8 +90,12 @@ def riemannian_alignment(covariances, scaling=False, online=False, enable_tqdm=T
     else:
         new_covariances = []
         for n in tqdm.tqdm(range(covariances.shape[0]), disable=not enable_tqdm):
+            if n == 0:
+                _scaling = False
+            else:
+                _scaling = scaling
             new_covariances.append(
-                _riemannian_alignment(covariances[0 : (n + 1), :, :], scaling=scaling)[
+                _riemannian_alignment(covariances[0 : (n + 1), :, :], scaling=_scaling)[
                     -1, :, :
                 ]
             )
