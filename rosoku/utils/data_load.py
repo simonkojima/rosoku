@@ -46,6 +46,7 @@ def apply_func_proc(func_proc, func_proc_mode, train, valid, test):
 
 def convert_epochs_to_ndarray(
     epochs,
+    mode,
     label_keys={"event:left": 0, "event:right": 1},
     **kwargs,
 ):

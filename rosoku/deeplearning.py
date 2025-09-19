@@ -12,6 +12,7 @@ import pandas as pd
 
 from . import utils
 from . import preprocessing
+from . import attribution
 
 
 def setup_optimizer(optimizer, optimizer_params, model):
@@ -727,6 +728,8 @@ def deeplearning(
     early_stopping=None,
     name_classifier=None,
     enable_normalization=False,
+    saliency_map=False,
+    label_keys=None,
     seed=None,
     desc=None,
 ):
@@ -954,8 +957,26 @@ def deeplearning(
 
     df_list = list()
     model.eval()
+
+    if saliency_map:
+        saliency_data = []
+        for idx, dataloader in enumerate(dataloader_test):
+            saliency_data.append({})
+            if label_keys is None:
+
+                classes = np.unique(y_test).tolist()
+
+                label_keys = {f"{c}": c for c in classes}
+
+            for class_label, c in label_keys.items():
+                saliency_data[idx][class_label] = attribution.saliency_map(
+                    model, dataloader, "cpu", class_index=c
+                )
+
     with torch.no_grad():
-        for dataloader, keywords_test_single in zip(dataloader_test, keywords_test):
+        for idx, (dataloader, keywords_test_single) in enumerate(
+            zip(dataloader_test, keywords_test)
+        ):
 
             preds, labels, logits, probas = utils.get_predictions(
                 model,
@@ -981,6 +1002,9 @@ def deeplearning(
             if enable_normalization:
                 df_results["normalization_mean"] = [normalization_mean.flatten()]
                 df_results["normalization_std"] = [normalization_std.flatten()]
+
+            if saliency_map:
+                df_results["saliency_map"] = [saliency_data[idx]]
 
             if enable_wandb_logging:
                 if (enable_ddp and params["rank"] == 0) or (enable_ddp is False):
