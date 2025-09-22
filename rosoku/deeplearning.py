@@ -970,7 +970,7 @@ def deeplearning(
 
             for class_label, c in label_keys.items():
                 saliency_data[idx][class_label] = attribution.saliency_map(
-                    model, dataloader, "cpu", class_index=c
+                    model, dataloader, device, class_index=c
                 )
 
     with torch.no_grad():
