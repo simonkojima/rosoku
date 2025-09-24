@@ -13,10 +13,15 @@ def saliency_map(model, dataloader, device, class_index=1):
 
     saliency = torch.zeros((n_chans, n_times), device=device)
 
+    cnt = 0
     for batch in iter(dataloader):
         data, target = batch
+
         mask = target == class_index
         data = data[mask]
+
+        # saliency should be scaled with cnt, istead of len(dataloader.dataset)?
+        cnt += data.shape[0]
 
         data = data.to(device)
         data.requires_grad = True
@@ -25,8 +30,8 @@ def saliency_map(model, dataloader, device, class_index=1):
         output = torch.sum(output, dim=0) / output.shape[0]
 
         output_cls = output[class_index]
-        # If output is not a scalar, consider using torch.sum(output).backward()
         output_cls.backward()
+
         # Assuming data.grad is not None and has the same shape as data
         if data.grad is not None:
             saliency += data.grad.abs().sum(dim=0)  # Sum over the batch
