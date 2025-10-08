@@ -394,6 +394,7 @@ def deeplearning(
         label_keys=None,
         seed=None,
         desc=None,
+        additional_values=None,
 ):
     """
     汎用的なdeeplearning用関数
@@ -704,6 +705,10 @@ def deeplearning(
             df_list.append(df_results)
 
     df = pd.concat(df_list, axis=0, ignore_index=True)
+
+    if additional_values is not None:
+        for key, value in additional_values.items():
+            df[key] = [value for m in range(df.shape[0])]
 
     if samples_fname is not None:
         samples = pd.concat(samples_list, axis=0, ignore_index=True)
