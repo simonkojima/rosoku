@@ -6,6 +6,8 @@ Example: Within-subject classification with riemannian classifier
 # %%
 import functools
 
+from pathlib import Path
+
 import mne
 import tag_mne as tm
 
@@ -121,6 +123,7 @@ def func_load_epochs(keywords, mode, epochs):
 
 def convert_epochs_to_ndarray(
     epochs,
+    mode,
     label_keys,
 ):
 
@@ -134,6 +137,8 @@ def convert_epochs_to_ndarray(
 # %%
 label_keys = {"event:left": 0, "event:right": 1}
 
+save_base = Path("~").expanduser() / "rosoku-log"
+
 results = rosoku.conventional(
     keywords_train=["run:1", "run:2"],
     keywords_test=[["run:3", "run:4", "run:5"]],
@@ -142,7 +147,10 @@ results = rosoku.conventional(
     func_convert_epochs_to_ndarray=functools.partial(
         convert_epochs_to_ndarray, label_keys=label_keys
     ),
+    samples_fname = save_base / "samples.parquet"
 )
 
 for m in range(results.shape[0]):
     print(results.loc[m])
+
+results.to_parquet(save_base / "results.parquet")

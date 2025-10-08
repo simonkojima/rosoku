@@ -1,6 +1,8 @@
 import os
 import time
 import random
+import json
+import msgpack
 
 import numpy as np
 import sklearn
@@ -41,9 +43,8 @@ def setup_scheduler(scheduler, scheduler_params, optimizer):
 
 
 def load_data(
-    subjects, func_get_fnames, func_proc_epochs, label_keys, enable_euclidean_alignment
+        subjects, func_get_fnames, func_proc_epochs, label_keys, enable_euclidean_alignment
 ):
-
     X = []
     y = []
 
@@ -71,25 +72,24 @@ def load_data(
 
 
 def deeplearning_train(
-    dataloader_train,
-    dataloader_valid,
-    n_epochs,
-    model,
-    criterion,
-    device,
-    optimizer=None,
-    scheduler=None,
-    early_stopping=None,
-    enable_wandb_logging=False,
-    wandb_params=None,
-    checkpoint_fname=None,
-    history_fname=None,
-    enable_ddp=False,
-    enable_dp=False,
-    sampler_train=None,
-    rank=0,
+        dataloader_train,
+        dataloader_valid,
+        n_epochs,
+        model,
+        criterion,
+        device,
+        optimizer=None,
+        scheduler=None,
+        early_stopping=None,
+        enable_wandb_logging=False,
+        wandb_params=None,
+        checkpoint_fname=None,
+        history_fname=None,
+        enable_ddp=False,
+        enable_dp=False,
+        sampler_train=None,
+        rank=0,
 ):
-
     if enable_wandb_logging:
         if (enable_ddp and rank == 0) or (enable_ddp is False):
             import wandb
@@ -135,7 +135,7 @@ def deeplearning_train(
 
         if early_stopping is not None:
             if enable_ddp is False and early_stopping(valid_loss):
-                print(f"Early stopping was triggered: epoch #{epoch+1}")
+                print(f"Early stopping was triggered: epoch #{epoch + 1}")
                 break
             elif enable_ddp:
                 should_stop = False
@@ -149,7 +149,7 @@ def deeplearning_train(
 
                 if should_stop:
                     if rank == 0:
-                        print(f"Early stopping was triggered: epoch #{epoch+1}")
+                        print(f"Early stopping was triggered: epoch #{epoch + 1}")
                     break
 
     toc = time.time()
@@ -159,16 +159,15 @@ def deeplearning_train(
 
     if history_fname is not None and rank == 0:
         df_save = pd.DataFrame(history)
-        df_save.to_pickle(f"{history_fname}.pkl")
-        df_save.to_html(f"{history_fname}.html")
+        df_save.to_parquet(f"{history_fname}.parquet")
+        # df_save.to_html(f"{history_fname}.html")
 
     return model
 
 
 def load_data(
-    subjects, func_get_fnames, func_proc_epochs, label_keys, enable_euclidean_alignment
+        subjects, func_get_fnames, func_proc_epochs, label_keys, enable_euclidean_alignment
 ):
-
     X = []
     y = []
 
@@ -196,23 +195,22 @@ def load_data(
 
 
 def main(
-    enable_ddp,
-    enable_dp,
-    num_workers,
-    device,
-    X_train,
-    y_train,
-    X_valid,
-    y_valid,
-    X_test,
-    y_test,
-    criterion,
-    batch_size,
-    n_epochs,
-    optimizer,
-    kwargs,
+        enable_ddp,
+        enable_dp,
+        num_workers,
+        device,
+        X_train,
+        y_train,
+        X_valid,
+        y_valid,
+        X_test,
+        y_test,
+        criterion,
+        batch_size,
+        n_epochs,
+        optimizer,
+        kwargs,
 ):
-
     import torch
 
     # parse kwargs
@@ -359,379 +357,43 @@ def main(
             torch.distributed.destroy_process_group()
 
 
-def deeplearning_cross_subject(
-    subjects_train,
-    subjects_valid,
-    subjects_test,
-    func_get_fnames,
-    criterion,
-    batch_size,
-    n_epochs,
-    optimizer,
-    *,
-    optimizer_params=None,
-    model=None,
-    func_get_model=None,
-    scheduler=None,
-    scheduler_params=None,
-    device="cpu",
-    enable_ddp=False,
-    enable_dp=False,
-    num_workers=0,
-    func_proc_epochs=None,
-    label_keys={"event:left": 0, "event:right": 1},
-    compile_test_subjects=False,
-    enable_wandb_logging=False,
-    wandb_params=None,
-    checkpoint_fname=None,
-    history_fname=None,
-    early_stopping=None,
-    name_classifier=None,
-    enable_euclidean_alignment=False,
-    enable_normalization=False,
-    desc=None,
-):
-    """
-    cross-subjectのDLを行う
-
-    Parameters
-    ==========
-    subjects_train: list
-    subjects_valid: list
-    subjects_test: list
-    func_get_fnames: callable
-        subject名を引数とし，-epo.fifのファイル名リストを返す関数
-
-        .. code-block:: python
-
-            def fuc_get_fnames(subject):
-                return [f"{subject}-R1-epo.fif", f"{subject}-R2-epo.fif"]
-
-    criterion: instance of loss function
-    batch_size: int
-    n_epochs: int
-    optimizer: reference to class
-        インスタンスではなく，クラスへの参照を渡す
-
-        e.g.,
-
-        >>> optimizer = torch.optim.AdamW
-    optimizer_params: dict
-        optimizerへ渡す**kwargs
-    model: instance of pytorch model
-        func_get_modelを使う場合はNoneでOK
-    func_get_model: callable
-        - X_train, y_trainを引数として，modelを返す関数
-        - X_trainのshape依存のmodel等で便利
-        - modelに直接渡す場合はNoneでOK
-    scheduler:
-        インスタンスではなく，クラスへの参照を渡す
-
-        e.g.,
-
-        >>> scheduler = torch.optim.lr_scheduler.CosineAnnealingLR
-
-    scheduler_params: dict
-        schedulerへ渡す**kwargs
-    device: str
-        "cpu", "cuda"...etc
-    enable_ddp: bool
-        DDP(Distributed Data Parallel)を使うか否か．Trueの場合はdevice = "cuda"じゃないといけないので注意
-    num_workers: int
-        - 各GPUごとにいくつのプロセスを使ってデータ読み込みを行うか
-        - enable_ddp = Trueのときのみこの変更が有効になる
-    func_proc_epochs: callable
-        - mne.epochsを引数として，mne.epochsを返す
-        - チャネルを脳波のみにする，cropする...などで使う
-    label_keys: dict
-        epochsからクラス情報を抜き出すのに使う
-
-        e.g.,
-
-        >>> label_keys={"event:left": 0, "event:right": 1}
-
-        この場合，"event:left"のエポックが0で，"event:right"が1になる
-    compile_test_subjects: bool
-        - Trueのとき，複数のテストサブジェクトのデータを結合し，精度等を計算する
-        - Falseの場合は，被験者ごとの結果を返す
-    enable_wandb_logging: bool
-        wandbでのログ保存を有効化するか
-    wandb_params: dict
-        - wandb.init()に渡すkwargs
-        - project, name, などを入れておくと良い
-    checkpoint_fname: path-like
-        - checkpoint保存用ファイル名
-        - pthで保存される
-    history_fname: path-like
-        - history保存用ファイル名
-        - pkl, htmlでpandas DataFrameが保存される
-    early_stopping: int or callable
-        >>> early_stopping = rosoku.EarlyStopping(patience = 75)
-        >>> early_stopping = 75
-
-    Returns
-    =======
-    df: pandas DataFrame()
-        結果が入っている
-    """
-    import torch
-
-    if enable_ddp:
-        params = utils.get_ddp_params()
-
-    if enable_wandb_logging:
-        if (enable_ddp and params["rank"] == 0) or (enable_ddp is False):
-            import wandb
-
-    if not isinstance(subjects_train, list) or not isinstance(subjects_test, list):
-        raise ValueError("type of subjects_train and subjects_test have to be list")
-
-    if enable_ddp and enable_dp:
-        raise ValueError(
-            "enable_ddp and enable_dp cannot be True at the same time. Choose one."
-        )
-
-    if (enable_ddp and device != "cuda") or (enable_dp and device != "cuda"):
-        raise ValueError(
-            "device have to be 'cuda' when enable_ddp = True or enable_dp = True."
-        )
-
-    # load data
-
-    ## training data
-    X_train, y_train = load_data(
-        subjects_train,
-        func_get_fnames,
-        func_proc_epochs,
-        label_keys,
-        enable_euclidean_alignment,
-    )
-    X_train = np.concatenate(X_train, axis=0)
-    y_train = np.concatenate(y_train, axis=0)
-
-    ## validation data
-    X_valid, y_valid = load_data(
-        subjects_valid,
-        func_get_fnames,
-        func_proc_epochs,
-        label_keys,
-        enable_euclidean_alignment,
-    )
-    X_valid = np.concatenate(X_valid, axis=0)
-    y_valid = np.concatenate(y_valid, axis=0)
-
-    ## test data
-    X_test, y_test = load_data(
-        subjects_test,
-        func_get_fnames,
-        func_proc_epochs,
-        label_keys,
-        enable_euclidean_alignment,
-    )
-
-    if compile_test_subjects:
-        # compile y
-        y_test = [np.concatenate(y_test, axis=0)]
-
-        # compile X
-        X_test = [np.concatenate(X_test, axis=0)]
-
-        # compile subjects_test list
-        subjects_test = [subjects_test]
-
-    # data normalization
-    if enable_normalization:
-        X_train, X_valid, X_test, normalization_mean, normalization_std = (
-            preprocessing.normalize(X_train, X_valid, X_test, return_params=True)
-        )
-
-    """
-    X_train = np.zeros((40, 27, 128 * 4))
-    y_train = 0
-    X_valid = 0
-    y_valid = 0
-    X_test = 0
-    y_test = 0
-    """
-
-    kwargs = {
-        "optimizer_params": optimizer_params,
-        "model": model,
-        "func_get_model": func_get_model,
-        "scheduler": scheduler,
-        "scheduler_params": scheduler_params,
-        "func_proc_epochs": func_proc_epochs,
-        "label_keys": label_keys,
-        "compile_test_subjects": compile_test_subjects,
-        "enable_wandb_logging": enable_wandb_logging,
-        "wandb_params": wandb_params,
-        "checkpoint_fname": checkpoint_fname,
-        "history_fname": history_fname,
-        "early_stopping": early_stopping,
-        "name_classifier": name_classifier,
-        "enable_euclidean_alignment": enable_euclidean_alignment,
-        "enable_normalization": enable_normalization,
-        "desc": desc,
-    }
-
-    if enable_ddp:
-        """
-        args = (
-            world_size,
-            enable_ddp,
-            num_workers,
-            device,
-            X_train,
-            y_train,
-            X_valid,
-            y_valid,
-            X_test,
-            y_test,
-            criterion,
-            batch_size,
-            n_epochs,
-            optimizer,
-            kwargs,
-        )
-
-        torch.multiprocessing.spawn(
-            main_cross_subject, args=args, nprocs=world_size, join=True
-        )
-        """
-        main(
-            enable_ddp=enable_ddp,
-            enable_dp=enable_dp,
-            num_workers=num_workers,
-            device=None,
-            X_train=X_train,
-            y_train=y_train,
-            X_valid=X_valid,
-            y_valid=y_valid,
-            X_test=X_test,
-            y_test=y_test,
-            criterion=criterion,
-            batch_size=batch_size,
-            n_epochs=n_epochs,
-            optimizer=optimizer,
-            kwargs=kwargs,
-        )
-    else:
-        main(
-            # rank=None,
-            # world_size=None,
-            enable_ddp=enable_ddp,
-            enable_dp=enable_dp,
-            num_workers=num_workers,
-            device=device,
-            X_train=X_train,
-            y_train=y_train,
-            X_valid=X_valid,
-            y_valid=y_valid,
-            X_test=X_test,
-            y_test=y_test,
-            criterion=criterion,
-            batch_size=batch_size,
-            n_epochs=n_epochs,
-            optimizer=optimizer,
-            kwargs=kwargs,
-        )
-
-    if model is None:
-        model = func_get_model(X_train, y_train)
-
-    # device = "cuda" if enable_ddp else "cpu"
-    model.to(device)
-
-    # classify test data
-    if checkpoint_fname is not None:
-        # checkpoint = torch.load(f"{checkpoint_fname}")
-        checkpoint = torch.load(checkpoint_fname, map_location=torch.device(device))
-        model.load_state_dict(checkpoint["model_state_dict"])
-
-    (_, _, dataloader_test) = utils.nd_to_dataloader(
-        X_train,
-        y_train,
-        X_valid,
-        y_valid,
-        X_test,
-        y_test,
-        device="cpu",
-        batch_size=batch_size,
-        enable_DS=False,
-    )
-
-    df_list = list()
-    model.eval()
-    with torch.no_grad():
-        for dataloader, subject in zip(dataloader_test, subjects_test):
-            # accuracy = utils.accuracy_score_dataloader(model, dataloader_test)
-
-            preds, labels, logits, probas = utils.get_predictions(
-                model,
-                dataloader,
-                device=device,
-            )
-
-            accuracy = sklearn.metrics.accuracy_score(labels, preds)
-
-            df_results = pd.DataFrame()
-            df_results["subjects_train"] = [subjects_train]
-            df_results["subjects_valid"] = [subjects_valid]
-            df_results["subjects_test"] = [subject]
-            df_results["classifier"] = [name_classifier]
-            df_results["accuracy"] = [accuracy]
-            df_results["labels"] = [labels]
-            df_results["preds"] = [preds]
-            df_results["probas"] = [probas]
-            df_results["logits"] = [logits]
-            # df_results["elapsed_time"] = [elapsed_time]
-            df_results["desc"] = [desc]
-            if enable_normalization:
-                df_results["normalization_mean"] = [normalization_mean.flatten()]
-                df_results["normalization_std"] = [normalization_std.flatten()]
-
-            df_list.append(df_results)
-
-    df = pd.concat(df_list, axis=0, ignore_index=True)
-
-    return df
-
-
 def deeplearning(
-    keywords_train,
-    keywords_valid,
-    keywords_test,
-    func_load_epochs=None,
-    func_load_ndarray=None,
-    criterion=torch.nn.CrossEntropyLoss(),
-    batch_size=64,
-    n_epochs=500,
-    optimizer=torch.optim.AdamW,
-    *,
-    func_proc_mode="per_split",
-    func_proc_epochs=None,
-    func_proc_ndarray=None,
-    func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
-    optimizer_params=None,
-    model=None,
-    func_get_model=None,
-    scheduler=None,
-    scheduler_params=None,
-    device="cpu",
-    enable_ddp=False,
-    enable_dp=False,
-    num_workers=0,
-    enable_wandb_logging=False,
-    wandb_params=None,
-    checkpoint_fname=None,
-    history_fname=None,
-    early_stopping=None,
-    name_classifier=None,
-    enable_normalization=False,
-    saliency_map=False,
-    label_keys=None,
-    seed=None,
-    desc=None,
+        keywords_train,
+        keywords_valid,
+        keywords_test,
+        func_load_epochs=None,
+        func_load_ndarray=None,
+        criterion=torch.nn.CrossEntropyLoss(),
+        batch_size=64,
+        n_epochs=500,
+        optimizer=torch.optim.AdamW,
+        *,
+        func_proc_mode="per_split",
+        func_proc_epochs=None,
+        func_proc_ndarray=None,
+        func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
+        optimizer_params=None,
+        model=None,
+        func_get_model=None,
+        scheduler=None,
+        scheduler_params=None,
+        device="cpu",
+        enable_ddp=False,
+        enable_dp=False,
+        num_workers=0,
+        enable_wandb_logging=False,
+        wandb_params=None,
+        checkpoint_fname=None,
+        history_fname=None,
+        samples_fname=None,
+        normalization_fname=None,
+        saliency_map_fname=False,
+        early_stopping=None,
+        name_classifier=None,
+        enable_normalization=False,
+        label_keys=None,
+        seed=None,
+        desc=None,
 ):
     """
     汎用的なdeeplearning用関数
@@ -955,27 +617,34 @@ def deeplearning(
     if isinstance(dataloader_test, list) is False:
         dataloader_test = [dataloader_test]
 
-    df_list = list()
     model.eval()
 
-    if saliency_map:
-        saliency_data = []
+    if saliency_map_fname is not None:
+        saliency_data = {}
         for idx, dataloader in enumerate(dataloader_test):
-            saliency_data.append({})
+            saliency_data[idx] = {}
             if label_keys is None:
-
                 classes = np.unique(y_test).tolist()
 
                 label_keys = {f"{c}": c for c in classes}
 
             for class_label, c in label_keys.items():
-                saliency_data[idx][class_label] = attribution.saliency_map(
+                s = attribution.saliency_map(
                     model, dataloader, device, class_index=c
                 )
 
+                s = s.tolist()
+
+                saliency_data[idx][class_label] = s
+
+        with open(saliency_map_fname, "wb") as f:
+            msgpack.pack(saliency_data, f)
+
+    df_list = []
+    samples_list = []
     with torch.no_grad():
         for idx, (dataloader, keywords_test_single) in enumerate(
-            zip(dataloader_test, keywords_test)
+                zip(dataloader_test, keywords_test)
         ):
 
             preds, labels, logits, probas = utils.get_predictions(
@@ -989,22 +658,32 @@ def deeplearning(
             bacc = sklearn.metrics.balanced_accuracy_score(labels, preds)
 
             df_results = pd.DataFrame()
-            df_results["keywords_train"] = [keywords_train]
-            df_results["keywords_valid"] = [keywords_valid]
-            df_results["keywords_test"] = [keywords_test_single]
+            df_results["keywords_train"] = [json.dumps(keywords_train)]
+            df_results["keywords_valid"] = [json.dumps(keywords_valid)]
+            df_results["keywords_test"] = [json.dumps(keywords_test_single)]
             df_results["classifier"] = [name_classifier]
             df_results["accuracy"] = [accuracy]
-            df_results["labels"] = [labels]
-            df_results["preds"] = [preds]
-            df_results["probas"] = [probas]
-            df_results["logits"] = [logits]
+            # df_results["labels"] = [labels]
+            # df_results["preds"] = [preds]
+            # df_results["probas"] = [probas]
+            # df_results["logits"] = [logits]
             df_results["desc"] = [desc]
-            if enable_normalization:
-                df_results["normalization_mean"] = [normalization_mean.flatten()]
-                df_results["normalization_std"] = [normalization_std.flatten()]
 
-            if saliency_map:
-                df_results["saliency_map"] = [saliency_data[idx]]
+            if normalization_fname is not None:
+                normalization_dict = {"mean": normalization_mean.squeeze().tolist(),
+                                      "std": normalization_std.squeeze().tolist()}
+
+                with open(normalization_fname, "wb") as f:
+                    msgpack.pack(normalization_dict, f)
+
+            samples = pd.DataFrame()
+            samples["labels"] = labels
+            samples["preds"] = preds
+            for idx in range(probas.shape[1]):
+                samples[f"probas_{idx}"] = probas[:, idx]
+            for idx in range(logits.shape[1]):
+                samples[f"logits_{idx}"] = logits[:, idx]
+            samples["classifier"] = [name_classifier for _ in range(len(samples))]
 
             if enable_wandb_logging:
                 if (enable_ddp and params["rank"] == 0) or (enable_ddp is False):
@@ -1021,9 +700,14 @@ def deeplearning(
                         }
                     )
 
+            samples_list.append(samples)
             df_list.append(df_results)
 
     df = pd.concat(df_list, axis=0, ignore_index=True)
+
+    if samples_fname is not None:
+        samples = pd.concat(samples_list, axis=0, ignore_index=True)
+        samples.to_parquet(samples_fname)
 
     if enable_wandb_logging:
 

@@ -24,7 +24,7 @@ resample = 128
 
 lr = 1e-3
 weight_decay = 1e-2
-n_epochs = 500
+n_epochs = 10
 batch_size = 8
 patience = 75
 enable_euclidean_alignment = False
@@ -38,6 +38,10 @@ seed = 42
 save_base = Path("~").expanduser() / "rosoku-log"
 (save_base / "checkpoint").mkdir(parents=True, exist_ok=True)
 (save_base / "history").mkdir(parents=True, exist_ok=True)
+(save_base / "saliency").mkdir(parents=True, exist_ok=True)
+(save_base / "samples").mkdir(parents=True, exist_ok=True)
+(save_base / "normalization").mkdir(parents=True, exist_ok=True)
+
 
 # %%
 
@@ -45,7 +49,7 @@ save_base = Path("~").expanduser() / "rosoku-log"
 
 
 def epochs_from_raws(
-    raws, runs, rtypes, tmin, tmax, l_freq, h_freq, order_filter, subject
+        raws, runs, rtypes, tmin, tmax, l_freq, h_freq, order_filter, subject
 ):
     epochs_list = list()
     for raw, run, rtype in zip(raws, runs, rtypes):
@@ -130,7 +134,6 @@ epochs = tm.concatenate_epochs([epochs_acquisition, epochs_online])
 
 # %%
 
-
 def func_proc_epochs(epochs, mode, tmin=0.5, tmax=4.5):
     epochs = epochs.pick(picks="eeg").crop(tmin=tmin, tmax=tmax)
     return epochs
@@ -188,8 +191,12 @@ results = rosoku.deeplearning(
     name_classifier="eegnet4.2",
     history_fname=(save_base / "history" / f"sub-{subject}"),
     checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}"),
+    samples_fname=(save_base / "samples" / f"sub-{subject}.parquet"),
+    normalization_fname=(save_base / "normalization" / f"sub-{subject}.msgpack"),
     desc="eegnet4.2/drop_prob=0.25",
     enable_wandb_logging=False,
+    label_keys={"event:left": 0, "event:right": 1},
+    saliency_map_fname=(save_base / "saliency" / f"sub-{subject}"),
     wandb_params={
         "project": "wandb-project-name",
         "name": f"sub-{subject}",
@@ -199,3 +206,5 @@ results = rosoku.deeplearning(
 
 for m in range(results.shape[0]):
     print(results.loc[m])
+
+results.to_parquet(save_base / "results_deeplearning_within-subject.parquet")
