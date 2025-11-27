@@ -43,3 +43,17 @@ def saliency_map(model, dataloader, device, class_index=1):
     saliency = saliency.cpu().numpy()
 
     return saliency
+
+
+def saliency_temporal(saliency):
+    saliency_temporal = saliency.sum(axis=0)
+    saliency_temporal = saliency_temporal / saliency_temporal.sum() * 100
+
+    return saliency_temporal
+
+
+def saliency_spatial(saliency):
+    saliency_spatial = saliency.sum(axis=1)
+    saliency_spatial = saliency_spatial / saliency_spatial.sum() * 100
+
+    return saliency_spatial
