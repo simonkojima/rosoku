@@ -73,54 +73,131 @@ def conventional(
         ],
         classifier_names=["tslr", "mdm"],
         func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
-        # compile_test=False,
         samples_fname=None,
         desc=None,
         additional_values=None,
 ):
     """
-    汎用的なriemannian用関数
+    General-purpose pipeline for conventional (non-deep-learning) classifiers,
+    especially Riemannian-based methods.
+
+    This function provides a flexible interface for loading data, preprocessing,
+    fitting multiple classifiers, evaluating performance, and exporting results.
+
+    ---------------------------------------------------------------------------
+    Data loading via “keywords” and “mode”
+    ---------------------------------------------------------------------------
+    ``keywords_train`` and ``keywords_test`` are arbitrary user-defined objects
+    (typically dicts) that specify how data should be loaded. They are passed,
+    together with a ``mode`` string, to the callback functions
+    ``func_load_epochs`` or ``func_load_ndarray``.
+
+    - First argument:  ``keyword`` (one element of ``keywords_train``/``keywords_test``)
+    - Second argument: ``mode`` ∈ {"train", "test"}
+
+    Example
+    -------
+    .. code-block:: python
+
+        def func_load_epochs(keyword, mode):
+            subject = keyword["subject"]
+            session = keyword["session"]
+            fname = f"sub-{subject}_ses-{session}-epo.fif"
+            epochs = mne.read_epochs(fname)
+
+            if mode == "train":
+                # optional: apply additional preprocessing for training data
+                epochs = epochs.crop(tmin=0.0, tmax=1.0)
+
+            return epochs
+
+    ---------------------------------------------------------------------------
+    Grouping test data
+    ---------------------------------------------------------------------------
+    ``keywords_test`` controls how test data are grouped for evaluation.
+
+    - ``[[a], [b]]``  → evaluate a and b **separately**
+    - ``[[a, b]]``    → **merge** the data associated with a and b
+                        and evaluate them together
+
+    This allows flexible control over whether each test set is evaluated
+    individually or jointly.
+
+    ---------------------------------------------------------------------------
 
     Parameters
     ----------
-    kewords_train: list
-    kewords_test: list
-    func_load_epochs: callable
-            第一引数がkeywords, 第二引数がmodeの，mne.Epochsオブジェクトを返す関数．
-            keywordsはkeywords_trainやkeywords_testで渡されたlistオブジェクトが渡される．
-            modeは，train, testのstrが渡される．
+    keywords_train : list
+        List of keyword objects used to load training data.
 
-            .. code-block:: python
+    keywords_test : list of list
+        Controls grouping of test data.
+        Each inner list corresponds to one test evaluation group.
 
-                def func_load_epochs(keywords, mode):
-                    # keywords: keywords_train or keywords_test
-                    # mode: "train" or "test"
+    func_load_epochs : callable, optional
+        Callback function for loading data as MNE ``Epochs`` objects. It must accept:
 
-                    # load epochs here...
+        .. code-block:: python
 
-                    return epochs
-    func_load_ndarray: callable
-            第一引数がkeywords, 第二引数がmodeの，np.ndarrayオブジェクトを返す関数．
-            keywordsはkeywords_trainやkeywords_testで渡されたlistオブジェクトが渡される．
-            modeは，train, testのstrが渡される．
+            def func_load_epochs(keyword, mode):
+                ...
 
-            .. code-block:: python
+        where
 
-                def func_load_ndarray(keywords, mode):
-                    # keywords: keywords_train or keywords_test
-                    # mode: "train" or "test"
+        - ``keyword`` is one element from ``keywords_train`` or ``keywords_test``
+        - ``mode`` is either ``"train"`` or ``"test"``
 
-                    # load data here...
+        and it must return an ``mne.Epochs`` instance.
 
-                    return ndarray
+    func_load_ndarray : callable, optional
+        Callback function for loading data as NumPy arrays. It must accept:
 
+        .. code-block:: python
 
-    classifier: list of classifier, "tslr", "mdm", instance
-    label_keys: dict
-    compile_test_subjects: bool
-        Trueにすると，テストsubjectのデータをまとめて，その精度とかを返す
-        Falseにすると，各被験者ごとの精度をリストで返す
+            def func_load_ndarray(keyword, mode):
+                ...
 
+        and return a tuple ``(X, y)`` where ``X`` and ``y`` are NumPy arrays.
+
+    func_proc_epochs : callable, optional
+        Function that receives an ``mne.Epochs`` object and returns a processed one
+        (e.g., channel selection, cropping, filtering).
+
+    func_proc_ndarray : callable, optional
+        Preprocessing function for NumPy data.
+
+    func_proc_mode : {"per_split", "all"}
+        Defines whether preprocessing is applied independently to each split
+        or jointly across all splits.
+
+    classifiers : list of estimator
+        List of classifier instances implementing ``fit`` and ``predict``
+        (optionally ``predict_proba``). By default, Riemannian classifiers
+        from pyRiemann are used.
+
+    classifier_names : list of str
+        Names associated with each classifier (used in the output DataFrame).
+        Must have the same length as ``classifiers``.
+
+    func_convert_epochs_to_ndarray : callable
+        Converter from MNE Epochs to NumPy arrays, used internally by
+        :func:`utils.load_data`.
+
+    samples_fname : path-like, optional
+        File path for saving sample-level predictions (Parquet format).
+
+    desc : str, optional
+        Additional description stored in the output.
+
+    additional_values : dict, optional
+        Extra key–value pairs appended as columns to the output DataFrame.
+
+    Returns
+    -------
+    df : pandas.DataFrame
+        A DataFrame containing classification results (accuracy per classifier
+        and test group), along with metadata such as train/test keywords,
+        classifier name, and optional description.
     """
 
     # load data

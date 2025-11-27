@@ -397,89 +397,200 @@ def deeplearning(
         additional_values=None,
 ):
     """
-    汎用的なdeeplearning用関数
+    General-purpose deep learning pipeline for EEG/BCI experiments.
+
+    This function provides a flexible interface for loading data, preprocessing,
+    training deep learning models, evaluating performance, and exporting results.
+    The behavior is fully customizable through callback functions.
+
+    ---------------------------------------------------------------------------
+    Data loading via “keywords” and “mode”
+    ---------------------------------------------------------------------------
+    The arguments ``keywords_train``, ``keywords_valid``, and ``keywords_test``
+    are arbitrary user-defined objects (typically dicts) that specify how data
+    should be loaded. They are passed, together with a ``mode`` string, to the
+    callback functions ``func_load_epochs`` or ``func_load_ndarray``.
+
+    - First argument:  ``keyword`` (one element of keywords_*)  
+    - Second argument: ``mode`` ∈ {"train", "valid", "test"}
+
+    This allows you to implement different behavior depending on the split,
+    e.g. data augmentation only for training data.
+
+    Example
+    -------
+    >>> keywords_train = [{"subject": 1, "session": 1},
+    ...                   {"subject": 2, "session": 1}]
+
+    .. code-block:: python
+
+        def func_load_epochs(keyword, mode):
+            subject = keyword["subject"]
+            session = keyword["session"]
+            fname = f"sub-{subject}_ses-{session}-epo.fif"
+            epochs = mne.read_epochs(fname)
+
+            if mode == "train":
+                # optional: apply stronger augmentation only on training data
+                epochs = epochs.crop(tmin=0.0, tmax=1.0)
+
+            return epochs
+
+    ---------------------------------------------------------------------------
+    Grouping test data
+    ---------------------------------------------------------------------------
+    ``keywords_test`` controls how test data are grouped for classification.
+
+    - ``[[a], [b]]`` → evaluate a and b **separately**  
+    - ``[[a, b]]`` → **merge** the data associated with a and b and evaluate them together
+
+    This allows flexible control over whether each test set is evaluated
+    individually or jointly.
+
+    ---------------------------------------------------------------------------
 
     Parameters
     ----------
-    subjects_train: list
-    subjects_valid: list
-    subjects_test: list
-    func_get_fnames: callable
-        subject名を引数とし，-epo.fifのファイル名リストを返す関数
+    keywords_train : list
+        List of keyword objects used to load training data.
+
+    keywords_valid : list
+        List of keyword objects used to load validation data.
+
+    keywords_test : list of list
+        Controls grouping of test data.
+        Each inner list represents one test evaluation group.
+
+    func_load_epochs : callable, optional
+        Callback function for loading MNE Epochs. It must accept:
 
         .. code-block:: python
 
-            def fuc_get_fnames(subject):
-                return [f"{subject-R1-epo.fif}", f"{subject-R2}-epo.fif"]
+            def func_load_epochs(keyword, mode):
+                ...
 
-    criterion: instance of loss function
-    batch_size: int
-    n_epochs: int
-    optimizer: reference to class
-        - インスタンスではなく，クラスへの参照を渡す
+        where
 
-        e.g.,
+        - ``keyword`` is one element from ``keywords_train/valid/test``
+        - ``mode`` is one of ``"train"``, ``"valid"``, ``"test"``
+
+        The function must return an ``mne.Epochs`` instance.
+
+    func_load_ndarray : callable, optional
+        Callback function that loads data as NumPy arrays instead of Epochs. It must accept:
+
+        .. code-block:: python
+
+            def func_load_ndarray(keyword, mode):
+                ...
+
+        and return a tuple ``(X, y)`` where ``X`` and ``y`` are NumPy arrays.
+
+    criterion : torch.nn.Module
+        Loss function instance (default: ``CrossEntropyLoss``).
+
+    batch_size : int
+        Batch size used for training.
+
+    n_epochs : int
+        Number of training epochs.
+
+    optimizer : type
+        Reference to an optimizer class (not an instance), e.g.:
 
         >>> optimizer = torch.optim.AdamW
 
-    optimizer_params: dict
-        optimizerへ渡す**kwargs
-    model: instance of pytorch model
-        func_get_modelを使う場合はNoneでOK
-    func_get_model: callable
-        - X_train, y_trainを引数として，modelを返す関数
-        - X_trainのshape依存のmodel等で便利
-        - modelに直接渡す場合はNoneでOK
-    scheduler:
-        インスタンスではなく，クラスへの参照を渡す
+    optimizer_params : dict, optional
+        ``**kwargs`` passed to the optimizer constructor.
 
-        e.g.,
+    model : torch.nn.Module, optional
+        Predefined model instance. If ``None``, ``func_get_model`` must be provided.
 
-        >>> scheduler = torch.optim.lr_scheduler.CosineAnnealingLR
+    func_get_model : callable, optional
+        Function receiving ``(X_train, y_train)`` and returning a model instance.
+        Useful when model architecture depends on the input shape.
 
-    scheduler_params: dict
-        schedulerへ渡す**kwargs
-    device: str
-        "cpu", "cuda"...etc
-    enable_ddp: bool
-        DDP(Distributed Data Parallel)を使うか否か．Trueの場合はdevice = "cuda"じゃないといけないので注意
-    num_workers: int
-        - 各GPUごとにいくつのプロセスを使ってデータ読み込みを行うか
-        - enable_ddp = Trueのときのみこの変更が有効になる
-    func_proc_epochs: callable
-        - mne.epochsを引数として，mne.epochsを返す
-        - チャネルを脳波のみにする，cropする...などで使う
-    label_keys: dict
-        epochsからクラス情報を抜き出すのに使う
+    scheduler : type, optional
+        Reference to a learning-rate scheduler class.
 
-        e.g.,
+    scheduler_params : dict, optional
+        ``**kwargs`` passed to the scheduler constructor.
 
-        >>> label_keys={"event:left": 0, "event:right": 1}
+    device : {"cpu", "cuda"}
+        Device used for training and inference.
 
-        この場合，"event:left"のエポックが0で，"event:right"が1になる
-    compile_test: bool
-        - Trueのとき，複数のテストサブジェクトのデータを結合し，精度等を計算する
-        - Falseの場合は，被験者ごとの結果を返す
-    enable_wandb_logging: bool
-        wandbでのログ保存を有効化するか
-    wandb_params: dict
-        - wandb.init()に渡すkwargs
-        - project, name, などを入れておくと良い
-    checkpoint_fname: path-like
-        - checkpoint保存用ファイル名
-        - pthで保存される
-    history_fname: path-like
-        - history保存用ファイル名
-        - pkl, htmlでpandas DataFrameが保存される
-    early_stopping: int or callable
+    enable_ddp : bool
+        Enable Distributed Data Parallel (DDP).
+        ``device`` must be ``"cuda"`` when True.
 
-        >>> early_stopping = rosoku.EarlyStopping(patience = 75)
-        >>> early_stopping = 75
+    enable_dp : bool
+        Enable DataParallel. Cannot be True at the same time as DDP.
+
+    num_workers : int
+        Number of data-loading worker processes per GPU.
+        Effective only when ``enable_ddp=True``.
+
+    func_proc_epochs : callable, optional
+        Function that receives an ``mne.Epochs`` object and returns a processed one.
+        Useful for channel selection, cropping, filtering, etc.
+
+    func_proc_ndarray : callable, optional
+        Preprocessing function for NumPy data.
+
+    func_proc_mode : {"per_split", "all"}
+        Defines whether preprocessing is applied independently to each split
+        or jointly across all splits.
+
+    func_convert_epochs_to_ndarray : callable
+        Converter from MNE Epochs to NumPy arrays.
+
+    enable_normalization : bool
+        Whether to apply z-score normalization to X_train/X_valid/X_test.
+
+    label_keys : dict, optional
+        Mapping from label strings to integer class IDs.
+
+    enable_wandb_logging : bool
+        Enable logging to Weights & Biases.
+
+    wandb_params : dict, optional
+        Arguments passed to ``wandb.init()``.
+
+    checkpoint_fname : path-like, optional
+        File path for saving/loading PyTorch checkpoints.
+
+    history_fname : path-like, optional
+        File path for saving training history (pkl or html).
+
+    samples_fname : path-like, optional
+        File path for saving sample-level predictions (Parquet).
+
+    normalization_fname : path-like, optional
+        File path for saving normalization parameters (mean/std).
+
+    saliency_map_fname : path-like or None
+        If provided, saliency maps are computed and saved via msgpack.
+
+    early_stopping : int or callable, optional
+        Patience or early stopping controller.
+
+    name_classifier : str, optional
+        Name of the classifier (for logging/output).
+
+    seed : int, optional
+        Random seed for NumPy, Python, and PyTorch CPU/GPU backends.
+
+    desc : str, optional
+        Additional description stored in output.
+
+    additional_values : dict, optional
+        Extra key–value pairs appended to the output DataFrame.
 
     Returns
     -------
-    df: pandas DataFrame()
-        結果が入ってる
+    df : pandas.DataFrame
+        A DataFrame containing classification metrics (accuracy, F1, etc.)
+        and metadata such as training/validation/test keywords and classifier name.
     """
     import torch
 
