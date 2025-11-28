@@ -558,18 +558,23 @@ def deeplearning(
 
     checkpoint_fname : path-like, optional
         File path for saving/loading PyTorch checkpoints.
+        File extension should be ".pth"
 
     history_fname : path-like, optional
         File path for saving training history (pkl or html).
+        File extension should be ".parquet"
 
     samples_fname : path-like, optional
         File path for saving sample-level predictions (Parquet).
+        File extension should be ".parquet"
 
     normalization_fname : path-like, optional
         File path for saving normalization parameters (mean/std).
+        File extension should be ".msgpack"
 
     saliency_map_fname : path-like or None
         If provided, saliency maps are computed and saved via msgpack.
+        File extension should be ".msgpack"
 
     early_stopping : int or callable, optional
         Patience or early stopping controller.
@@ -579,9 +584,6 @@ def deeplearning(
 
     seed : int, optional
         Random seed for NumPy, Python, and PyTorch CPU/GPU backends.
-
-    desc : str, optional
-        Additional description stored in output.
 
     additional_values : dict, optional
         Extra key–value pairs appended to the output DataFrame.
@@ -779,7 +781,6 @@ def deeplearning(
             # df_results["preds"] = [preds]
             # df_results["probas"] = [probas]
             # df_results["logits"] = [logits]
-            df_results["desc"] = [desc]
 
             if normalization_fname is not None:
                 normalization_dict = {"mean": normalization_mean.squeeze().tolist(),

@@ -2,7 +2,7 @@ import numpy as np
 import tag_mne as tm
 
 
-def get_labels_from_epochs(epochs, label_keys={"event:left": 0, "event:right": 1}):
+def get_labels_from_epochs(epochs, label_keys={"left_hand": 0, "right_hand": 1}):
     y = list()
 
     _, markers = tm.markers_from_events(epochs.events, epochs.event_id)
@@ -25,7 +25,6 @@ def get_labels_from_epochs(epochs, label_keys={"event:left": 0, "event:right": 1
 
 
 def apply_func_proc(func_proc, func_proc_mode, train, valid, test):
-
     match func_proc_mode:
         case "per_split":
             train = func_proc(train, "train")
@@ -45,12 +44,11 @@ def apply_func_proc(func_proc, func_proc_mode, train, valid, test):
 
 
 def convert_epochs_to_ndarray(
-    epochs,
-    mode,
-    label_keys={"event:left": 0, "event:right": 1},
-    **kwargs,
+        epochs,
+        mode,
+        label_keys={"event:left": 0, "event:right": 1},
+        **kwargs,
 ):
-
     X = epochs.get_data(**kwargs)
     y = get_labels_from_epochs(epochs, label_keys)
 
@@ -58,15 +56,15 @@ def convert_epochs_to_ndarray(
 
 
 def load_data(
-    keywords_train,
-    keywords_valid,
-    keywords_test,
-    func_load_epochs=None,
-    func_load_ndarray=None,
-    func_proc_epochs=None,
-    func_proc_ndarray=None,
-    func_proc_mode="per_split",
-    func_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
+        keywords_train,
+        keywords_valid,
+        keywords_test,
+        func_load_epochs=None,
+        func_load_ndarray=None,
+        func_proc_epochs=None,
+        func_proc_ndarray=None,
+        func_proc_mode="per_split",
+        func_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
 ):
     """
     渡されたkeywordsをもとに，データを読み出す関数
@@ -136,9 +134,9 @@ def load_data(
             )
     else:
         if (
-            isinstance(keywords_train, list)
-            and isinstance(keywords_valid, list)
-            and isinstance(keywords_test, list)
+                isinstance(keywords_train, list)
+                and isinstance(keywords_valid, list)
+                and isinstance(keywords_test, list)
         ):
             pass
         else:

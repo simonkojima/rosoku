@@ -74,7 +74,6 @@ def conventional(
         classifier_names=["tslr", "mdm"],
         func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
         samples_fname=None,
-        desc=None,
         additional_values=None,
 ):
     """
@@ -186,9 +185,6 @@ def conventional(
     samples_fname : path-like, optional
         File path for saving sample-level predictions (Parquet format).
 
-    desc : str, optional
-        Additional description stored in the output.
-
     additional_values : dict, optional
         Extra key–value pairs appended as columns to the output DataFrame.
 
@@ -242,7 +238,6 @@ def conventional(
             df_results["keywords_test"] = [json.dumps(keywords)]
             df_results["classifier"] = [name]
             df_results["accuracy"] = [accuracy]
-            df_results["desc"] = [desc]
 
             samples = pd.DataFrame()
             samples["labels"] = y
