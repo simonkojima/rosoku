@@ -24,9 +24,6 @@ Meanwhile, frameworks like MOABB or Braindecode are convenient, but restrict cus
 | Evaluation & logging               | accuracy / saliency               | optional W&B configuration        |
 | Result export                      | DataFrame / parquet / msgpack     | downstream analysis or plotting   |
 
-→ rosoku performs the *plumbing*  
-→ you focus on *ideas and research*
-
 ---
 
 ## 🔧 Two Complementary Pipelines
@@ -38,7 +35,7 @@ Meanwhile, frameworks like MOABB or Braindecode are convenient, but restrict cus
 
 Both follow the same concept:
 You write data & preprocessing.
-rosoku handles training & evaluation.
+Rosoku handles training & evaluation.
 
 ---
 
