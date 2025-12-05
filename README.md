@@ -1,27 +1,60 @@
-# rosoku
+# 🕯️ Rosoku — A Flexible EEG/BCI Experiment Pipeline Toolkit
 
+**rosoku** is a *callback-based experiment pipeline* for EEG/BCI research.  
+You are free to design **how your data is loaded, processed, and shaped**,  
+while rosoku handles **training, evaluation, logging, and result export**.
 
-# CPUで実行
-pythonで普通に実行すればOK
+> **You control the data.  
+> rosoku handles everything after.**
 
-# 単一ノード上でtorchrun
-```
-srun --nodelist=sirocco07 --ntasks=2 --cpus-per-task=16 --exclusive --pty bash
+Working directly with PyTorch or scikit-learn provides flexibility but requires heavy boilerplate.  
+Meanwhile, frameworks like MOABB or Braindecode are convenient, but restrict custom processing.
 
-torchrun --nproc_per_node=2 --master_addr=127.0.0.1  --master_port=29627  ./main.py
-```
+**rosoku fills the space between them — flexibility without overhead.**
 
-# 複数ノードで実行
-```
-srunで実行
-```
+---
 
-# sphinx
-`docs`内で以下を実行
+## 🔥 Key Idea
 
-```
-# sphinx-apidoc -f -o ../docs/source ../rosoku && make html
-# sphinx-apidoc -f -o ../docs/source ../rosoku && sphinx-multiversion source build/html
+| Task                               | rosoku handles                    | You define                        |
+|------------------------------------|-----------------------------------|-----------------------------------|
+| Dataset loading                    | receives via callback             | how to load (MNE, NumPy, custom)  |
+| Preprocessing / feature extraction | pluggable via callbacks           | any processing you write          |
+| Training loop                      | model fitting, scheduling, saving | sklearn estimator / PyTorch model |
+| Evaluation & logging               | accuracy / saliency               | optional W&B configuration        |
+| Result export                      | DataFrame / parquet / msgpack     | downstream analysis or plotting   |
 
-sphinx-build -b html docs/source ~/git/rosoku-docs/latest
-```
+→ rosoku performs the *plumbing*  
+→ you focus on *ideas and research*
+
+---
+
+## 🔧 Two Complementary Pipelines
+
+| API              | Purpose                       | Typical models                        |
+|------------------|-------------------------------|---------------------------------------|
+| `conventional()` | traditional ML classification | MDM / TSClassifier / CSP / SVM / LDA  |
+| `deeplearning()` | deep learning with PyTorch    | EEGNet / Braindecode / custom CNN/RNN |
+
+Both follow the same concept:
+You write data & preprocessing.
+rosoku handles training & evaluation.
+
+---
+
+## 🚀 Quick Start
+
+Full runnable examples are available under `examples/`.
+
+Recommended first files:
+
+- `examples/example_within-subject-classification-riemannian.py`
+- `examples/example_within-subject-classification-deeplearning.py`
+
+```python
+from rosoku import conventional, deeplearning
+
+# You are free to define exactly how your data is loaded.
+# rosoku does not restrict your pipeline design.
+def func_load_epochs(keyword, mode):
+    ...
