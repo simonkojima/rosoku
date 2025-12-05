@@ -85,34 +85,50 @@ def load_data(
         func_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
 ):
     """
-    渡されたkeywordsをもとに，データを読み出す関数
+    Load dataset using given keyword lists and optional processing functions.
 
     Parameters
     ----------
     keywords_train : list
-    keywords_valid : list
+        A list of identifiers used to load the training data.
+
+    keywords_valid : list or None
+        A list of identifiers for validation data.
+        If ``None``, data will be split into only train and test.
+
     keywords_test : list
-        例えば，"A29"と"A3"を別々にテストにしたい場合には， ``keywords_test=["A29", "A3"]`` .
+        A list of identifiers for test data.
+        For example:
+            ``keywords_test=["A29", "A3"]`` → test each dataset separately  
+            ``keywords_test=[["A29", "A3"]]`` → merge them as a single test dataset
 
-        "A29"と"A3"を合わせたデータをテストしたい場合には， ``keywords_test = [["A29", "A3"]]``
-    func_load_epochs : callable
-    func_load_ndarray : callable
-    func_proc_epochs : callable
-    func_proc_ndarray : callable
-    func_proc_mode : str, default = ``"per_split"``
-        ``"per_split"`` or ``"per_function"``
+    func_load_epochs : callable, optional
+        Function used to load *epochs* objects.  
+        Must be provided if ``func_load_ndarray`` is ``None``.
 
-        per_splitでは，func_procに対して，train, valid, testのスプリット毎に関数がコールバックされる．
+    func_load_ndarray : callable, optional
+        Function used to load raw NumPy arrays.  
+        Must be provided if ``func_load_epochs`` is ``None``.
 
-        per_functionでは，func_procに対して，train, valid, testがまとめて渡される．
+    func_proc_epochs : callable, optional
+        Processing function applied to epochs before conversion to ndarray.
 
-    func_convert_epochs_to_ndarray : callable, default= ``rosoku.utils.convert_epochs_to_ndarray``
+    func_proc_ndarray : callable, optional
+        Processing function applied after ndarray conversion.
+
+    func_proc_mode : {'per_split', 'per_function'}, default='per_split'
+        - ``'per_split'``: ``func_proc`` is applied to each split independently  
+          (**train**, **valid**, **test**)  
+        - ``'per_function'``: all splits are passed to ``func_proc`` at once
+
+    func_convert_epochs_to_ndarray : callable, default=rosoku.utils.convert_epochs_to_ndarray
+        Function that converts epochs → ``(X, y)`` arrays.
 
     Notes
     -----
-    ``func_load_epochs`` か ``func_load_ndarray`` のどちらかが必要．
+    At least one of ``func_load_epochs`` or ``func_load_ndarray`` must be provided.
 
-    ``func_load_ndarray=None`` の場合の流れは以下のような感じ．
+    If ``func_load_ndarray is None`` the processing pipeline becomes:
 
     .. code-block:: text
 
@@ -124,7 +140,7 @@ def load_data(
         ↓
         func_proc_ndarray()
 
-    ``func_load_epochs=None`` の場合の流れは以下のような感じ．
+    If ``func_load_epochs is None`` the pipeline becomes simpler:
 
     .. code-block:: text
 
@@ -134,9 +150,14 @@ def load_data(
 
     Returns
     -------
+    X_train : ndarray
+    X_valid : ndarray or None
+    X_test : list of ndarray
+    y_train : ndarray
+    y_valid : ndarray or None
+    y_test : list of ndarray
 
     """
-
     if func_load_epochs is None and func_load_ndarray is None:
         raise ValueError("Specify func_load_epochs or func_load_ndarray")
 
@@ -237,95 +258,3 @@ def load_data(
         X_test, y_test = [d["X"] for d in test], [d["y"] for d in test]
 
     return X_train, X_valid, X_test, y_train, y_valid, y_test
-
-    exit()
-
-    if apply_func_proc_per_obj:
-        _load_data_per_obj(
-            keywords_train=keywords_train,
-            keywords_valid=keywords_valid,
-            keywords_test=keywords_test,
-            func_load_epochs=func_load_epochs,
-            func_load_ndarray=func_load_ndarray,
-            func_proc_epochs=func_proc_epochs,
-            func_proc_ndarray=func_proc_ndarray,
-            func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
-            compile_test=compile_test,
-        )
-
-    else:
-        pass
-
-    exit()
-    ## training data
-    if func_load_epochs is not None:
-        epochs_train = func_load_epochs(keywords_train, "train")
-        if keywords_valid is not None:
-            epochs_valid = func_load_epochs(keywords_valid, "valid")
-        epochs_test = func_load_epochs(keywords_test, "test")
-
-        if func_proc_epochs is not None:
-            if apply_func_proc_per_obj:
-                epochs_train = func_proc_epochs(epochs_train, "train")
-                if keywords_valid is not None:
-                    epochs_valid = func_proc_epochs(epochs_valid, "valid")
-                epochs_test = func_proc_epochs(epochs_test, "test")
-            else:
-                if keywords_valid is not None:
-                    epochs_train, epochs_valid, epochs_test = func_proc_epochs(
-                        epochs_train,
-                        epochs_valid,
-                        epochs_test,
-                    )
-                else:
-                    epochs_train, epochs_test = func_proc_epochs(
-                        epochs_train,
-                        epochs_test,
-                    )
-
-        if keywords_valid is not None:
-            X_train, X_valid, X_test, y_train, y_valid, y_test = (
-                func_convert_epochs_to_ndarray(epochs_train, epochs_valid, epochs_test)
-            )
-        else:
-            X_train, X_test, y_train, y_test = func_convert_epochs_to_ndarray(
-                epochs_train, epochs_test
-            )
-
-    elif func_load_ndarray is not None:
-        X_train, y_train = func_load_ndarray(keywords_train, "train")
-        if keywords_valid is not None:
-            X_valid, y_valid = func_load_ndarray(keywords_valid, "valid")
-        X_test, y_test = func_load_ndarray(keywords_test, "test")
-    else:
-        raise ValueError(
-            "either func_load_epochs or func_load_ndarray should not be None"
-        )
-
-    if compile_test:
-        # compile y
-        y_test = [np.concatenate(y_test, axis=0)]
-
-        # compile X
-        X_test = [np.concatenate(X_test, axis=0)]
-
-    if func_proc_ndarray is not None:
-        if apply_func_proc_per_obj:
-            X_train, y_train = func_proc_ndarray(X_train, y_train, "train")
-            if keywords_valid is not None:
-                X_valid, y_valid = func_proc_ndarray(X_valid, y_valid, "valid")
-            X_test, y_test = func_proc_ndarray(X_test, y_test, "test")
-        else:
-            if keywords_valid is not None:
-                X_train, X_valid, X_test, y_train, y_valid, y_test = func_proc_ndarray(
-                    X_train, X_valid, X_test, y_train, y_valid, y_test
-                )
-            else:
-                X_train, X_test, y_train, y_test = func_proc_ndarray(
-                    X_train, X_test, y_train, y_test
-                )
-    else:
-        if keywords_valid is not None:
-            return X_train, X_valid, X_test, y_train, y_valid, y_test
-        else:
-            return X_train, X_test, y_train, y_test
