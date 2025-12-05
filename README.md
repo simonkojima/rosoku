@@ -50,11 +50,3 @@ Recommended first files:
 
 - `examples/example_within-subject-classification-riemannian.py`
 - `examples/example_within-subject-classification-deeplearning.py`
-
-```python
-from rosoku import conventional, deeplearning
-
-# You are free to define exactly how your data is loaded.
-# rosoku does not restrict your pipeline design.
-def func_load_epochs(keyword, mode):
-    ...
