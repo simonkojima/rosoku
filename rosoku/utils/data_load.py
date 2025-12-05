@@ -1,11 +1,29 @@
 import numpy as np
-import tag_mne as tm
+
+
+def get_swap_dict(d):
+    return {v: k for k, v in d.items()}
+
+
+def markers_from_events(events, event_id):
+    event_id_swap = get_swap_dict(event_id)
+
+    samples = np.array(events)[:, 0]
+
+    markers = list()
+    for val in np.array(events)[:, 2]:
+        if "marker:" in str(event_id_swap[val]):
+            markers.append(str(event_id_swap[val]))
+        else:
+            markers.append("marker:%s" % str(event_id_swap[val]))
+
+    return samples, markers
 
 
 def get_labels_from_epochs(epochs, label_keys={"left_hand": 0, "right_hand": 1}):
     y = list()
 
-    _, markers = tm.markers_from_events(epochs.events, epochs.event_id)
+    _, markers = markers_from_events(epochs.events, epochs.event_id)
 
     for marker in markers:
         for key, val in label_keys.items():
