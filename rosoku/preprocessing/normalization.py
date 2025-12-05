@@ -3,29 +3,57 @@ import numpy as np
 
 def normalize(X_train, X_valid, X_test, return_params=False):
     """
-    Normalization
+    Z-score normalization across channels for EEG-style tensors.
+
+    Normalization parameters (mean, std) are computed only from ``X_train``
+    and applied to validation and test data. This ensures no data leakage
+    during evaluation.
 
     Parameters
     ----------
-    X_train: np.ndarray
-    X_valid: np.ndarray
-    X_test: np.ndarray or list of np.ndarray
-    return_params: bool
-        If true, return mean and std value used for normalization.
+    X_train : np.ndarray
+        Training data with shape ``(n_trials, n_channels, n_times)``.
+        Used to compute the normalization mean and std.
 
-    Notes
-    -----
-    X.shape: (n_trials, n_channels, n_times)
+    X_valid : np.ndarray
+        Validation data with shape ``(n_trials, n_channels, n_times)``.
+
+    X_test : np.ndarray or list of np.ndarray
+        Test data with shape ``(n_trials, n_channels, n_times)``
+        or a list of such arrays (e.g., multiple test groups).
+
+    return_params : bool, default=False
+        If ``True``, also return the computed ``mean`` and ``std`` arrays.
 
     Returns
     -------
-    X_train_norm, X_valid_norm, X_test_norm : same shape as inputs
-        Normalized versions of the input arrays.
+    X_train_norm : np.ndarray
+        Normalized training data with same shape as ``X_train``.
+    X_valid_norm : np.ndarray
+        Normalized validation data.
+    X_test_norm : np.ndarray or list of np.ndarray
+        Normalized test data. The output type matches the input type
+        (single ndarray or list of ndarrays).
     mean : np.ndarray, optional
-        Returned if `return_params=True`.
+        Mean used for normalization. Returned only when
+        ``return_params=True``.
     std : np.ndarray, optional
-        Returned if `return_params=True`.
+        Standard deviation used for normalization. Returned only when
+        ``return_params=True``.
 
+    Notes
+    -----
+    - Input tensors must follow shape ``(n_trials, n_channels, n_times)``.
+    - Mean and std are computed per-channel across all trials and time samples.
+    - ``mean``/``std`` are reshaped to ``(1, n_channels, 1)``
+      for broadcasting during normalization.
+    - Test sets do **not** influence normalization statistics.
+
+    Examples
+    --------
+    >>> X_train_norm, X_valid_norm, X_test_norm = normalize(X_train, X_valid, X_test)
+    >>> X_train_norm, X_valid_norm, X_test_norm, mean, std = \
+    ...     normalize(X_train, X_valid, X_test, return_params=True)
     """
 
     n_trials, n_channels, n_times = X_train.shape
@@ -52,42 +80,3 @@ def normalize(X_train, X_valid, X_test, return_params=False):
         return X_train, X_valid, X_test, mean, std
     else:
         return X_train, X_valid, X_test
-
-
-def normalize_tensor(X_train_tensor, X_valid_tensor, X_test_tensor):
-    """
-    Normalization
-
-    X.shape: (n_trials, n_channels, n_times)
-
-    X_test_tensor: list
-
-    """
-
-    n_trials, n_channels, n_times = X_train_tensor.shape
-
-    mean = X_train_tensor.transpose(1, 2).reshape(-1, n_channels).mean(dim=0)
-    std = X_train_tensor.transpose(1, 2).reshape(-1, n_channels).std(dim=0)
-
-    print("mean", mean.size(), mean)
-    print("std", std.size(), std)
-
-    X_train_tensor = (X_train_tensor - mean.unsqueeze(0).unsqueeze(2)) / std.unsqueeze(
-        0
-    ).unsqueeze(2)
-    X_valid_tensor = (X_valid_tensor - mean.unsqueeze(0).unsqueeze(2)) / std.unsqueeze(
-        0
-    ).unsqueeze(2)
-
-    X_test_tensor_normalized = list()
-    if isinstance(X_test_tensor, list):
-        for X in X_test_tensor:
-            X = (X - mean.unsqueeze(0).unsqueeze(2)) / std.unsqueeze(0).unsqueeze(2)
-            X_test_tensor_normalized.append(X)
-        X_test_tensor = X_test_tensor_normalized
-    else:
-        X_test_tensor = (
-            X_test_tensor - mean.unsqueeze(0).unsqueeze(2)
-        ) / std.unsqueeze(0).unsqueeze(2)
-
-    return X_train_tensor, X_valid_tensor, X_test_tensor

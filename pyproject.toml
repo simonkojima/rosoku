@@ -17,9 +17,17 @@ authors = [
 dependencies = [
     "numpy",
     "scipy",
-    "mne>=1.8",
     "pandas",
+    "mne",
+    "pyriemann",
+    "scikit-learn",
+    "torch",
+    "msgpack",
 ]
+###### Optional Dependencies ######
+# moabb
+# braindecode
+# wandb
 
 [tool.setuptools.dynamic]
 version = { attr = "rosoku.__version__" }

@@ -9,7 +9,6 @@ import sklearn
 
 import torch
 
-import tag_mne as tm
 import pandas as pd
 
 from . import utils

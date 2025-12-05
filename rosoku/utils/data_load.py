@@ -21,6 +21,50 @@ def markers_from_events(events, event_id):
 
 
 def get_labels_from_epochs(epochs, label_keys={"left_hand": 0, "right_hand": 1}):
+    """
+    Extract trial labels from MNE Epochs based on event markers.
+
+    This function retrieves event markers from ``epochs.events`` and maps them to
+    integer class IDs according to ``label_keys``.
+    Event strings containing multiple tags (e.g. ``"cue/left_hand"``) are also
+    supported — if a key appears anywhere within the marker, it is assigned.
+
+    Parameters
+    ----------
+    epochs : mne.Epochs
+        Input epochs from which events are extracted.
+        ``epochs.events`` and ``epochs.event_id`` must be available.
+
+    label_keys : dict, default={"left_hand": 0, "right_hand": 1}
+        Mapping from event keyword to integer class label.
+        Keys are matched against event marker strings.
+        Example:
+        ``{"left_hand": 0, "right_hand": 1, "feet": 2}``
+
+    Returns
+    -------
+    y : np.ndarray of shape (n_epochs,)
+        Array of integer labels corresponding to each epoch.
+
+    Raises
+    ------
+    RuntimeError
+        If the extracted label count does not match the number of epochs.
+
+    Notes
+    -----
+    - Event markers may contain hierarchical names (e.g. ``"cue/left_hand"``).
+      In such cases, the marker is split by ``"/"`` and matched against keys.
+    - Every epoch must contain exactly one identifiable label.
+    - ``len(epochs) == len(y)`` is enforced for consistency.
+
+    Examples
+    --------
+    >>> y = get_labels_from_epochs(epochs,
+    ...     label_keys={"left_hand": 0, "right_hand": 1, "feet": 2})
+    >>> y[:10]
+    array([0, 1, 1, 0, ...])
+    """
     y = list()
 
     _, markers = markers_from_events(epochs.events, epochs.event_id)
@@ -64,9 +108,62 @@ def apply_func_proc(func_proc, func_proc_mode, train, valid, test):
 def convert_epochs_to_ndarray(
         epochs,
         mode,
-        label_keys={"event:left": 0, "event:right": 1},
+        label_keys={"left_hand": 0, "right_hand": 1},
         **kwargs,
 ):
+    """
+    Convert an MNE Epochs object into NumPy arrays (X, y).
+
+    This function extracts the raw epoch data using ``epochs.get_data()`` and
+    generates corresponding class labels by parsing event markers via
+    :func:`get_labels_from_epochs`.
+    It serves as the **default conversion function** for both
+    :func:`rosoku.deeplearning` and :func:`rosoku.conventional`,
+    where it is passed as ``func_convert_epochs_to_ndarray``.
+
+    Parameters
+    ----------
+    epochs : mne.Epochs
+        MNE epochs containing EEG/BCI trials. Must include ``events`` and
+        ``event_id`` for label extraction.
+
+    mode : {"train", "valid", "test"}
+        Provided for pipeline consistency, but not used directly here.
+        Allows seamless substitution with user-defined conversion functions
+        that may behave differently depending on dataset split.
+
+    label_keys : dict, default={"left_hand": 0, "right_hand": 1}
+        Mapping from event string to class ID.
+        Passed to :func:`get_labels_from_epochs`.
+
+    **kwargs :
+        Additional arguments forwarded to ``epochs.get_data()``, such as:
+
+        ``picks=...`` (channel selection)
+        ``tmin, tmax`` (time window)
+        ``reject_by_annotation=True`` etc.
+
+    Returns
+    -------
+    X : np.ndarray of shape (n_epochs, n_channels, n_times)
+        Trial data extracted from MNE Epochs.
+
+    y : np.ndarray of shape (n_epochs,)
+        Integer class labels derived from event markers.
+
+    Notes
+    -----
+    - Serves as the default feature-extraction backend for rosoku pipelines.
+    - Intended for cases where the user does **not** need custom handcrafted
+      features and prefers raw time-domain input for ML/DL.
+    - Can be replaced by any user-defined function with the same return format.
+
+    Examples
+    --------
+    >>> X, y = convert_epochs_to_ndarray(epochs, mode="train")
+    >>> X.shape, y.shape
+    ((120, 64, 400), (120,))
+    """
     X = epochs.get_data(**kwargs)
     y = get_labels_from_epochs(epochs, label_keys)
 
@@ -85,77 +182,138 @@ def load_data(
         func_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
 ):
     """
-    Load dataset using given keyword lists and optional processing functions.
+    Load and preprocess datasets for rosoku pipelines using keyword specifications.
+
+    This utility function is the core data loader used by rosoku's
+    :func:`conventional` and :func:`deeplearning` pipelines. It takes
+    user-defined *keywords* that describe which data to load for the
+    train/validation/test splits, calls user-provided loading functions
+    (for MNE Epochs or NumPy arrays), optionally applies preprocessing,
+    and returns NumPy arrays suitable for machine-learning models.
 
     Parameters
     ----------
     keywords_train : list
-        A list of identifiers used to load the training data.
+        List of keyword objects specifying which data belong to the
+        training split. The structure of each keyword is arbitrary
+        (e.g., dicts with subject/session metadata) and is interpreted
+        solely by the user-defined loading functions.
 
     keywords_valid : list or None
-        A list of identifiers for validation data.
-        If ``None``, data will be split into only train and test.
+        List of keyword objects specifying validation data.
+        If ``None``, no separate validation set is loaded and
+        ``X_valid``/``y_valid`` will be ``None``.
 
     keywords_test : list
-        A list of identifiers for test data.
-        For example:
-            ``keywords_test=["A29", "A3"]`` → test each dataset separately  
-            ``keywords_test=[["A29", "A3"]]`` → merge them as a single test dataset
+        List describing test data and how they are grouped. Each element
+        can be either:
+
+        - a single keyword object → treated as one test group
+        - a list of keyword objects → merged and evaluated as a single test group
+
+        Examples
+        --------
+        - ``keywords_test = ["A29", "A3"]``
+          → two separate test sets (``["A29"]``, ``["A3"]``)
+
+        - ``keywords_test = [["A29", "A3"]]``
+          → load both and merge into one test set
 
     func_load_epochs : callable, optional
-        Function used to load *epochs* objects.  
-        Must be provided if ``func_load_ndarray`` is ``None``.
+        Function used to load data as MNE ``Epochs`` objects.
+        Must accept ``(keywords, mode)`` where ``keywords`` is a list of
+        keyword objects and ``mode`` is one of ``"train"``, ``"valid"``,
+        or ``"test"``. Should return an ``mne.Epochs`` instance (or a
+        merged Epochs object).
+
+        Required if ``func_load_ndarray`` is ``None``.
 
     func_load_ndarray : callable, optional
-        Function used to load raw NumPy arrays.  
-        Must be provided if ``func_load_epochs`` is ``None``.
+        Function used to load data directly as NumPy arrays.
+        Must accept ``(keywords, mode)`` and return a tuple ``(X, y)``,
+        where ``X`` is a NumPy array and ``y`` the corresponding labels.
+
+        Required if ``func_load_epochs`` is ``None``.
 
     func_proc_epochs : callable, optional
-        Processing function applied to epochs before conversion to ndarray.
+        Preprocessing function applied to Epochs objects *before*
+        conversion to NumPy arrays. It is passed through to
+        :func:`apply_func_proc` and can be used for tasks such as
+        channel selection, cropping, filtering, etc.
 
     func_proc_ndarray : callable, optional
-        Processing function applied after ndarray conversion.
+        Preprocessing function applied to NumPy arrays *(X, y)* after
+        conversion from Epochs or direct loading. Also handled by
+        :func:`apply_func_proc`.
 
-    func_proc_mode : {'per_split', 'per_function'}, default='per_split'
-        - ``'per_split'``: ``func_proc`` is applied to each split independently  
-          (**train**, **valid**, **test**)  
-        - ``'per_function'``: all splits are passed to ``func_proc`` at once
+    func_proc_mode : {"per_split", "all"}, default="per_split"
+        Controls how the preprocessing functions are applied:
 
-    func_convert_epochs_to_ndarray : callable, default=rosoku.utils.convert_epochs_to_ndarray
-        Function that converts epochs → ``(X, y)`` arrays.
+        - ``"per_split"`` : process train/valid/test splits independently
+        - ``"all"`` : pass all splits at once to the processing function
+          (exact behavior depends on :func:`apply_func_proc`)
 
-    Notes
-    -----
-    At least one of ``func_load_epochs`` or ``func_load_ndarray`` must be provided.
-
-    If ``func_load_ndarray is None`` the processing pipeline becomes:
-
-    .. code-block:: text
-
-        func_load_epochs()
-        ↓
-        func_proc_epochs()
-        ↓
-        func_convert_epochs_to_ndarray()
-        ↓
-        func_proc_ndarray()
-
-    If ``func_load_epochs is None`` the pipeline becomes simpler:
-
-    .. code-block:: text
-
-        func_load_ndarray()
-        ↓
-        func_proc_ndarray()
+    func_convert_epochs_to_ndarray : callable, default=convert_epochs_to_ndarray
+        Function used to convert Epochs objects to ``(X, y)`` arrays.
+        By default, uses :func:`convert_epochs_to_ndarray`, which wraps
+        ``epochs.get_data()`` and :func:`get_labels_from_epochs`.
 
     Returns
     -------
-    X_train : ndarray
-    X_valid : ndarray or None
-    X_test : list of ndarray
-    y_train : ndarray
-    y_valid : ndarray or None
-    y_test : list of ndarray
+    X_train : np.ndarray
+        Training data array.
+
+    X_valid : np.ndarray or None
+        Validation data array, or ``None`` if ``keywords_valid`` is ``None``.
+
+    X_test : list of np.ndarray
+        List of test data arrays, one per test group defined in
+        ``keywords_test``.
+
+    y_train : np.ndarray
+        Training labels.
+
+    y_valid : np.ndarray or None
+        Validation labels, or ``None`` if ``keywords_valid`` is ``None``.
+
+    y_test : list of np.ndarray
+        List of label arrays corresponding to each test group in
+        ``X_test``.
+
+    Raises
+    ------
+    ValueError
+        If neither nor both of ``func_load_epochs`` and
+        ``func_load_ndarray`` are provided, or if keyword lists are
+        not lists as required.
+
+    Notes
+    -----
+    - Exactly one of ``func_load_epochs`` and ``func_load_ndarray``
+      must be provided.
+    - When ``func_load_epochs`` is used, the pipeline is:
+
+      .. code-block:: text
+
+          func_load_epochs()
+          ↓
+          func_proc_epochs()        (optional)
+          ↓
+          func_convert_epochs_to_ndarray()
+          ↓
+          func_proc_ndarray()       (optional)
+
+    - When ``func_load_ndarray`` is used, the pipeline is:
+
+      .. code-block:: text
+
+          func_load_ndarray()
+          ↓
+          func_proc_ndarray()       (optional)
+
+    - This function is designed to support flexible dataset definitions
+      while keeping the downstream experiment code (training/evaluation)
+      agnostic to data-loading details.
 
     """
     if func_load_epochs is None and func_load_ndarray is None:

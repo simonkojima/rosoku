@@ -8,7 +8,6 @@ import functools
 import numpy as np
 
 import mne
-import tag_mne as tm
 
 import moabb.datasets
 

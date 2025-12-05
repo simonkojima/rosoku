@@ -1,4 +1,2 @@
 Examples
 ========
-
-hogehoge

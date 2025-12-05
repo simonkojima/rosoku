@@ -9,7 +9,6 @@ import functools
 from pathlib import Path
 
 import mne
-import tag_mne as tm
 
 import moabb.datasets
 

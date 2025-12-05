@@ -198,3 +198,8 @@ wandb/
 
 # docs
 docs/build/
+
+# misc
+.vscode/
+_.github/
+auto_examples/
