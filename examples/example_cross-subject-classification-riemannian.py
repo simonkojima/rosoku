@@ -80,7 +80,7 @@ def func_load_ndarray(
 label_keys = {"left_hand": 0, "right_hand": 1}
 dataset = moabb.datasets.Dreyer2023()
 
-results = rosoku.conventional(
+results = rosoku.conventional.conventional(
     keywords_train=[f"A{num}" for num in range(1, 3)],
     keywords_test=["A21", "A56"],
     func_load_ndarray=functools.partial(
