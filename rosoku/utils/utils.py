@@ -280,6 +280,7 @@ def dataset_to_dataloader(
             worker_seed = generator + worker_id
             np.random.seed(worker_seed)
             random.seed(worker_seed)
+            torch.manual_seed(worker_seed)
 
     elif isinstance(generator, torch.Generator):
         g = generator
@@ -288,6 +289,7 @@ def dataset_to_dataloader(
             worker_seed = g.initial_seed() + worker_id
             np.random.seed(worker_seed)
             random.seed(worker_seed)
+            torch.manual_seed(worker_seed)
 
     else:
         raise ValueError("generator must be an int or torch.Generator")
