@@ -32,5 +32,6 @@ dependencies = [
 [tool.setuptools.dynamic]
 version = { attr = "rosoku.__version__" }
 
-[tool.setuptools]
-packages = ["rosoku"]
+[tool.setuptools.packages.find]
+where=["."]
+include = ["rosoku*"]
