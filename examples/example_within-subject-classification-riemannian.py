@@ -78,7 +78,7 @@ label_keys = {"left_hand": 0, "right_hand": 1}
 
 save_base = Path("~").expanduser() / "rosoku-log"
 
-results = rosoku.conventional.conventional(
+results = rosoku.conventional(
     keywords_train=[subject, "R1", "R2"],
     keywords_test=[[subject, "R3", "R4", "R5"]],
     func_load_epochs=functools.partial(func_load_epochs, dataset=dataset, l_freq=8.0, h_freq=30.0, order_filter=4,
@@ -87,6 +87,7 @@ results = rosoku.conventional.conventional(
     func_convert_epochs_to_ndarray=functools.partial(
         convert_epochs_to_ndarray, label_keys=label_keys
     ),
+    scoring=["accuracy", "f1"],
     samples_fname=save_base / "samples.parquet"
 )
 

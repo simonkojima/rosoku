@@ -380,6 +380,8 @@ def deeplearning(
         enable_ddp=False,
         enable_dp=False,
         num_workers=0,
+        scoring="accuracy",
+        scoring_name=None,
         enable_wandb_logging=False,
         wandb_params=None,
         checkpoint_fname=None,
@@ -708,6 +710,36 @@ def deeplearning(
     # device = "cuda" if enable_ddp else "cpu"
     model.to(device)
 
+    if not isinstance(scoring, list):
+        scoring = [scoring]
+
+    if scoring_name is None:
+        scoring_name = []
+        for idx, scoring_ in enumerate(scoring):
+            if isinstance(scoring_, str):
+                scoring_name.append(scoring_)
+            elif isinstance(scoring_, callable):
+                scoring_name.append("callable")
+            else:
+                scoring_name.append("unknown_scoring")
+
+    if not isinstance(scoring_name, list):
+        scoring_name = [scoring_name]
+
+    if len(scoring) != len(scoring_name):
+        raise RuntimeError("len(scoring) != len(scoring_name)")
+
+    for idx, scoring_ in enumerate(scoring):
+        if isinstance(scoring_, str):
+            from sklearn.metrics import get_scorer
+            scoring_ = get_scorer(scoring_)._score_func
+        elif isinstance(scoring_, callable):
+            # do nothing
+            pass
+        else:
+            raise ValueError(f"Invalid scoring: {scoring_}")
+        scoring[idx] = scoring_
+
     # classify test data
     if checkpoint_fname is not None:
         # checkpoint = torch.load(f"{checkpoint_fname}")
@@ -766,16 +798,27 @@ def deeplearning(
                 device=device,
             )
 
+            scores = []
+            for scoring_ in scoring:
+                scores.append(scoring_(labels, preds))
+
+            """
             accuracy = sklearn.metrics.accuracy_score(labels, preds)
             f1 = sklearn.metrics.f1_score(labels, preds)
             bacc = sklearn.metrics.balanced_accuracy_score(labels, preds)
+            """
 
             df_results = pd.DataFrame()
             df_results["keywords_train"] = [json.dumps(keywords_train)]
             df_results["keywords_valid"] = [json.dumps(keywords_valid)]
             df_results["keywords_test"] = [json.dumps(keywords_test_single)]
             df_results["classifier"] = [name_classifier]
-            df_results["accuracy"] = [accuracy]
+
+            wandb_log = {}
+            for scoring_name_, score in zip(scoring_name, scores):
+                df_results[scoring_name_] = [score]
+                wandb_log[f"tset/{scoring_name_}"] = score
+            # df_results["accuracy"] = [accuracy]
             # df_results["labels"] = [labels]
             # df_results["preds"] = [preds]
             # df_results["probas"] = [probas]
@@ -803,6 +846,9 @@ def deeplearning(
                     for idx, (label, pred) in enumerate(zip(labels, preds)):
                         table.add_data(idx, label, pred)
 
+                    wandb_log.update({"predictions": table})
+                    wandb.log(wandb_log)
+                    """
                     wandb.log(
                         {
                             "test/accuracy": accuracy,
@@ -811,6 +857,7 @@ def deeplearning(
                             "predictions": table,
                         }
                     )
+                    """
 
             samples_list.append(samples)
             df_list.append(df_results)

@@ -11,7 +11,7 @@ license = { file = "LICENSE" }
 dynamic = ["version"]
 
 authors = [
-    { name = "Simon Kojima" },
+    { name = "Simon Kojima, Alex Pepi" },
 ]
 
 dependencies = [
@@ -33,5 +33,5 @@ dependencies = [
 version = { attr = "rosoku.__version__" }
 
 [tool.setuptools.packages.find]
-where=["."]
+where = ["."]
 include = ["rosoku*"]

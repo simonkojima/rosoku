@@ -67,6 +67,11 @@ def conventional(
         func_proc_epochs=None,
         func_proc_ndarray=None,
         func_proc_mode="per_split",
+        func_fit_clf=None,
+        func_predict_clf=None,
+        func_predict_proba_clf=None,
+        scoring="accuracy",
+        scoring_name=None,
         classifiers=[
             pyriemann.classification.TSClassifier(),
             pyriemann.classification.MDM(),
@@ -210,9 +215,42 @@ def conventional(
         func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
     )
 
+    if not isinstance(scoring, list):
+        scoring = [scoring]
+
+    if scoring_name is None:
+        scoring_name = []
+        for idx, scoring_ in enumerate(scoring):
+            if isinstance(scoring_, str):
+                scoring_name.append(scoring_)
+            elif isinstance(scoring_, callable):
+                scoring_name.append("callable")
+            else:
+                scoring_name.append("unknown_scoring")
+
+    if not isinstance(scoring_name, list):
+        scoring_name = [scoring_name]
+
+    if len(scoring) != len(scoring_name):
+        raise RuntimeError("len(scoring) != len(scoring_name)")
+
+    for idx, scoring_ in enumerate(scoring):
+        if isinstance(scoring_, str):
+            from sklearn.metrics import get_scorer
+            scoring_ = get_scorer(scoring_)._score_func
+        elif isinstance(scoring_, callable):
+            # do nothing
+            pass
+        else:
+            raise ValueError(f"Invalid scoring: {scoring_}")
+        scoring[idx] = scoring_
+
     # train classifiers
     for clf in classifiers:
-        clf.fit(X_train, y_train)
+        if func_fit_clf is None:
+            clf.fit(X_train, y_train)
+        else:
+            clf = func_fit_clf(clf, X_train, y_train)
 
     # classify test data and evaluate results
 
@@ -230,14 +268,27 @@ def conventional(
 
             df_results = pd.DataFrame()
 
-            preds = clf.predict(X)
-            probas = clf.predict_proba(X)
-            accuracy = sklearn.metrics.accuracy_score(y, preds)
+            if func_predict_clf is None:
+                preds = clf.predict(X)
+            else:
+                preds = func_predict_clf(clf, X)
+
+            if func_predict_proba_clf is None:
+                probas = clf.predict_proba(X)
+            else:
+                probas = func_predict_proba_clf(clf, X)
+
+            # accuracy = sklearn.metrics.accuracy_score(y, preds)
+            scores = []
+            for scoring_ in scoring:
+                scores.append(scoring_(y, preds))
 
             df_results["keywords_train"] = [json.dumps(keywords_train)]
             df_results["keywords_test"] = [json.dumps(keywords)]
             df_results["classifier"] = [name]
-            df_results["accuracy"] = [accuracy]
+
+            for scoring_name_, score in zip(scoring_name, scores):
+                df_results[scoring_name_] = [score]
 
             samples = pd.DataFrame()
             samples["labels"] = y
