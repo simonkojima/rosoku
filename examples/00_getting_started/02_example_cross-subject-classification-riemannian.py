@@ -25,8 +25,8 @@ import rosoku
 # Define a callback function to load ndarray data
 # ===============================================
 def callback_load_ndarray(
-        keywords,
-        mode,
+        items,
+        split,
         tmin,
         tmax,
         l_freq,
@@ -38,8 +38,8 @@ def callback_load_ndarray(
     X_list = []
     y_list = []
 
-    for keyword in keywords:
-        subject = keyword
+    for item in items:
+        subject = item
         sessions = dataset.get_data(subjects=[subject])
         raws = sessions[subject]["0"]
 
@@ -90,8 +90,8 @@ label_keys = {"left_hand": 0, "right_hand": 1}
 dataset = moabb.datasets.Dreyer2023()
 
 results = rosoku.conventional(
-    keywords_train=[1, 2, 3],
-    keywords_test=[21, 56],
+    items_train=[1, 2, 3],
+    items_test=[21, 56],
     callback_load_ndarray=functools.partial(
         callback_load_ndarray,
         dataset=dataset,

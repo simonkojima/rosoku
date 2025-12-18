@@ -106,10 +106,10 @@ def apply_callback_proc(callback_proc, callback_proc_mode, train, valid, test):
 
 
 def convert_epochs_to_ndarray(
-    epochs,
-    mode,
-    label_keys={"left_hand": 0, "right_hand": 1},
-    **kwargs,
+        epochs,
+        mode,
+        label_keys={"left_hand": 0, "right_hand": 1},
+        **kwargs,
 ):
     """
     Convert an MNE Epochs object into NumPy arrays (X, y).
@@ -278,12 +278,12 @@ def ndarray_to_tensor(X_train, y_train, X_valid, y_valid, X_test, y_test, device
 
 
 def tensor_to_dataset(
-    X_train_tensor,
-    y_train_tensor,
-    X_valid_tensor,
-    y_valid_tensor,
-    X_test_tensor,
-    y_test_tensor,
+        X_train_tensor,
+        y_train_tensor,
+        X_valid_tensor,
+        y_valid_tensor,
+        X_test_tensor,
+        y_test_tensor,
 ):
     """
     Convert PyTorch tensors into TensorDataset objects.
@@ -375,13 +375,13 @@ def tensor_to_dataset(
 
 
 def dataset_to_dataloader(
-    dataset_train,
-    dataset_valid,
-    dataset_test,
-    batch_size,
-    enable_DS=False,
-    DS_params=None,
-    generator=None,
+        dataset_train,
+        dataset_valid,
+        dataset_test,
+        batch_size,
+        enable_DS=False,
+        DS_params=None,
+        generator=None,
 ):
     """
     Create PyTorch DataLoader objects from datasets.
@@ -623,17 +623,17 @@ def dataset_to_dataloader(
 
 
 def ndarray_to_dataloader(
-    X_train,
-    y_train,
-    X_valid,
-    y_valid,
-    X_test,
-    y_test,
-    batch_size,
-    device="cpu",
-    enable_DS=False,
-    DS_params=None,
-    generator=None,
+        X_train,
+        y_train,
+        X_valid,
+        y_valid,
+        X_test,
+        y_test,
+        batch_size,
+        device="cpu",
+        enable_DS=False,
+        DS_params=None,
+        generator=None,
 ):
     """
     Convert NumPy arrays to PyTorch DataLoaders.
@@ -768,15 +768,15 @@ def ndarray_to_dataloader(
 
 
 def load_data(
-    keywords_train,
-    keywords_valid,
-    keywords_test,
-    callback_load_epochs=None,
-    callback_load_ndarray=None,
-    callback_proc_epochs=None,
-    callback_proc_ndarray=None,
-    callback_proc_mode="per_split",
-    callback_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
+        items_train,
+        items_valid,
+        items_test,
+        callback_load_epochs=None,
+        callback_load_ndarray=None,
+        callback_proc_epochs=None,
+        callback_proc_ndarray=None,
+        callback_proc_mode="per_split",
+        callback_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
 ):
     """
     Load and preprocess datasets for rosoku pipelines using keyword specifications.
@@ -790,18 +790,18 @@ def load_data(
 
     Parameters
     ----------
-    keywords_train : list
+    items_train : list
         List of keyword objects specifying which data belong to the
         training split. The structure of each keyword is arbitrary
         (e.g., dicts with subject/session metadata) and is interpreted
         solely by the user-defined loading functions.
 
-    keywords_valid : list or None
+    items_valid : list or None
         List of keyword objects specifying validation data.
         If ``None``, no separate validation set is loaded and
         ``X_valid``/``y_valid`` will be ``None``.
 
-    keywords_test : list
+    items_test : list
         List describing test data and how they are grouped. Each element
         can be either:
 
@@ -810,10 +810,10 @@ def load_data(
 
         Examples
         --------
-        - ``keywords_test = ["A29", "A3"]``
+        - ``items_test = ["A29", "A3"]``
           → two separate test sets (``["A29"]``, ``["A3"]``)
 
-        - ``keywords_test = [["A29", "A3"]]``
+        - ``items_test = [["A29", "A3"]]``
           → load both and merge into one test set
 
     callback_load_epochs : callable, optional
@@ -861,17 +861,17 @@ def load_data(
         Training data array.
 
     X_valid : np.ndarray or None
-        Validation data array, or ``None`` if ``keywords_valid`` is ``None``.
+        Validation data array, or ``None`` if ``items_valid`` is ``None``.
 
     X_test : list of np.ndarray
         List of test data arrays, one per test group defined in
-        ``keywords_test``.
+        ``items_test``.
 
     y_train : np.ndarray
         Training labels.
 
     y_valid : np.ndarray or None
-        Validation labels, or ``None`` if ``keywords_valid`` is ``None``.
+        Validation labels, or ``None`` if ``items_valid`` is ``None``.
 
     y_test : list of np.ndarray
         List of label arrays corresponding to each test group in
@@ -921,40 +921,38 @@ def load_data(
             "Either callback_load_epochs or callback_load_ndarray must be None"
         )
 
-    if keywords_valid is None:
-        if isinstance(keywords_train, list) and isinstance(keywords_test, list):
+    if items_valid is None:
+        if isinstance(items_train, list) and isinstance(items_test, list):
             pass
         else:
-            raise ValueError(
-                "keywords_train and keywords_test must be instance of list"
-            )
+            raise ValueError("items_train and items_test must be instance of list")
     else:
         if (
-            isinstance(keywords_train, list)
-            and isinstance(keywords_valid, list)
-            and isinstance(keywords_test, list)
+                isinstance(items_train, list)
+                and isinstance(items_valid, list)
+                and isinstance(items_test, list)
         ):
             pass
         else:
             raise ValueError(
-                "keywords_train, keywords_valid, and keywords_test must be instance of list"
+                "items_train, items_valid, and items_test must be instance of list"
             )
 
     if callback_load_epochs is not None:
         # load epochs
-        epochs_train = callback_load_epochs(keywords_train, "train")
-        if keywords_valid is None:
+        epochs_train = callback_load_epochs(items_train, "train")
+        if items_valid is None:
             epochs_valid = None
         else:
-            epochs_valid = callback_load_epochs(keywords_valid, "valid")
+            epochs_valid = callback_load_epochs(items_valid, "valid")
 
         epochs_test = []
-        for k in keywords_test:
-            if isinstance(k, list):
-                e = callback_load_epochs(k, "test")
+        for item in items_test:
+            if isinstance(item, list):
+                e = callback_load_epochs(item, "test")
                 epochs_test.append(e)
             else:
-                e = callback_load_epochs([k], "test")
+                e = callback_load_epochs([item], "test")
                 epochs_test.append(e)
 
         # apply callback_proc_epochs
@@ -980,21 +978,21 @@ def load_data(
             y_test.append(y)
     else:
         # load ndarray
-        X_train, y_train = callback_load_ndarray(keywords_train, "train")
+        X_train, y_train = callback_load_ndarray(items_train, "train")
 
-        if keywords_valid is None:
+        if items_valid is None:
             X_valid, y_valid = None, None
         else:
-            X_valid, y_valid = callback_load_ndarray(keywords_valid, "valid")
+            X_valid, y_valid = callback_load_ndarray(items_valid, "valid")
 
         X_test, y_test = [], []
-        for k in keywords_test:
-            if isinstance(k, list):
-                X, y = callback_load_ndarray(k, "test")
+        for item in items_test:
+            if isinstance(item, list):
+                X, y = callback_load_ndarray(item, "test")
                 X_test.append(X)
                 y_test.append(y)
             else:
-                X, y = callback_load_ndarray([k], "test")
+                X, y = callback_load_ndarray([item], "test")
                 X_test.append(X)
                 y_test.append(y)
 

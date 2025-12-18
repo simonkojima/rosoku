@@ -43,10 +43,10 @@ def callback_get_model(X, y):
 
 
 def callback_load_epochs(
-        keywords, mode, dataset, l_freq, h_freq, order_filter, tmin, tmax
+        items, split, dataset, l_freq, h_freq, order_filter, tmin, tmax
 ):
-    subject = keywords[0]
-    keywords = keywords[1:]
+    subject = items[0]
+    items = items[1:]
 
     sessions = dataset.get_data(subjects=[subject])
     raws_dict = sessions[subject]["0"]
@@ -54,7 +54,7 @@ def callback_load_epochs(
     epochs_list = []
 
     for name_run, raw in raws_dict.items():
-        if not True in [k in name_run for k in keywords]:
+        if not True in [item in name_run for item in items]:
             continue
 
         raw.filter(
@@ -78,14 +78,14 @@ def callback_load_epochs(
     return mne.concatenate_epochs(epochs_list)
 
 
-def callback_proc_epochs(epochs, mode):
+def callback_proc_epochs(epochs, split):
     # do nothing in this example
     return epochs
 
 
 def convert_epochs_to_ndarray(
         epochs,
-        mode,
+        split,
         label_keys,
 ):
     X = epochs.get_data()
@@ -133,9 +133,9 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 label_keys = {"left_hand": 0, "right_hand": 1}
 
 results = rosoku.deeplearning(
-    keywords_train=[subject, "R1", "R2"],
-    keywords_valid=[subject, "R3"],
-    keywords_test=[[subject, "R4", "R5"]],
+    items_train=[subject, "R1", "R2"],
+    items_valid=[subject, "R3"],
+    items_test=[[subject, "R4", "R5"]],
     callback_load_epochs=functools.partial(
         callback_load_epochs,
         dataset=dataset,

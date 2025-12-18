@@ -7,8 +7,8 @@ from .utils.core import _add_values_to_df
 
 
 def conventional(
-        keywords_train,
-        keywords_test,
+        items_train,
+        items_test,
         callback_load_epochs=None,
         callback_proc_epochs=None,
         callback_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
@@ -214,9 +214,9 @@ def conventional(
     # load data
 
     X_train, _, X_test, y_train, _, y_test = utils.load_data(
-        keywords_train=keywords_train,
-        keywords_valid=None,
-        keywords_test=keywords_test,
+        items_train=items_train,
+        items_valid=None,
+        items_test=items_test,
         callback_load_epochs=callback_load_epochs,
         callback_load_ndarray=callback_load_ndarray,
         callback_proc_epochs=callback_proc_epochs,
@@ -278,12 +278,12 @@ def conventional(
         X_test = [X_test]
         y_test = [y_test]
 
-    if len(keywords_test) != len(X_test):
-        raise RuntimeError("len(keywords_test) != len(X_test)")
+    if len(items_test) != len(X_test):
+        raise RuntimeError("len(items_test) != len(X_test)")
 
     df_list = []
     samples_list = []
-    for X, y, keywords in zip(X_test, y_test, keywords_test):
+    for X, y, item in zip(X_test, y_test, items_test):
         for model, name in zip(models, model_names):
 
             df_results = pd.DataFrame()
@@ -302,8 +302,8 @@ def conventional(
             for scoring_ in scoring:
                 scores.append(scoring_(y, preds))
 
-            df_results["keywords_train"] = [json.dumps(keywords_train)]
-            df_results["keywords_test"] = [json.dumps(keywords)]
+            df_results["items_train"] = [json.dumps(items_train)]
+            df_results["items_test"] = [json.dumps(item)]
             df_results["classifier"] = [name]
 
             for scoring_name_, score in zip(scoring_name, scores):

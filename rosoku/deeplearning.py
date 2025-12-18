@@ -294,9 +294,9 @@ def main(
 
 
 def deeplearning(
-        keywords_train,
-        keywords_valid,
-        keywords_test,
+        items_train,
+        items_valid,
+        items_test,
         callback_load_epochs=None,
         callback_load_ndarray=None,
         criterion=torch.nn.CrossEntropyLoss(),
@@ -350,21 +350,21 @@ def deeplearning(
     core pipeline.
 
     Test data can be evaluated in user-defined groups: each element of
-    ``keywords_test`` represents one evaluation group, and can contain one or
+    ``items_test`` represents one evaluation group, and can contain one or
     multiple keyword items (e.g., to merge multiple sessions into a single test
     set before scoring).
 
     Parameters
     ----------
-    keywords_train : list
+    items_train : list
         Keyword objects describing how to load the training data. The content is
         user-defined and interpreted by ``callback_load_epochs`` or
         ``callback_load_ndarray``.
 
-    keywords_valid : list
+    items_valid : list
         Keyword objects describing how to load the validation data.
 
-    keywords_test : list of list
+    items_test : list of list
         Keyword objects describing how to load the test data, grouped for
         evaluation. Each inner list defines one evaluation group.
 
@@ -576,12 +576,12 @@ def deeplearning(
     -------
     df : pandas.DataFrame
         Summary results with one row per test group. Includes JSON-serialized
-        ``keywords_train`` / ``keywords_valid`` / ``keywords_test`` strings, one
+        ``items_train`` / ``items_valid`` / ``items_test`` strings, one
         column per requested scoring metric, and a ``"model"`` column.
 
     Notes
     -----
-    - ``keywords_test`` grouping controls evaluation granularity: each inner list is
+    - ``items_test`` grouping controls evaluation granularity: each inner list is
       treated as one test set after loading/merging by ``utils.load_data``.
     - If a scoring string is provided, this function uses
       ``sklearn.metrics.get_scorer(scoring)._score_func`` rather than calling the
@@ -599,9 +599,9 @@ def deeplearning(
             return MyNet(n_ch=n_ch, n_times=n_t, n_classes=len(np.unique(y_train)))
 
         df = deeplearning(
-            keywords_train=[{"sub": 1}],
-            keywords_valid=[{"sub": 1, "split": "valid"}],
-            keywords_test=[[{"sub": 1, "split": "test"}]],
+            items_train=[{"sub": 1}],
+            items_valid=[{"sub": 1, "split": "valid"}],
+            items_test=[[{"sub": 1, "split": "test"}]],
             callback_load_ndarray=load_xy,
             callback_get_model=get_model,
             device="cuda",
@@ -642,9 +642,9 @@ def deeplearning(
     # load data
 
     X_train, X_valid, X_test, y_train, y_valid, y_test = utils.load_data(
-        keywords_train=keywords_train,
-        keywords_valid=keywords_valid,
-        keywords_test=keywords_test,
+        items_train=items_train,
+        items_valid=items_valid,
+        items_test=items_test,
         callback_load_epochs=callback_load_epochs,
         callback_load_ndarray=callback_load_ndarray,
         callback_proc_epochs=callback_proc_epochs,
@@ -653,8 +653,8 @@ def deeplearning(
         callback_convert_epochs_to_ndarray=callback_convert_epochs_to_ndarray,
     )
 
-    if len(keywords_test) != len(X_test):
-        raise RuntimeError("len(keywords_test) != len(X_test)")
+    if len(items_test) != len(X_test):
+        raise RuntimeError("len(items_test) != len(X_test)")
 
     # data normalization
     if enable_normalization:
@@ -747,7 +747,7 @@ def deeplearning(
             from sklearn.metrics import get_scorer
 
             scoring_ = get_scorer(scoring_)._score_func
-        elif isinstance(scoring_, callable):
+        elif callable(scoring_):
             # do nothing
             pass
         else:
@@ -799,8 +799,8 @@ def deeplearning(
     df_list = []
     samples_list = []
     with torch.no_grad():
-        for idx, (dataloader, keywords_test_single) in enumerate(
-                zip(dataloader_test, keywords_test)
+        for idx, (dataloader, items_test_single) in enumerate(
+                zip(dataloader_test, items_test)
         ):
 
             preds, labels, logits, probas = utils.get_predictions(
@@ -817,9 +817,9 @@ def deeplearning(
                 scores.append(scoring_(labels, preds))
 
             df_results = pd.DataFrame()
-            df_results["keywords_train"] = [json.dumps(keywords_train)]
-            df_results["keywords_valid"] = [json.dumps(keywords_valid)]
-            df_results["keywords_test"] = [json.dumps(keywords_test_single)]
+            df_results["items_train"] = [json.dumps(items_train)]
+            df_results["items_valid"] = [json.dumps(items_valid)]
+            df_results["items_test"] = [json.dumps(items_test_single)]
 
             wandb_log = {}
             for scoring_name_, score in zip(scoring_name, scores):

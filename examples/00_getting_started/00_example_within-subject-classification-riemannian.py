@@ -25,10 +25,10 @@ from moabb.datasets import Dreyer2023
 
 
 def callback_load_epochs(
-        keywords, mode, dataset, l_freq, h_freq, order_filter, tmin, tmax
+        items, split, dataset, l_freq, h_freq, order_filter, tmin, tmax
 ):
-    subject = keywords[0]
-    keywords = keywords[1:]
+    subject = items[0]
+    keywords = items[1:]
 
     sessions = dataset.get_data(subjects=[subject])
     raws_dict = sessions[subject]["0"]
@@ -60,14 +60,14 @@ def callback_load_epochs(
     return mne.concatenate_epochs(epochs_list)
 
 
-def callback_proc_epochs(epochs, mode):
+def callback_proc_epochs(epochs, split):
     # do nothing in this example
     return epochs
 
 
 def callback_convert_epochs_to_ndarray(
         epochs,
-        mode,
+        split,
         label_keys,
 ):
     X = epochs.get_data()
@@ -89,8 +89,8 @@ label_keys = {"left_hand": 0, "right_hand": 1}
 save_base = Path("~").expanduser() / "rosoku-log"
 
 results = rosoku.conventional(
-    keywords_train=[subject, "R1", "R2"],
-    keywords_test=[[subject, "R3", "R4", "R5"]],
+    items_train=[subject, "R1", "R2"],
+    items_test=[[subject, "R3", "R4", "R5"]],
     callback_load_epochs=functools.partial(
         callback_load_epochs,
         dataset=dataset,

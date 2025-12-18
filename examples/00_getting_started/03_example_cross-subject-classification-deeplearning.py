@@ -17,7 +17,7 @@ from pathlib import Path
 
 import mne
 
-import moabb.datasets
+from moabb.datasets import Dreyer2023
 
 import torch
 import braindecode
@@ -30,8 +30,8 @@ import rosoku
 
 
 def callback_load_ndarray(
-        keywords,
-        mode,
+        items,
+        split,
         tmin,
         tmax,
         l_freq,
@@ -43,8 +43,8 @@ def callback_load_ndarray(
     X_list = []
     y_list = []
 
-    for keyword in keywords:
-        subject = keyword
+    for item in items:
+        subject = item
         sessions = dataset.get_data(subjects=[subject])
         raws = sessions[subject]["0"]
 
@@ -123,7 +123,7 @@ enable_dp = False
 
 seed = 42
 
-dataset = moabb.datasets.Dreyer2023()
+dataset = Dreyer2023()
 
 save_base = Path("~").expanduser() / "rosoku-log"
 (save_base / "checkpoint").mkdir(parents=True, exist_ok=True)
@@ -142,9 +142,9 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 label_keys = {"left_hand": 0, "right_hand": 1}
 
 results = rosoku.deeplearning(
-    keywords_train=[1, 2, 3],
-    keywords_valid=[4],
-    keywords_test=[21, 56],
+    items_train=[1, 2, 3],
+    items_valid=[4],
+    items_test=[21, 56],
     callback_load_ndarray=functools.partial(
         callback_load_ndarray,
         dataset=dataset,
