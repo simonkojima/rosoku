@@ -731,7 +731,7 @@ def deeplearning(
         for idx, scoring_ in enumerate(scoring):
             if isinstance(scoring_, str):
                 scoring_name.append(scoring_)
-            elif collable(scoring_):
+            elif callable(scoring_):
                 scoring_name.append("callable")
             else:
                 scoring_name.append("unknown_scoring")

@@ -178,6 +178,7 @@ results = rosoku.deeplearning(
     saliency_map_fname=(save_base / "saliency" / f"cross-subject-deeplearning.msgpack"),
     label_keys=label_keys,
     seed=seed,
+    additional_values={"example_key": "example_value"},
 )
 
 # %%
