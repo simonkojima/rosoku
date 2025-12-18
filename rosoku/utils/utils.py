@@ -439,7 +439,14 @@ def nd_to_dataloader(
     )
 
 
-def get_predictions(model, dataloader, device="cpu"):
+def get_predictions(
+        model,
+        dataloader,
+        device="cpu",
+        callback_get_logits=None,
+        callback_get_probas=None,
+        callback_get_preds=None,
+):
     """
     Run inference on a dataloader and return predictions, labels, logits and class probabilities.
 
@@ -501,9 +508,20 @@ def get_predictions(model, dataloader, device="cpu"):
             X = X.to(device, non_blocking=True)
             y = y.to(device, non_blocking=True)
 
-            logits = model(X)
-            preds = torch.argmax(logits, dim=1)
-            probas = torch.nn.functional.softmax(logits, dim=1)
+            if callback_get_logits is None:
+                logits = model(X)
+            else:
+                logits = callback_get_logits(model, X)
+
+            if callback_get_preds is None:
+                preds = torch.argmax(logits, dim=1)
+            else:
+                preds = callback_get_preds(model, X)
+
+            if callback_get_probas is None:
+                probas = torch.nn.functional.softmax(logits, dim=1)
+            else:
+                probas = callback_get_probas(model, X)
 
             logits_list.append(logits)
             preds_list.append(preds)

@@ -371,6 +371,9 @@ def deeplearning(
         func_proc_epochs=None,
         func_proc_ndarray=None,
         func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
+        callback_get_logits=None,
+        callback_get_preds=None,
+        callback_get_probas=None,
         optimizer_params=None,
         model=None,
         func_get_model=None,
@@ -391,6 +394,7 @@ def deeplearning(
         saliency_map_fname=False,
         early_stopping=None,
         # name_classifier=None,
+        model_name=None,
         enable_normalization=False,
         label_keys=None,
         seed=None,
@@ -412,7 +416,7 @@ def deeplearning(
     should be loaded. They are passed, together with a ``mode`` string, to the
     callback functions ``func_load_epochs`` or ``func_load_ndarray``.
 
-    - First argument:  ``keyword`` (one element of keywords_*)  
+    - First argument:  ``keyword`` (one element of keywords_*)
     - Second argument: ``mode`` ∈ {"train", "valid", "test"}
 
     This allows you to implement different behavior depending on the split,
@@ -442,7 +446,7 @@ def deeplearning(
     ---------------------------------------------------------------------------
     ``keywords_test`` controls how test data are grouped for classification.
 
-    - ``[[a], [b]]`` → evaluate a and b **separately**  
+    - ``[[a], [b]]`` → evaluate a and b **separately**
     - ``[[a, b]]`` → **merge** the data associated with a and b and evaluate them together
 
     This allows flexible control over whether each test set is evaluated
@@ -709,6 +713,9 @@ def deeplearning(
     # device = "cuda" if enable_ddp else "cpu"
     model.to(device)
 
+    if model_name is None:
+        model_name = model.__class__.__name__
+
     if not isinstance(scoring, list):
         scoring = [scoring]
 
@@ -731,6 +738,7 @@ def deeplearning(
     for idx, scoring_ in enumerate(scoring):
         if isinstance(scoring_, str):
             from sklearn.metrics import get_scorer
+
             scoring_ = get_scorer(scoring_)._score_func
         elif isinstance(scoring_, callable):
             # do nothing
@@ -773,9 +781,7 @@ def deeplearning(
                 label_keys = {f"{c}": c for c in classes}
 
             for class_label, c in label_keys.items():
-                s = attribution.saliency_map(
-                    model, dataloader, device, class_index=c
-                )
+                s = attribution.saliency_map(model, dataloader, device, class_index=c)
 
                 s = s.tolist()
 
@@ -795,6 +801,9 @@ def deeplearning(
                 model,
                 dataloader,
                 device=device,
+                callback_get_logits=callback_get_logits,
+                callback_get_preds=callback_get_preds,
+                callback_get_probas=callback_get_probas,
             )
 
             scores = []
@@ -824,8 +833,10 @@ def deeplearning(
             # df_results["logits"] = [logits]
 
             if normalization_fname is not None:
-                normalization_dict = {"mean": normalization_mean.squeeze().tolist(),
-                                      "std": normalization_std.squeeze().tolist()}
+                normalization_dict = {
+                    "mean": normalization_mean.squeeze().tolist(),
+                    "std": normalization_std.squeeze().tolist(),
+                }
 
                 with open(normalization_fname, "wb") as f:
                     msgpack.pack(normalization_dict, f)
@@ -837,7 +848,9 @@ def deeplearning(
                 samples[f"probas_{idx}"] = probas[:, idx]
             for idx in range(logits.shape[1]):
                 samples[f"logits_{idx}"] = logits[:, idx]
-            samples = utils.add_values_to_df(samples, additional_values)
+            samples["model"] = [model_name for _ in range(len(samples))]
+            if additional_values is not None:
+                samples = utils.add_values_to_df(samples, additional_values)
             # samples["classifier"] = [name_classifier for _ in range(len(samples))]
 
             if enable_wandb_logging:
@@ -863,7 +876,9 @@ def deeplearning(
             df_list.append(df_results)
 
     df = pd.concat(df_list, axis=0, ignore_index=True)
-    df = utils.add_values_to_df(df, additional_values)
+    df["model"] = [model_name for _ in range(len(df))]
+    if additional_values is not None:
+        df = utils.add_values_to_df(df, additional_values)
 
     if samples_fname is not None:
         samples = pd.concat(samples_list, axis=0, ignore_index=True)
