@@ -39,39 +39,6 @@ def setup_scheduler(scheduler, scheduler_params, optimizer):
     return scheduler
 
 
-def load_data(
-        subjects,
-        callback_get_fnames,
-        callback_proc_epochs,
-        label_keys,
-        enable_euclidean_alignment,
-):
-    X = []
-    y = []
-
-    for subject in subjects:
-
-        files = callback_get_fnames(subject)
-
-        epochs = utils.load_epochs(files, True)
-
-        if callback_proc_epochs is not None:
-            epochs = callback_proc_epochs(epochs)
-
-        y.append(np.array(utils.get_labels_from_epochs(epochs, label_keys)))
-
-        X_single = epochs.get_data()
-
-        if enable_euclidean_alignment:
-            from . import tl
-
-            X_single = tl.euclidean_alignment(X_single)
-
-        X.append(X_single)
-
-    return X, y
-
-
 def deeplearning_train(
         dataloader_train,
         dataloader_valid,
@@ -163,39 +130,6 @@ def deeplearning_train(
         df_save.to_parquet(f"{history_fname}.parquet")
 
     return model
-
-
-def load_data(
-        subjects,
-        callback_get_fnames,
-        callback_proc_epochs,
-        label_keys,
-        enable_euclidean_alignment,
-):
-    X = []
-    y = []
-
-    for subject in subjects:
-
-        files = callback_get_fnames(subject)
-
-        epochs = utils.load_epochs(files, True)
-
-        if callback_proc_epochs is not None:
-            epochs = callback_proc_epochs(epochs)
-
-        y.append(np.array(utils.get_labels_from_epochs(epochs, label_keys)))
-
-        X_single = epochs.get_data()
-
-        if enable_euclidean_alignment:
-            from . import tl
-
-            X_single = tl.euclidean_alignment(X_single)
-
-        X.append(X_single)
-
-    return X, y
 
 
 def main(
