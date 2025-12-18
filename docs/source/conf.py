@@ -21,7 +21,6 @@ extensions = []
 templates_path = ["_templates"]
 exclude_patterns = []
 
-
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
@@ -58,13 +57,7 @@ smv_remote_whitelist = r"^origin$"
 
 html_theme = "pydata_sphinx_theme"
 html_theme_options = {
-    "default_mode": "light",
     "logo": {"image_light": "logo-light.png", "image_dark": "logo-dark.png"},
-    "version_dropdown": True,
-    "version_info": {
-        "name": "Version",
-        "current_version": release,
-    },
     "navbar_end": ["theme-switcher", "version-switcher"],
     "switcher": {
         "json_url": "https://simonkojima.github.io/rosoku-docs/versions.json",
@@ -80,7 +73,6 @@ sphinx_gallery_conf = {
     "gallery_dirs": "auto_examples",
     "filename_pattern": r"example_",
 }
-
 
 source_suffix = {
     ".rst": "restructuredtext",

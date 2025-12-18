@@ -224,7 +224,7 @@ def main(
     checkpoint_fname = kwargs.get("checkpoint_fname", None)
     history_fname = kwargs.get("history_fname", None)
     early_stopping = kwargs.get("early_stopping", None)
-    name_classifier = kwargs.get("name_classifier", None)
+    # name_classifier = kwargs.get("name_classifier", None)
     seed = kwargs.get("seed", None)
 
     # setup DDP
@@ -318,8 +318,8 @@ def main(
             model, device_ids=[local_rank]
         )
 
-    if name_classifier is None:
-        name_classifier = model.__class__.__name__
+    # if name_classifier is None:
+    #    name_classifier = model.__class__.__name__
 
     # setup optimizer
     optimizer = setup_optimizer(optimizer, optimizer_params, model)
@@ -390,7 +390,7 @@ def deeplearning(
         normalization_fname=None,
         saliency_map_fname=False,
         early_stopping=None,
-        name_classifier=None,
+        # name_classifier=None,
         enable_normalization=False,
         label_keys=None,
         seed=None,
@@ -662,7 +662,6 @@ def deeplearning(
         "checkpoint_fname": checkpoint_fname,
         "history_fname": history_fname,
         "early_stopping": early_stopping,
-        "name_classifier": name_classifier,
         "seed": seed,
         "desc": desc,
     }
@@ -812,7 +811,7 @@ def deeplearning(
             df_results["keywords_train"] = [json.dumps(keywords_train)]
             df_results["keywords_valid"] = [json.dumps(keywords_valid)]
             df_results["keywords_test"] = [json.dumps(keywords_test_single)]
-            df_results["classifier"] = [name_classifier]
+            # df_results["classifier"] = [name_classifier]
 
             wandb_log = {}
             for scoring_name_, score in zip(scoring_name, scores):
@@ -838,7 +837,8 @@ def deeplearning(
                 samples[f"probas_{idx}"] = probas[:, idx]
             for idx in range(logits.shape[1]):
                 samples[f"logits_{idx}"] = logits[:, idx]
-            samples["classifier"] = [name_classifier for _ in range(len(samples))]
+            samples = utils.add_values_to_df(samples, additional_values)
+            # samples["classifier"] = [name_classifier for _ in range(len(samples))]
 
             if enable_wandb_logging:
                 if (enable_ddp and params["rank"] == 0) or (enable_ddp is False):
@@ -863,10 +863,7 @@ def deeplearning(
             df_list.append(df_results)
 
     df = pd.concat(df_list, axis=0, ignore_index=True)
-
-    if additional_values is not None:
-        for key, value in additional_values.items():
-            df[key] = [value for m in range(df.shape[0])]
+    df = utils.add_values_to_df(df, additional_values)
 
     if samples_fname is not None:
         samples = pd.concat(samples_list, axis=0, ignore_index=True)

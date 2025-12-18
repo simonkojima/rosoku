@@ -3,7 +3,13 @@ Example: Within-subject classification with riemannian classifier
 =================================================================
 """
 
+# Authors: Simon Kojima <simon.kojima@inria.fr>
+#
+# License: BSD (3-clause)
+
 # %%
+# Import Packages
+# ===============
 import functools
 from pathlib import Path
 import mne
@@ -12,11 +18,12 @@ import pyriemann
 
 import rosoku
 
-mne.set_log_level("CRITICAL")
 
+# mne.set_log_level("CRITICAL")
 
 # %%
-
+# Define callback functions
+# =========================
 
 def func_load_epochs(keywords, mode, dataset, l_freq, h_freq, order_filter, tmin, tmax):
     subject = keywords[0]
@@ -63,13 +70,15 @@ def convert_epochs_to_ndarray(
         label_keys,
 ):
     X = epochs.get_data()
-    X = pyriemann.estimation.Covariances().transform(X)
+    X = pyriemann.estimation.Covariances(estimator="lwf").transform(X)
     y = rosoku.utils.get_labels_from_epochs(epochs, label_keys)
 
     return X, y
 
 
 # %%
+# Run the Experiment
+# ==================
 
 subject = 56
 
@@ -91,7 +100,7 @@ results = rosoku.conventional(
     samples_fname=save_base / "samples.parquet"
 )
 
-for m in range(results.shape[0]):
-    print(results.loc[m])
-
-results.to_parquet(save_base / "results.parquet")
+# %%
+# Print Results
+# =============
+print(results.to_string())

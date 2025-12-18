@@ -23,6 +23,7 @@ dependencies = [
     "scikit-learn",
     "torch",
     "msgpack",
+    "pyarrow",
 ]
 ###### Optional Dependencies ######
 # moabb

@@ -3,7 +3,13 @@ Example: Within-subject classification with deep learning
 =========================================================
 """
 
+# Authors: Simon Kojima <simon.kojima@inria.fr>
+#
+# License: BSD (3-clause)
+
 # %%
+# Import Packages
+# ===============
 import functools
 
 from pathlib import Path
@@ -18,6 +24,8 @@ import rosoku
 
 
 # %%
+# Define callback functions
+# =========================
 def func_get_model(X, y):
     _, n_chans, n_times = X.shape
     F1 = 4
@@ -88,6 +96,8 @@ def convert_epochs_to_ndarray(
 
 
 # %%
+# Run the Experiment
+# ==================
 
 subject = 56
 resample = 128
@@ -145,7 +155,7 @@ results = rosoku.deeplearning(
     enable_ddp=enable_ddp,
     early_stopping=early_stopping,
     enable_normalization=enable_normalization,
-    name_classifier="eegnet4.2",
+    # name_classifier="eegnet4.2",
     history_fname=(save_base / "history" / f"sub-{subject}.parquet"),
     checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}.pth"),
     samples_fname=(save_base / "samples" / f"sub-{subject}.parquet"),
@@ -155,7 +165,8 @@ results = rosoku.deeplearning(
     seed=seed,
 )
 
-for m in range(results.shape[0]):
-    print(results.loc[m])
+# %%
+# Print Results
+# =============
 
-results.to_parquet(save_base / "results_deeplearning_within-subject.parquet")
+print(results.to_string())

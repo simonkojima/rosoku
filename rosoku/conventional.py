@@ -8,7 +8,6 @@ import mne
 import pyriemann
 import sklearn
 
-import tag_mne as tm
 import pandas as pd
 
 from . import utils
@@ -25,7 +24,7 @@ def load_epochs(files, concat=False):
         epochs = mne.read_epochs(file)
         epochs_list.append(epochs)
     if concat:
-        return tm.concatenate_epochs(epochs_list)
+        return mne.concatenate_epochs(epochs_list)
     else:
         return epochs_list
 

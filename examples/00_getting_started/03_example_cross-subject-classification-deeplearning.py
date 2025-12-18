@@ -3,7 +3,13 @@ Example: Cross-subject classification with deep learning
 ========================================================
 """
 
+# Authors: Simon Kojima <simon.kojima@inria.fr>
+#
+# License: BSD (3-clause)
+
 # %%
+# Import Packages
+# ===============
 import functools
 import numpy as np
 
@@ -19,9 +25,8 @@ import rosoku
 
 
 # %%
-
-
-# %%
+# Define a callback function to load ndarray data
+# ===============================================
 
 def func_load_ndarray(
         keywords,
@@ -38,7 +43,7 @@ def func_load_ndarray(
     y_list = []
 
     for keyword in keywords:
-        subject = int(keyword[1:])
+        subject = keyword
         sessions = dataset.get_data(subjects=[subject])
         raws = sessions[subject]["0"]
 
@@ -80,6 +85,8 @@ def func_load_ndarray(
 
 
 # %%
+# Define a callback function to load PyTorch model
+# ================================================
 
 
 def func_get_model(X, y):
@@ -102,6 +109,8 @@ def func_get_model(X, y):
 
 
 # %%
+# Run the Experiment
+# ==================
 
 lr = 1e-3
 weight_decay = 1e-2
@@ -134,9 +143,9 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 label_keys = {"left_hand": 0, "right_hand": 1}
 
 results = rosoku.deeplearning(
-    keywords_train=[f"A{num}" for num in range(1, 16)],
-    keywords_valid=[f"A{num}" for num in range(16, 21)],
-    keywords_test=["A21", "A56"],
+    keywords_train=[1, 2, 3],
+    keywords_valid=[4],
+    keywords_test=[21, 56],
     func_load_ndarray=functools.partial(
         func_load_ndarray,
         dataset=dataset,
@@ -171,5 +180,8 @@ results = rosoku.deeplearning(
     seed=seed,
 )
 
-for m in range(results.shape[0]):
-    print(results.loc[m])
+# %%
+# Print Results
+# =============
+
+print(results.to_string())

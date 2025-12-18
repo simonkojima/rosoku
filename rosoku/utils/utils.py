@@ -2,7 +2,9 @@ import os
 import random
 import time
 import numpy as np
-import tag_mne as tm
+
+
+# import tag_mne as tm
 
 
 ##
@@ -24,6 +26,12 @@ def normalize(*args, **kwargs):
     )
     # return preprocessing.normalize(X_train, X_valid, X_test, return_params)
     return preprocessing.normalize(*args, **kwargs)
+
+
+def add_values_to_df(df, values):
+    for key, value in values.items():
+        df[key] = [value for _ in range(len(df))]
+    return df
 
 
 def get_ddp_params():
