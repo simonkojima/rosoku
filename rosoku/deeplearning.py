@@ -380,9 +380,9 @@ def deeplearning(
         callback_get_logits=None,
         callback_get_preds=None,
         callback_get_probas=None,
+        callback_get_model=None,
         optimizer_params=None,
         model=None,
-        callback_get_model=None,
         scheduler=None,
         scheduler_params=None,
         device="cpu",
@@ -481,17 +481,54 @@ def deeplearning(
         Converter used when loading Epochs. By default,
         ``utils.convert_epochs_to_ndarray``.
 
+
     callback_get_logits : callable | None, optional
-        Optional hook to obtain logits from a model forward pass during inference.
-        Passed to ``utils.get_predictions``.
+        Optional hook to extract logits from the model during inference.
+        If provided, it is called as::
+
+            callback_get_logits(model, X)
+
+        where ``model`` is a ``torch.nn.Module`` and ``X`` is a batch or array of
+        input samples.
+
+        If ``None``, logits are obtained by a direct forward pass:
+
+        .. code-block:: python
+
+            logits = model(X)
+
+        The returned ``logits`` must be a 2D tensor of shape
+        ``(n_samples, n_classes)``.
 
     callback_get_preds : callable | None, optional
-        Optional hook to obtain predicted labels from logits/probabilities during
-        inference. Passed to ``utils.get_predictions``.
+        Optional hook to compute predicted class labels from logits.
+        If provided, it is called as::
+
+            callback_get_preds(model, X)
+
+        If ``None``, predicted labels are computed from logits as:
+
+        .. code-block:: python
+
+            preds = torch.argmax(logits, dim=1)
+
+        The returned ``preds`` must be a 1D tensor or array of length
+        ``n_samples``.
 
     callback_get_probas : callable | None, optional
-        Optional hook to obtain class probabilities during inference. Passed to
-        ``utils.get_predictions``.
+        Optional hook to compute class probabilities from logits.
+        If provided, it is called as::
+
+            callback_get_probas(model, X)
+
+        If ``None``, class probabilities are computed using softmax:
+
+        .. code-block:: python
+
+            probas = torch.nn.functional.softmax(logits, dim=1)
+
+    The returned ``probas`` must be a 2D tensor or array of shape
+    ``(n_samples, n_classes)``.
 
     optimizer_params : dict | None, optional
         Keyword arguments passed to the optimizer constructor.
@@ -500,9 +537,19 @@ def deeplearning(
         Pre-instantiated model. If ``None``, ``callback_get_model`` must be provided.
 
     callback_get_model : callable | None, optional
-        Factory function returning a model instance, typically when the network
-        depends on the input shape. Expected signature
-        ``callback_get_model(X_train, y_train)``.
+        Factory function that returns a ``torch.nn.Module`` instance.
+        If provided, it is called as::
+
+            callback_get_model(X_train, y_train)
+
+        where ``X_train`` and ``y_train`` are the training data arrays loaded by
+        ``utils.load_data``.
+
+        This callback is useful when the model architecture depends on properties
+        of the training data (e.g., number of channels, number of time samples,
+        or number of classes).
+
+        If ``model`` is provided explicitly, this callback is ignored.
 
     scheduler : type | None, optional
         Learning-rate scheduler class (not an instance). If provided, it is

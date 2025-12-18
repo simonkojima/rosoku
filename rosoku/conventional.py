@@ -70,6 +70,7 @@ def conventional(
         callback_fit=None,
         callback_predict=None,
         callback_predict_proba=None,
+        callback_get_models=None,
         scoring="accuracy",
         scoring_name=None,
         models=[
@@ -165,6 +166,26 @@ def conventional(
         ``callback_predict_proba(model, X)``. If ``None``, uses
         ``model.predict_proba(X)``. Estimators must support probability outputs.
 
+    callback_get_models : callable | None, optional
+        Factory function that returns one or more scikit-learn estimators.
+        This callback is used only when ``models=None``.
+
+        If provided, it is called as::
+
+            callback_get_models(X_train, y_train)
+
+        where ``X_train`` and ``y_train`` are the training arrays returned by
+        ``utils.load_data``.
+
+        The return value **must be** either:
+
+        - a single scikit-learn–compatible estimator, or
+        - a list of scikit-learn–compatible estimators.
+
+        Each estimator must implement at least ``fit`` and ``predict``.
+        If class probabilities are required (default behavior), estimators must also
+        implement ``predict_proba`` unless ``callback_predict_proba`` is provided.
+
     scoring : str | callable | list of (str or callable), optional
         Scoring specification(s) applied to each test group.
         If a string, it is resolved with :func:`sklearn.metrics.get_scorer`
@@ -177,7 +198,7 @@ def conventional(
         strings keep their name, callables become ``"callable"`` (and other types
         become ``"unknown_scoring"``). Must match ``scoring`` length.
 
-    models : estimator | list of estimator, optional
+    models : estimator | list of estimator | None, optional
         One or more estimators implementing at least ``fit`` and ``predict``.
         If probabilities are required (default behavior), estimators should also
         implement ``predict_proba`` (or you must provide ``callback_predict_proba``).
@@ -212,6 +233,8 @@ def conventional(
       sign flipping for losses) because the scorer object itself is not called.
     - Probability outputs are always attempted; ensure your estimator supports
       ``predict_proba`` or provide ``callback_predict_proba``.
+    - ``callback_get_models`` is ignored when ``models`` is explicitly provided.
+      In that case, the estimators passed via ``models`` are used directly.
 
     Examples
     --------
@@ -253,6 +276,9 @@ def conventional(
         callback_proc_mode=callback_proc_mode,
         callback_convert_epochs_to_ndarray=callback_convert_epochs_to_ndarray,
     )
+
+    if models is None:
+        models = callback_get_models(X_train, y_train)
 
     if not isinstance(models, list):
         models = [models]
