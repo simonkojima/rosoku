@@ -26,7 +26,7 @@ import rosoku
 # %%
 # Define callback functions
 # =========================
-def func_get_model(X, y):
+def callback_get_model(X, y):
     _, n_chans, n_times = X.shape
     F1 = 4
     D = 2
@@ -45,7 +45,9 @@ def func_get_model(X, y):
     return model
 
 
-def func_load_epochs(keywords, mode, dataset, l_freq, h_freq, order_filter, tmin, tmax):
+def callback_load_epochs(
+        keywords, mode, dataset, l_freq, h_freq, order_filter, tmin, tmax
+):
     subject = keywords[0]
     keywords = keywords[1:]
 
@@ -54,7 +56,7 @@ def func_load_epochs(keywords, mode, dataset, l_freq, h_freq, order_filter, tmin
 
     epochs_list = []
 
-    for (name_run, raw) in raws.items():
+    for name_run, raw in raws.items():
         if not True in [k in name_run for k in keywords]:
             continue
 
@@ -79,7 +81,7 @@ def func_load_epochs(keywords, mode, dataset, l_freq, h_freq, order_filter, tmin
     return mne.concatenate_epochs(epochs_list)
 
 
-def func_proc_epochs(epochs, mode):
+def callback_proc_epochs(epochs, mode):
     # do nothing in this example
     return epochs
 
@@ -137,10 +139,17 @@ results = rosoku.deeplearning(
     keywords_train=[subject, "R1", "R2"],
     keywords_valid=[subject, "R3"],
     keywords_test=[[subject, "R4", "R5"]],
-    func_load_epochs=functools.partial(func_load_epochs, dataset=dataset, l_freq=8.0, h_freq=30.0, order_filter=4,
-                                       tmin=dataset.interval[0] + 0.5, tmax=dataset.interval[1]),
-    func_proc_epochs=func_proc_epochs,
-    func_convert_epochs_to_ndarray=functools.partial(
+    callback_load_epochs=functools.partial(
+        callback_load_epochs,
+        dataset=dataset,
+        l_freq=8.0,
+        h_freq=30.0,
+        order_filter=4,
+        tmin=dataset.interval[0] + 0.5,
+        tmax=dataset.interval[1],
+    ),
+    callback_proc_epochs=callback_proc_epochs,
+    callback_convert_epochs_to_ndarray=functools.partial(
         convert_epochs_to_ndarray, label_keys=label_keys
     ),
     batch_size=batch_size,
@@ -148,7 +157,7 @@ results = rosoku.deeplearning(
     criterion=criterion,
     optimizer=optimizer,
     optimizer_params=optimizer_params,
-    func_get_model=func_get_model,
+    callback_get_model=callback_get_model,
     scheduler=scheduler,
     scheduler_params=scheduler_params,
     device=device,

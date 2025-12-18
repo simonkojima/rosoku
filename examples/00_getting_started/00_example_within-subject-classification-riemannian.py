@@ -25,7 +25,10 @@ import rosoku
 # Define callback functions
 # =========================
 
-def func_load_epochs(keywords, mode, dataset, l_freq, h_freq, order_filter, tmin, tmax):
+
+def callback_load_epochs(
+        keywords, mode, dataset, l_freq, h_freq, order_filter, tmin, tmax
+):
     subject = keywords[0]
     keywords = keywords[1:]
 
@@ -34,7 +37,7 @@ def func_load_epochs(keywords, mode, dataset, l_freq, h_freq, order_filter, tmin
 
     epochs_list = []
 
-    for (name_run, raw) in raws.items():
+    for name_run, raw in raws.items():
         if not True in [k in name_run for k in keywords]:
             continue
 
@@ -59,12 +62,12 @@ def func_load_epochs(keywords, mode, dataset, l_freq, h_freq, order_filter, tmin
     return mne.concatenate_epochs(epochs_list)
 
 
-def func_proc_epochs(epochs, mode):
+def callback_proc_epochs(epochs, mode):
     # do nothing in this example
     return epochs
 
 
-def convert_epochs_to_ndarray(
+def callback_convert_epochs_to_ndarray(
         epochs,
         mode,
         label_keys,
@@ -90,14 +93,21 @@ save_base = Path("~").expanduser() / "rosoku-log"
 results = rosoku.conventional(
     keywords_train=[subject, "R1", "R2"],
     keywords_test=[[subject, "R3", "R4", "R5"]],
-    func_load_epochs=functools.partial(func_load_epochs, dataset=dataset, l_freq=8.0, h_freq=30.0, order_filter=4,
-                                       tmin=dataset.interval[0] + 0.5, tmax=dataset.interval[1]),
-    func_proc_epochs=func_proc_epochs,
-    func_convert_epochs_to_ndarray=functools.partial(
-        convert_epochs_to_ndarray, label_keys=label_keys
+    callback_load_epochs=functools.partial(
+        callback_load_epochs,
+        dataset=dataset,
+        l_freq=8.0,
+        h_freq=30.0,
+        order_filter=4,
+        tmin=dataset.interval[0] + 0.5,
+        tmax=dataset.interval[1],
+    ),
+    callback_proc_epochs=callback_proc_epochs,
+    callback_convert_epochs_to_ndarray=functools.partial(
+        callback_convert_epochs_to_ndarray, label_keys=label_keys
     ),
     scoring=["accuracy", "f1"],
-    samples_fname=save_base / "samples.parquet"
+    samples_fname=save_base / "samples.parquet",
 )
 
 # %%

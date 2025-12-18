@@ -28,7 +28,8 @@ import rosoku
 # Define a callback function to load ndarray data
 # ===============================================
 
-def func_load_ndarray(
+
+def callback_load_ndarray(
         keywords,
         mode,
         tmin,
@@ -71,9 +72,7 @@ def func_load_ndarray(
             # Apply Domain Adoptation (Euclidean Alignment)
             X = rosoku.tl.euclidean_alignment(epochs.get_data())
 
-            y = rosoku.utils.get_labels_from_epochs(
-                epochs, label_keys=label_keys
-            )
+            y = rosoku.utils.get_labels_from_epochs(epochs, label_keys=label_keys)
 
             X_list.append(X)
             y_list.append(y)
@@ -89,7 +88,7 @@ def func_load_ndarray(
 # ================================================
 
 
-def func_get_model(X, y):
+def callback_get_model(X, y):
     _, n_chans, n_times = X.shape
     F1 = 4
     D = 2
@@ -146,8 +145,8 @@ results = rosoku.deeplearning(
     keywords_train=[1, 2, 3],
     keywords_valid=[4],
     keywords_test=[21, 56],
-    func_load_ndarray=functools.partial(
-        func_load_ndarray,
+    callback_load_ndarray=functools.partial(
+        callback_load_ndarray,
         dataset=dataset,
         tmin=dataset.interval[0] + 0.5,
         tmax=dataset.interval[1],
@@ -161,12 +160,12 @@ results = rosoku.deeplearning(
     criterion=criterion,
     optimizer=optimizer,
     optimizer_params=optimizer_params,
-    func_get_model=func_get_model,
+    callback_get_model=callback_get_model,
     scheduler=scheduler,
     scheduler_params=scheduler_params,
     device=device,
     enable_ddp=enable_ddp,
-    func_proc_epochs=None,
+    callback_proc_epochs=None,
     early_stopping=early_stopping,
     enable_normalization=enable_normalization,
     scoring=["accuracy", "f1"],
@@ -174,7 +173,9 @@ results = rosoku.deeplearning(
     history_fname=(save_base / "history" / f"cross-subject-deeplearning.parquet"),
     checkpoint_fname=(save_base / "checkpoint" / f"cross-subject-deeplearning.pth"),
     samples_fname=(save_base / "samples" / f"cross-subject-deeplearning.parquet"),
-    normalization_fname=(save_base / "normalization" / f"cross-subject-deeplearning.msgpack"),
+    normalization_fname=(
+            save_base / "normalization" / f"cross-subject-deeplearning.msgpack"
+    ),
     saliency_map_fname=(save_base / "saliency" / f"cross-subject-deeplearning.msgpack"),
     label_keys=label_keys,
     seed=seed,

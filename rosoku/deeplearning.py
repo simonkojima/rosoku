@@ -42,19 +42,23 @@ def setup_scheduler(scheduler, scheduler_params, optimizer):
 
 
 def load_data(
-        subjects, func_get_fnames, func_proc_epochs, label_keys, enable_euclidean_alignment
+        subjects,
+        callback_get_fnames,
+        callback_proc_epochs,
+        label_keys,
+        enable_euclidean_alignment,
 ):
     X = []
     y = []
 
     for subject in subjects:
 
-        files = func_get_fnames(subject)
+        files = callback_get_fnames(subject)
 
         epochs = utils.load_epochs(files, True)
 
-        if func_proc_epochs is not None:
-            epochs = func_proc_epochs(epochs)
+        if callback_proc_epochs is not None:
+            epochs = callback_proc_epochs(epochs)
 
         y.append(np.array(utils.get_labels_from_epochs(epochs, label_keys)))
 
@@ -165,19 +169,23 @@ def deeplearning_train(
 
 
 def load_data(
-        subjects, func_get_fnames, func_proc_epochs, label_keys, enable_euclidean_alignment
+        subjects,
+        callback_get_fnames,
+        callback_proc_epochs,
+        label_keys,
+        enable_euclidean_alignment,
 ):
     X = []
     y = []
 
     for subject in subjects:
 
-        files = func_get_fnames(subject)
+        files = callback_get_fnames(subject)
 
         epochs = utils.load_epochs(files, True)
 
-        if func_proc_epochs is not None:
-            epochs = func_proc_epochs(epochs)
+        if callback_proc_epochs is not None:
+            epochs = callback_proc_epochs(epochs)
 
         y.append(np.array(utils.get_labels_from_epochs(epochs, label_keys)))
 
@@ -216,7 +224,7 @@ def main(
 
     optimizer_params = kwargs.get("optimizer_params", None)
     model = kwargs.get("model", None)
-    func_get_model = kwargs.get("func_get_model", None)
+    callback_get_model = kwargs.get("callback_get_model", None)
     scheduler = kwargs.get("scheduler", None)
     scheduler_params = kwargs.get("scheduler_params", None)
     enable_wandb_logging = kwargs.get("enable_wandb_logging", False)
@@ -297,8 +305,8 @@ def main(
 
     # setup model
 
-    if func_get_model is not None:
-        model = func_get_model(X_train, y_train)
+    if callback_get_model is not None:
+        model = callback_get_model(X_train, y_train)
 
     if model is None:
         raise RuntimeError("model is None")
@@ -360,23 +368,23 @@ def deeplearning(
         keywords_train,
         keywords_valid,
         keywords_test,
-        func_load_epochs=None,
-        func_load_ndarray=None,
+        callback_load_epochs=None,
+        callback_load_ndarray=None,
         criterion=torch.nn.CrossEntropyLoss(),
         batch_size=64,
         n_epochs=500,
         optimizer=torch.optim.AdamW,
         *,
-        func_proc_mode="per_split",
-        func_proc_epochs=None,
-        func_proc_ndarray=None,
-        func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
+        callback_proc_mode="per_split",
+        callback_proc_epochs=None,
+        callback_proc_ndarray=None,
+        callback_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
         callback_get_logits=None,
         callback_get_preds=None,
         callback_get_probas=None,
         optimizer_params=None,
         model=None,
-        func_get_model=None,
+        callback_get_model=None,
         scheduler=None,
         scheduler_params=None,
         device="cpu",
@@ -414,7 +422,7 @@ def deeplearning(
     The arguments ``keywords_train``, ``keywords_valid``, and ``keywords_test``
     are arbitrary user-defined objects (typically dicts) that specify how data
     should be loaded. They are passed, together with a ``mode`` string, to the
-    callback functions ``func_load_epochs`` or ``func_load_ndarray``.
+    callback functions ``callback_load_epochs`` or ``callback_load_ndarray``.
 
     - First argument:  ``keyword`` (one element of keywords_*)
     - Second argument: ``mode`` ∈ {"train", "valid", "test"}
@@ -429,7 +437,7 @@ def deeplearning(
 
     .. code-block:: python
 
-        def func_load_epochs(keyword, mode):
+        def callback_load_epochs(keyword, mode):
             subject = keyword["subject"]
             session = keyword["session"]
             fname = f"sub-{subject}_ses-{session}-epo.fif"
@@ -466,12 +474,12 @@ def deeplearning(
         Controls grouping of test data.
         Each inner list represents one test evaluation group.
 
-    func_load_epochs : callable, optional
+    callback_load_epochs : callable, optional
         Callback function for loading MNE Epochs. It must accept:
 
         .. code-block:: python
 
-            def func_load_epochs(keyword, mode):
+            def callback_load_epochs(keyword, mode):
                 ...
 
         where
@@ -481,12 +489,12 @@ def deeplearning(
 
         The function must return an ``mne.Epochs`` instance.
 
-    func_load_ndarray : callable, optional
+    callback_load_ndarray : callable, optional
         Callback function that loads data as NumPy arrays instead of Epochs. It must accept:
 
         .. code-block:: python
 
-            def func_load_ndarray(keyword, mode):
+            def callback_load_ndarray(keyword, mode):
                 ...
 
         and return a tuple ``(X, y)`` where ``X`` and ``y`` are NumPy arrays.
@@ -509,9 +517,9 @@ def deeplearning(
         ``**kwargs`` passed to the optimizer constructor.
 
     model : torch.nn.Module, optional
-        Predefined model instance. If ``None``, ``func_get_model`` must be provided.
+        Predefined model instance. If ``None``, ``callback_get_model`` must be provided.
 
-    func_get_model : callable, optional
+    callback_get_model : callable, optional
         Function receiving ``(X_train, y_train)`` and returning a model instance.
         Useful when model architecture depends on the input shape.
 
@@ -535,18 +543,18 @@ def deeplearning(
         Number of data-loading worker processes per GPU.
         Effective only when ``enable_ddp=True``.
 
-    func_proc_epochs : callable, optional
+    callback_proc_epochs : callable, optional
         Function that receives an ``mne.Epochs`` object and returns a processed one.
         Useful for channel selection, cropping, filtering, etc.
 
-    func_proc_ndarray : callable, optional
+    callback_proc_ndarray : callable, optional
         Preprocessing function for NumPy data.
 
-    func_proc_mode : {"per_split", "all"}
+    callback_proc_mode : {"per_split", "all"}
         Defines whether preprocessing is applied independently to each split
         or jointly across all splits.
 
-    func_convert_epochs_to_ndarray : callable
+    callback_convert_epochs_to_ndarray : callable
         Converter from MNE Epochs to NumPy arrays.
 
     enable_normalization : bool
@@ -637,12 +645,12 @@ def deeplearning(
         keywords_train=keywords_train,
         keywords_valid=keywords_valid,
         keywords_test=keywords_test,
-        func_load_epochs=func_load_epochs,
-        func_load_ndarray=func_load_ndarray,
-        func_proc_epochs=func_proc_epochs,
-        func_proc_ndarray=func_proc_ndarray,
-        func_proc_mode=func_proc_mode,
-        func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
+        callback_load_epochs=callback_load_epochs,
+        callback_load_ndarray=callback_load_ndarray,
+        callback_proc_epochs=callback_proc_epochs,
+        callback_proc_ndarray=callback_proc_ndarray,
+        callback_proc_mode=callback_proc_mode,
+        callback_convert_epochs_to_ndarray=callback_convert_epochs_to_ndarray,
     )
 
     if len(keywords_test) != len(X_test):
@@ -657,10 +665,10 @@ def deeplearning(
     kwargs = {
         "optimizer_params": optimizer_params,
         "model": model,
-        "func_get_model": func_get_model,
+        "callback_get_model": callback_get_model,
         "scheduler": scheduler,
         "scheduler_params": scheduler_params,
-        "func_proc_epochs": func_proc_epochs,
+        "callback_proc_epochs": callback_proc_epochs,
         "enable_wandb_logging": enable_wandb_logging,
         "wandb_params": wandb_params,
         "checkpoint_fname": checkpoint_fname,
@@ -708,7 +716,7 @@ def deeplearning(
         )
 
     if model is None:
-        model = func_get_model(X_train, y_train)
+        model = callback_get_model(X_train, y_train)
 
     # device = "cuda" if enable_ddp else "cpu"
     model.to(device)

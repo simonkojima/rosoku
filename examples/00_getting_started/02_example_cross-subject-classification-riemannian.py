@@ -24,7 +24,7 @@ import rosoku
 # %%
 # Define a callback function to load ndarray data
 # ===============================================
-def func_load_ndarray(
+def callback_load_ndarray(
         keywords,
         mode,
         tmin,
@@ -71,9 +71,7 @@ def func_load_ndarray(
             # Apply Domain Adaptation (Riemannian Alignment)
             X = rosoku.tl.riemannian_alignment(X, scaling=True)
 
-            y = rosoku.utils.get_labels_from_epochs(
-                epochs, label_keys=label_keys
-            )
+            y = rosoku.utils.get_labels_from_epochs(epochs, label_keys=label_keys)
 
             X_list.append(X)
             y_list.append(y)
@@ -94,8 +92,8 @@ dataset = moabb.datasets.Dreyer2023()
 results = rosoku.conventional(
     keywords_train=[1, 2, 3],
     keywords_test=[21, 56],
-    func_load_ndarray=functools.partial(
-        func_load_ndarray,
+    callback_load_ndarray=functools.partial(
+        callback_load_ndarray,
         dataset=dataset,
         tmin=dataset.interval[0] + 0.5,
         tmax=dataset.interval[1],

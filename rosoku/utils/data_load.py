@@ -86,21 +86,21 @@ def get_labels_from_epochs(epochs, label_keys={"left_hand": 0, "right_hand": 1})
     return np.array(y)
 
 
-def apply_func_proc(func_proc, func_proc_mode, train, valid, test):
-    match func_proc_mode:
+def apply_callback_proc(callback_proc, callback_proc_mode, train, valid, test):
+    match callback_proc_mode:
         case "per_split":
-            train = func_proc(train, "train")
+            train = callback_proc(train, "train")
             if valid is not None:
-                valid = func_proc(valid, "valid")
-            test = [func_proc(obj, "test") for obj in test]
+                valid = callback_proc(valid, "valid")
+            test = [callback_proc(obj, "test") for obj in test]
         case "per_function":
             if valid is None:
-                train, test = func_proc(train, test)
+                train, test = callback_proc(train, test)
             else:
-                train, valid, test = func_proc(train, valid, test)
+                train, valid, test = callback_proc(train, valid, test)
 
         case _:
-            raise ValueError(f"func_proc_mode: {func_proc_mode} is unknown")
+            raise ValueError(f"callback_proc_mode: {callback_proc_mode} is unknown")
 
     return train, valid, test
 
@@ -174,12 +174,12 @@ def load_data(
         keywords_train,
         keywords_valid,
         keywords_test,
-        func_load_epochs=None,
-        func_load_ndarray=None,
-        func_proc_epochs=None,
-        func_proc_ndarray=None,
-        func_proc_mode="per_split",
-        func_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
+        callback_load_epochs=None,
+        callback_load_ndarray=None,
+        callback_proc_epochs=None,
+        callback_proc_ndarray=None,
+        callback_proc_mode="per_split",
+        callback_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
 ):
     """
     Load and preprocess datasets for rosoku pipelines using keyword specifications.
@@ -219,41 +219,41 @@ def load_data(
         - ``keywords_test = [["A29", "A3"]]``
           → load both and merge into one test set
 
-    func_load_epochs : callable, optional
+    callback_load_epochs : callable, optional
         Function used to load data as MNE ``Epochs`` objects.
         Must accept ``(keywords, mode)`` where ``keywords`` is a list of
         keyword objects and ``mode`` is one of ``"train"``, ``"valid"``,
         or ``"test"``. Should return an ``mne.Epochs`` instance (or a
         merged Epochs object).
 
-        Required if ``func_load_ndarray`` is ``None``.
+        Required if ``callback_load_ndarray`` is ``None``.
 
-    func_load_ndarray : callable, optional
+    callback_load_ndarray : callable, optional
         Function used to load data directly as NumPy arrays.
         Must accept ``(keywords, mode)`` and return a tuple ``(X, y)``,
         where ``X`` is a NumPy array and ``y`` the corresponding labels.
 
-        Required if ``func_load_epochs`` is ``None``.
+        Required if ``callback_load_epochs`` is ``None``.
 
-    func_proc_epochs : callable, optional
+    callback_proc_epochs : callable, optional
         Preprocessing function applied to Epochs objects *before*
         conversion to NumPy arrays. It is passed through to
-        :func:`apply_func_proc` and can be used for tasks such as
+        :func:`apply_callback_proc` and can be used for tasks such as
         channel selection, cropping, filtering, etc.
 
-    func_proc_ndarray : callable, optional
+    callback_proc_ndarray : callable, optional
         Preprocessing function applied to NumPy arrays *(X, y)* after
         conversion from Epochs or direct loading. Also handled by
-        :func:`apply_func_proc`.
+        :func:`apply_callback_proc`.
 
-    func_proc_mode : {"per_split", "all"}, default="per_split"
+    callback_proc_mode : {"per_split", "all"}, default="per_split"
         Controls how the preprocessing functions are applied:
 
         - ``"per_split"`` : process train/valid/test splits independently
         - ``"all"`` : pass all splits at once to the processing function
-          (exact behavior depends on :func:`apply_func_proc`)
+          (exact behavior depends on :func:`apply_callback_proc`)
 
-    func_convert_epochs_to_ndarray : callable, default=convert_epochs_to_ndarray
+    callback_convert_epochs_to_ndarray : callable, default=convert_epochs_to_ndarray
         Function used to convert Epochs objects to ``(X, y)`` arrays.
         By default, uses :func:`convert_epochs_to_ndarray`, which wraps
         ``epochs.get_data()`` and :func:`get_labels_from_epochs`.
@@ -283,44 +283,46 @@ def load_data(
     Raises
     ------
     ValueError
-        If neither nor both of ``func_load_epochs`` and
-        ``func_load_ndarray`` are provided, or if keyword lists are
+        If neither nor both of ``callback_load_epochs`` and
+        ``callback_load_ndarray`` are provided, or if keyword lists are
         not lists as required.
 
     Notes
     -----
-    - Exactly one of ``func_load_epochs`` and ``func_load_ndarray``
+    - Exactly one of ``callback_load_epochs`` and ``callback_load_ndarray``
       must be provided.
-    - When ``func_load_epochs`` is used, the pipeline is:
+    - When ``callback_load_epochs`` is used, the pipeline is:
 
       .. code-block:: text
 
-          func_load_epochs()
+          callback_load_epochs()
           ↓
-          func_proc_epochs()        (optional)
+          callback_proc_epochs()        (optional)
           ↓
-          func_convert_epochs_to_ndarray()
+          callback_convert_epochs_to_ndarray()
           ↓
-          func_proc_ndarray()       (optional)
+          callback_proc_ndarray()       (optional)
 
-    - When ``func_load_ndarray`` is used, the pipeline is:
+    - When ``callback_load_ndarray`` is used, the pipeline is:
 
       .. code-block:: text
 
-          func_load_ndarray()
+          callback_load_ndarray()
           ↓
-          func_proc_ndarray()       (optional)
+          callback_proc_ndarray()       (optional)
 
     - This function is designed to support flexible dataset definitions
       while keeping the downstream experiment code (training/evaluation)
       agnostic to data-loading details.
 
     """
-    if func_load_epochs is None and func_load_ndarray is None:
-        raise ValueError("Specify func_load_epochs or func_load_ndarray")
+    if callback_load_epochs is None and callback_load_ndarray is None:
+        raise ValueError("Specify callback_load_epochs or callback_load_ndarray")
 
-    if func_load_epochs is not None and func_load_ndarray is not None:
-        raise ValueError("Either func_load_epochs or func_load_ndarray must be None")
+    if callback_load_epochs is not None and callback_load_ndarray is not None:
+        raise ValueError(
+            "Either callback_load_epochs or callback_load_ndarray must be None"
+        )
 
     if keywords_valid is None:
         if isinstance(keywords_train, list) and isinstance(keywords_test, list):
@@ -341,71 +343,71 @@ def load_data(
                 "keywords_train, keywords_valid, and keywords_test must be instance of list"
             )
 
-    if func_load_epochs is not None:
+    if callback_load_epochs is not None:
         # load epochs
-        epochs_train = func_load_epochs(keywords_train, "train")
+        epochs_train = callback_load_epochs(keywords_train, "train")
         if keywords_valid is None:
             epochs_valid = None
         else:
-            epochs_valid = func_load_epochs(keywords_valid, "valid")
+            epochs_valid = callback_load_epochs(keywords_valid, "valid")
 
         epochs_test = []
         for k in keywords_test:
             if isinstance(k, list):
-                e = func_load_epochs(k, "test")
+                e = callback_load_epochs(k, "test")
                 epochs_test.append(e)
             else:
-                e = func_load_epochs([k], "test")
+                e = callback_load_epochs([k], "test")
                 epochs_test.append(e)
 
-        # apply func_proc_epochs
-        if func_proc_epochs is not None:
-            (epochs_train, epochs_valid, epochs_test) = apply_func_proc(
-                func_proc=func_proc_epochs,
-                func_proc_mode=func_proc_mode,
+        # apply callback_proc_epochs
+        if callback_proc_epochs is not None:
+            (epochs_train, epochs_valid, epochs_test) = apply_callback_proc(
+                callback_proc=callback_proc_epochs,
+                callback_proc_mode=callback_proc_mode,
                 train=epochs_train,
                 valid=epochs_valid,
                 test=epochs_test,
             )
 
         # convert epochs to ndarray
-        X_train, y_train = func_convert_epochs_to_ndarray(epochs_train, "train")
+        X_train, y_train = callback_convert_epochs_to_ndarray(epochs_train, "train")
         if epochs_valid is None:
             X_valid, y_valid = None, None
         else:
-            X_valid, y_valid = func_convert_epochs_to_ndarray(epochs_valid, "valid")
+            X_valid, y_valid = callback_convert_epochs_to_ndarray(epochs_valid, "valid")
         X_test, y_test = [], []
         for e in epochs_test:
-            X, y = func_convert_epochs_to_ndarray(e, "test")
+            X, y = callback_convert_epochs_to_ndarray(e, "test")
             X_test.append(X)
             y_test.append(y)
     else:
         # load ndarray
-        X_train, y_train = func_load_ndarray(keywords_train, "train")
+        X_train, y_train = callback_load_ndarray(keywords_train, "train")
 
         if keywords_valid is None:
             X_valid, y_valid = None, None
         else:
-            X_valid, y_valid = func_load_ndarray(keywords_valid, "valid")
+            X_valid, y_valid = callback_load_ndarray(keywords_valid, "valid")
 
         X_test, y_test = [], []
         for k in keywords_test:
             if isinstance(k, list):
-                X, y = func_load_ndarray(k, "test")
+                X, y = callback_load_ndarray(k, "test")
                 X_test.append(X)
                 y_test.append(y)
             else:
-                X, y = func_load_ndarray([k], "test")
+                X, y = callback_load_ndarray([k], "test")
                 X_test.append(X)
                 y_test.append(y)
 
     # proc nd array
 
-    if func_proc_ndarray is not None:
+    if callback_proc_ndarray is not None:
         dict_test = [{"X": X, "y": y} for X, y in zip(X_test, y_test)]
-        (train, valid, test) = apply_func_proc(
-            func_proc=func_proc_ndarray,
-            func_proc_mode=func_proc_mode,
+        (train, valid, test) = apply_callback_proc(
+            callback_proc=callback_proc_ndarray,
+            callback_proc_mode=callback_proc_mode,
             train={"X": X_train, "y": y_train},
             valid={"X": X_valid, "y": y_valid},
             test=dict_test,

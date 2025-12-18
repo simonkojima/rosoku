@@ -13,7 +13,7 @@ import pandas as pd
 from . import utils
 
 
-def func_proc_epochs(epochs, tmin=0.5, tmax=4.5):
+def callback_proc_epochs(epochs, tmin=0.5, tmax=4.5):
     epochs = epochs.pick(picks="eeg").crop(tmin=tmin, tmax=tmax)
     return epochs
 
@@ -61,14 +61,15 @@ def recenter_cov(cov_session, scaling=False):
 def conventional(
         keywords_train,
         keywords_test,
-        func_load_epochs=None,
-        func_load_ndarray=None,
-        func_proc_epochs=None,
-        func_proc_ndarray=None,
-        func_proc_mode="per_split",
-        func_fit=None,
-        func_predict=None,
-        func_predict_proba=None,
+        callback_load_epochs=None,
+        callback_proc_epochs=None,
+        callback_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
+        callback_load_ndarray=None,
+        callback_proc_ndarray=None,
+        callback_proc_mode="per_split",
+        callback_fit=None,
+        callback_predict=None,
+        callback_predict_proba=None,
         scoring="accuracy",
         scoring_name=None,
         models=[
@@ -76,7 +77,6 @@ def conventional(
             pyriemann.classification.MDM(),
         ],
         model_names=None,
-        func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
         samples_fname=None,
         additional_values=None,
 ):
@@ -93,7 +93,7 @@ def conventional(
     ``keywords_train`` and ``keywords_test`` are arbitrary user-defined objects
     (typically dicts) that specify how data should be loaded. They are passed,
     together with a ``mode`` string, to the callback functions
-    ``func_load_epochs`` or ``func_load_ndarray``.
+    ``callback_load_epochs`` or ``callback_load_ndarray``.
 
     - First argument:  ``keyword`` (one element of ``keywords_train``/``keywords_test``)
     - Second argument: ``mode`` ∈ {"train", "test"}
@@ -102,7 +102,7 @@ def conventional(
     -------
     .. code-block:: python
 
-        def func_load_epochs(keyword, mode):
+        def callback_load_epochs(keyword, mode):
             subject = keyword["subject"]
             session = keyword["session"]
             fname = f"sub-{subject}_ses-{session}-epo.fif"
@@ -137,12 +137,12 @@ def conventional(
         Controls grouping of test data.
         Each inner list corresponds to one test evaluation group.
 
-    func_load_epochs : callable, optional
+    callback_load_epochs : callable, optional
         Callback function for loading data as MNE ``Epochs`` objects. It must accept:
 
         .. code-block:: python
 
-            def func_load_epochs(keyword, mode):
+            def callback_load_epochs(keyword, mode):
                 ...
 
         where
@@ -152,24 +152,24 @@ def conventional(
 
         and it must return an ``mne.Epochs`` instance.
 
-    func_load_ndarray : callable, optional
+    callback_load_ndarray : callable, optional
         Callback function for loading data as NumPy arrays. It must accept:
 
         .. code-block:: python
 
-            def func_load_ndarray(keyword, mode):
+            def callback_load_ndarray(keyword, mode):
                 ...
 
         and return a tuple ``(X, y)`` where ``X`` and ``y`` are NumPy arrays.
 
-    func_proc_epochs : callable, optional
+    callback_proc_epochs : callable, optional
         Function that receives an ``mne.Epochs`` object and returns a processed one
         (e.g., channel selection, cropping, filtering).
 
-    func_proc_ndarray : callable, optional
+    callback_proc_ndarray : callable, optional
         Preprocessing function for NumPy data.
 
-    func_proc_mode : {"per_split", "all"}
+    callback_proc_mode : {"per_split", "all"}
         Defines whether preprocessing is applied independently to each split
         or jointly across all splits.
 
@@ -182,7 +182,7 @@ def conventional(
         Names associated with each classifier (used in the output DataFrame).
         Must have the same length as ``classifiers``.
 
-    func_convert_epochs_to_ndarray : callable
+    callback_convert_epochs_to_ndarray : callable
         Converter from MNE Epochs to NumPy arrays, used internally by
         :func:`utils.load_data`.
 
@@ -206,12 +206,12 @@ def conventional(
         keywords_train=keywords_train,
         keywords_valid=None,
         keywords_test=keywords_test,
-        func_load_epochs=func_load_epochs,
-        func_load_ndarray=func_load_ndarray,
-        func_proc_epochs=func_proc_epochs,
-        func_proc_ndarray=func_proc_ndarray,
-        func_proc_mode=func_proc_mode,
-        func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
+        callback_load_epochs=callback_load_epochs,
+        callback_load_ndarray=callback_load_ndarray,
+        callback_proc_epochs=callback_proc_epochs,
+        callback_proc_ndarray=callback_proc_ndarray,
+        callback_proc_mode=callback_proc_mode,
+        callback_convert_epochs_to_ndarray=callback_convert_epochs_to_ndarray,
     )
 
     if not isinstance(models, list):
@@ -239,6 +239,7 @@ def conventional(
     for idx, scoring_ in enumerate(scoring):
         if isinstance(scoring_, str):
             from sklearn.metrics import get_scorer
+
             scoring_ = get_scorer(scoring_)._score_func
         elif isinstance(scoring_, callable):
             # do nothing
@@ -252,10 +253,10 @@ def conventional(
 
     # train classifiers
     for model in models:
-        if func_fit is None:
+        if callback_fit is None:
             model.fit(X_train, y_train)
         else:
-            model = func_fit(model, X_train, y_train)
+            model = callback_fit(model, X_train, y_train)
 
     # classify test data and evaluate results
 
@@ -273,15 +274,15 @@ def conventional(
 
             df_results = pd.DataFrame()
 
-            if func_predict is None:
+            if callback_predict is None:
                 preds = model.predict(X)
             else:
-                preds = func_predict(model, X)
+                preds = callback_predict(model, X)
 
-            if func_predict_proba is None:
+            if callback_predict_proba is None:
                 probas = model.predict_proba(X)
             else:
-                probas = func_predict_proba(model, X)
+                probas = callback_predict_proba(model, X)
 
             # accuracy = sklearn.metrics.accuracy_score(y, preds)
             scores = []
