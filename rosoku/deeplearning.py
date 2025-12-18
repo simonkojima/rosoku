@@ -1,11 +1,9 @@
-import os
 import time
 import random
 import json
 import msgpack
 
 import numpy as np
-import sklearn
 
 import torch
 
@@ -410,205 +408,229 @@ def deeplearning(
         additional_values=None,
 ):
     """
-    General-purpose deep learning pipeline for EEG/BCI experiments.
+    Run a general-purpose deep-learning pipeline for EEG/BCI experiments.
 
-    This function provides a flexible interface for loading data, preprocessing,
-    training deep learning models, evaluating performance, and exporting results.
-    The behavior is fully customizable through callback functions.
+    This function provides an end-to-end workflow to train and evaluate a PyTorch
+    model on EEG/BCI datasets. It supports loading data as MNE Epochs or NumPy
+    arrays via user callbacks, optional preprocessing and normalization, training
+    with a configurable optimizer (and optional LR scheduler), and evaluation on
+    grouped test sets. Several hooks are provided to customize model creation and
+    prediction extraction (logits/predictions/probabilities) without changing the
+    core pipeline.
 
-    ---------------------------------------------------------------------------
-    Data loading via “keywords” and “mode”
-    ---------------------------------------------------------------------------
-    The arguments ``keywords_train``, ``keywords_valid``, and ``keywords_test``
-    are arbitrary user-defined objects (typically dicts) that specify how data
-    should be loaded. They are passed, together with a ``mode`` string, to the
-    callback functions ``callback_load_epochs`` or ``callback_load_ndarray``.
-
-    - First argument:  ``keyword`` (one element of keywords_*)
-    - Second argument: ``mode`` ∈ {"train", "valid", "test"}
-
-    This allows you to implement different behavior depending on the split,
-    e.g. data augmentation only for training data.
-
-    Example
-    -------
-    >>> keywords_train = [{"subject": 1, "session": 1},
-    ...                   {"subject": 2, "session": 1}]
-
-    .. code-block:: python
-
-        def callback_load_epochs(keyword, mode):
-            subject = keyword["subject"]
-            session = keyword["session"]
-            fname = f"sub-{subject}_ses-{session}-epo.fif"
-            epochs = mne.read_epochs(fname)
-
-            if mode == "train":
-                # optional: apply stronger augmentation only on training data
-                epochs = epochs.crop(tmin=0.0, tmax=1.0)
-
-            return epochs
-
-    ---------------------------------------------------------------------------
-    Grouping test data
-    ---------------------------------------------------------------------------
-    ``keywords_test`` controls how test data are grouped for classification.
-
-    - ``[[a], [b]]`` → evaluate a and b **separately**
-    - ``[[a, b]]`` → **merge** the data associated with a and b and evaluate them together
-
-    This allows flexible control over whether each test set is evaluated
-    individually or jointly.
-
-    ---------------------------------------------------------------------------
+    Test data can be evaluated in user-defined groups: each element of
+    ``keywords_test`` represents one evaluation group, and can contain one or
+    multiple keyword items (e.g., to merge multiple sessions into a single test
+    set before scoring).
 
     Parameters
     ----------
     keywords_train : list
-        List of keyword objects used to load training data.
+        Keyword objects describing how to load the training data. The content is
+        user-defined and interpreted by ``callback_load_epochs`` or
+        ``callback_load_ndarray``.
 
     keywords_valid : list
-        List of keyword objects used to load validation data.
+        Keyword objects describing how to load the validation data.
 
     keywords_test : list of list
-        Controls grouping of test data.
-        Each inner list represents one test evaluation group.
+        Keyword objects describing how to load the test data, grouped for
+        evaluation. Each inner list defines one evaluation group.
 
-    callback_load_epochs : callable, optional
-        Callback function for loading MNE Epochs. It must accept:
+    callback_load_epochs : callable | None, optional
+        Loader returning an :class:`mne.Epochs` instance. Must have signature
+        ``callback_load_epochs(keyword, mode)`` where ``mode`` is one of
+        ``{"train", "valid", "test"}``.
 
-        .. code-block:: python
+    callback_load_ndarray : callable | None, optional
+        Loader returning a tuple ``(X, y)``. Must have signature
+        ``callback_load_ndarray(keyword, mode)`` where ``mode`` is one of
+        ``{"train", "valid", "test"}``.
 
-            def callback_load_epochs(keyword, mode):
-                ...
+    criterion : torch.nn.Module, optional
+        Loss function instance used for training (default:
+        :class:`torch.nn.CrossEntropyLoss`).
 
-        where
+    batch_size : int, optional
+        Mini-batch size used for training and inference.
 
-        - ``keyword`` is one element from ``keywords_train/valid/test``
-        - ``mode`` is one of ``"train"``, ``"valid"``, ``"test"``
-
-        The function must return an ``mne.Epochs`` instance.
-
-    callback_load_ndarray : callable, optional
-        Callback function that loads data as NumPy arrays instead of Epochs. It must accept:
-
-        .. code-block:: python
-
-            def callback_load_ndarray(keyword, mode):
-                ...
-
-        and return a tuple ``(X, y)`` where ``X`` and ``y`` are NumPy arrays.
-
-    criterion : torch.nn.Module
-        Loss function instance (default: ``CrossEntropyLoss``).
-
-    batch_size : int
-        Batch size used for training.
-
-    n_epochs : int
+    n_epochs : int, optional
         Number of training epochs.
 
-    optimizer : type
-        Reference to an optimizer class (not an instance), e.g.:
+    optimizer : type, optional
+        Optimizer class (not an instance), e.g. :class:`torch.optim.AdamW`.
 
-        >>> optimizer = torch.optim.AdamW
+    callback_proc_mode : {"per_split", "all"}, optional
+        Strategy for preprocessing across splits, as interpreted by
+        ``utils.load_data``.
 
-    optimizer_params : dict, optional
-        ``**kwargs`` passed to the optimizer constructor.
+        Controls how the preprocessing functions are applied:
 
-    model : torch.nn.Module, optional
-        Predefined model instance. If ``None``, ``callback_get_model`` must be provided.
+        - ``"per_split"`` : process train/valid/test splits independently
+        - ``"all"`` : pass all splits at once to the processing function
+          (exact behavior depends on :func:`apply_callback_proc`)
 
-    callback_get_model : callable, optional
-        Function receiving ``(X_train, y_train)`` and returning a model instance.
-        Useful when model architecture depends on the input shape.
+    callback_proc_epochs : callable | None, optional
+        Optional preprocessing applied to loaded Epochs (e.g., picking channels,
+        cropping, filtering), as used by ``utils.load_data``.
 
-    scheduler : type, optional
-        Reference to a learning-rate scheduler class.
+    callback_proc_ndarray : callable | None, optional
+        Optional preprocessing applied to array data, as used by ``utils.load_data``.
 
-    scheduler_params : dict, optional
-        ``**kwargs`` passed to the scheduler constructor.
+    callback_convert_epochs_to_ndarray : callable, optional
+        Converter used when loading Epochs. By default,
+        ``utils.convert_epochs_to_ndarray``.
 
-    device : {"cpu", "cuda"}
-        Device used for training and inference.
+    callback_get_logits : callable | None, optional
+        Optional hook to obtain logits from a model forward pass during inference.
+        Passed to ``utils.get_predictions``.
 
-    enable_ddp : bool
-        Enable Distributed Data Parallel (DDP).
-        ``device`` must be ``"cuda"`` when True.
+    callback_get_preds : callable | None, optional
+        Optional hook to obtain predicted labels from logits/probabilities during
+        inference. Passed to ``utils.get_predictions``.
 
-    enable_dp : bool
-        Enable DataParallel. Cannot be True at the same time as DDP.
+    callback_get_probas : callable | None, optional
+        Optional hook to obtain class probabilities during inference. Passed to
+        ``utils.get_predictions``.
 
-    num_workers : int
-        Number of data-loading worker processes per GPU.
-        Effective only when ``enable_ddp=True``.
+    optimizer_params : dict | None, optional
+        Keyword arguments passed to the optimizer constructor.
 
-    callback_proc_epochs : callable, optional
-        Function that receives an ``mne.Epochs`` object and returns a processed one.
-        Useful for channel selection, cropping, filtering, etc.
+    model : torch.nn.Module | None, optional
+        Pre-instantiated model. If ``None``, ``callback_get_model`` must be provided.
 
-    callback_proc_ndarray : callable, optional
-        Preprocessing function for NumPy data.
+    callback_get_model : callable | None, optional
+        Factory function returning a model instance, typically when the network
+        depends on the input shape. Expected signature
+        ``callback_get_model(X_train, y_train)``.
 
-    callback_proc_mode : {"per_split", "all"}
-        Defines whether preprocessing is applied independently to each split
-        or jointly across all splits.
+    scheduler : type | None, optional
+        Learning-rate scheduler class (not an instance). If provided, it is
+        configured inside the training routine.
 
-    callback_convert_epochs_to_ndarray : callable
-        Converter from MNE Epochs to NumPy arrays.
+    scheduler_params : dict | None, optional
+        Keyword arguments passed to the scheduler constructor.
 
-    enable_normalization : bool
-        Whether to apply z-score normalization to X_train/X_valid/X_test.
+    device : {"cpu", "cuda"}, optional
+        Device used for training and inference when DDP/DP is disabled.
 
-    label_keys : dict, optional
-        Mapping from label strings to integer class IDs.
+    enable_ddp : bool, optional
+        If True, enable DistributedDataParallel training. Requires ``device="cuda"``.
+        DDP process parameters are obtained via ``utils.get_ddp_params``.
 
-    enable_wandb_logging : bool
-        Enable logging to Weights & Biases.
+    enable_dp : bool, optional
+        If True, enable DataParallel training. Cannot be True at the same time as
+        ``enable_ddp``. Requires ``device="cuda"``.
 
-    wandb_params : dict, optional
-        Arguments passed to ``wandb.init()``.
+    num_workers : int, optional
+        Number of DataLoader workers per process/GPU. Effective only when
+        ``enable_ddp=True``.
 
-    checkpoint_fname : path-like, optional
-        File path for saving/loading PyTorch checkpoints.
-        File extension should be ".pth"
+    scoring : str | callable | list of (str or callable), optional
+        Scoring specification(s) computed on each test group.
+        If a string, it is resolved with :func:`sklearn.metrics.get_scorer` and the
+        underlying ``_score_func`` is used.
+        If a callable, it must have signature ``scoring(y_true, y_pred)`` and return
+        a scalar.
 
-    history_fname : path-like, optional
-        File path for saving training history (pkl or html).
-        File extension should be ".parquet"
+    scoring_name : str | list of str | None, optional
+        Column name(s) for the returned scores. If ``None``, names are inferred:
+        strings keep their name, callables become ``"callable"`` (and other types
+        become ``"unknown_scoring"``). Must match ``scoring`` length.
 
-    samples_fname : path-like, optional
-        File path for saving sample-level predictions (Parquet).
-        File extension should be ".parquet"
+    enable_wandb_logging : bool, optional
+        If True, log metrics and predictions to Weights & Biases. In DDP, logging
+        is performed only on rank 0.
 
-    normalization_fname : path-like, optional
-        File path for saving normalization parameters (mean/std).
-        File extension should be ".msgpack"
+    wandb_params : dict | None, optional
+        Keyword arguments passed to ``wandb.init``.
 
-    saliency_map_fname : path-like or None
-        If provided, saliency maps are computed and saved via msgpack.
-        File extension should be ".msgpack"
+    checkpoint_fname : path-like | None, optional
+        If provided, loads a checkpoint before test-time inference and restores
+        ``model_state_dict``. Typically ends with ``.pth``.
 
-    early_stopping : int or callable, optional
-        Patience or early stopping controller.
+    history_fname : path-like | None, optional
+        File path for saving training history, as handled by the training routine
+        (e.g., ``.parquet``).
 
-    name_classifier : str, optional
-        Name of the classifier (for logging/output).
+    samples_fname : path-like | None, optional
+        If provided, writes sample-level outputs to this path in Parquet format.
+        The file includes true labels, predicted labels, per-class probabilities,
+        per-class logits, and the model name (plus ``additional_values`` if given).
 
-    seed : int, optional
-        Random seed for NumPy, Python, and PyTorch CPU/GPU backends.
+    normalization_fname : path-like | None, optional
+        If provided and ``enable_normalization=True``, saves normalization
+        parameters (mean/std) via msgpack (typically ``.msgpack``).
 
-    additional_values : dict, optional
-        Extra key–value pairs appended to the output DataFrame.
+    saliency_map_fname : path-like | None, optional
+        If provided, computes saliency maps for each test group and class and saves
+        them via msgpack.
+
+    early_stopping : int | callable | None, optional
+        Early stopping controller or patience parameter, as interpreted by the
+        training routine.
+
+    model_name : str | None, optional
+        Name recorded in the outputs. If ``None``, defaults to
+        ``model.__class__.__name__``.
+
+    enable_normalization : bool, optional
+        If True, apply z-score normalization to train/valid/test arrays using
+        ``preprocessing.normalize``. When enabled, normalization parameters can
+        be saved with ``normalization_fname``.
+
+    label_keys : dict | None, optional
+        Mapping from class label strings to integer IDs. Used for saliency map
+        computation. If ``None``, it is inferred from unique values in ``y_test``.
+
+    seed : int | None, optional
+        Random seed for NumPy/Python/PyTorch. When provided, deterministic CuDNN
+        settings are enabled.
+
+    desc : str | None, optional
+        Optional description forwarded to the training routine (e.g., for logging).
+
+    additional_values : dict | None, optional
+        Extra metadata appended as columns to the output DataFrame (and also to the
+        sample-level table if ``samples_fname`` is provided).
 
     Returns
     -------
     df : pandas.DataFrame
-        A DataFrame containing classification metrics (accuracy, F1, etc.)
-        and metadata such as training/validation/test keywords and classifier name.
-    """
-    import torch
+        Summary results with one row per test group. Includes JSON-serialized
+        ``keywords_train`` / ``keywords_valid`` / ``keywords_test`` strings, one
+        column per requested scoring metric, and a ``"model"`` column.
 
+    Notes
+    -----
+    - ``keywords_test`` grouping controls evaluation granularity: each inner list is
+      treated as one test set after loading/merging by ``utils.load_data``.
+    - If a scoring string is provided, this function uses
+      ``sklearn.metrics.get_scorer(scoring)._score_func`` rather than calling the
+      scorer object; ensure the callable matches your intended behavior.
+    - In DDP mode, logging and W&B table creation are performed only on rank 0.
+    - Saliency map computation runs over each test group and each class index.
+
+    Examples
+    --------
+    Provide a model factory that depends on the input shape::
+
+        def get_model(X_train, y_train):
+            n_ch = X_train.shape[1]
+            n_t = X_train.shape[2]
+            return MyNet(n_ch=n_ch, n_times=n_t, n_classes=len(np.unique(y_train)))
+
+        df = deeplearning(
+            keywords_train=[{"sub": 1}],
+            keywords_valid=[{"sub": 1, "split": "valid"}],
+            keywords_test=[[{"sub": 1, "split": "test"}]],
+            callback_load_ndarray=load_xy,
+            callback_get_model=get_model,
+            device="cuda",
+            n_epochs=200,
+            scoring=["accuracy", "balanced_accuracy"],
+        )
+    """
     if enable_ddp:
         params = utils.get_ddp_params()
 

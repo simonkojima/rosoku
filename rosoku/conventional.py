@@ -81,123 +81,163 @@ def conventional(
         additional_values=None,
 ):
     """
-    General-purpose pipeline for conventional (non-deep-learning) classifiers,
-    especially Riemannian-based methods.
+    Run a conventional (non-deep-learning) classification pipeline.
 
-    This function provides a flexible interface for loading data, preprocessing,
-    fitting multiple classifiers, evaluating performance, and exporting results.
+    This utility orchestrates end-to-end evaluation for classical machine-learning
+    models with a scikit-learn-like interface (i.e., estimators implementing
+    ``fit``/``predict`` and optionally ``predict_proba``) by:
 
-    ---------------------------------------------------------------------------
-    Data loading via “keywords” and “mode”
-    ---------------------------------------------------------------------------
-    ``keywords_train`` and ``keywords_test`` are arbitrary user-defined objects
-    (typically dicts) that specify how data should be loaded. They are passed,
-    together with a ``mode`` string, to the callback functions
-    ``callback_load_epochs`` or ``callback_load_ndarray``.
+    1) loading training and test data via user callbacks (as MNE Epochs or NumPy),
+    2) optionally preprocessing Epochs/arrays,
+    3) fitting one or more estimators,
+    4) predicting labels (and, if available, class probabilities),
+    5) computing one or more scoring functions on each test group, and
+    6) returning a tidy results table (optionally exporting sample-level outputs).
 
-    - First argument:  ``keyword`` (one element of ``keywords_train``/``keywords_test``)
-    - Second argument: ``mode`` ∈ {"train", "test"}
+    While the default behavior follows a standard scikit-learn workflow, the
+    ``callback_fit``, ``callback_predict``, and ``callback_predict_proba`` hooks can be
+    used to override the fitting/prediction steps, enabling more flexible behaviors
+    (e.g., custom wrappers, non-standard estimators, additional post-processing, or
+    alternative probability generation).
 
-    Example
-    -------
-    .. code-block:: python
-
-        def callback_load_epochs(keyword, mode):
-            subject = keyword["subject"]
-            session = keyword["session"]
-            fname = f"sub-{subject}_ses-{session}-epo.fif"
-            epochs = mne.read_epochs(fname)
-
-            if mode == "train":
-                # optional: apply additional preprocessing for training data
-                epochs = epochs.crop(tmin=0.0, tmax=1.0)
-
-            return epochs
-
-    ---------------------------------------------------------------------------
-    Grouping test data
-    ---------------------------------------------------------------------------
-    ``keywords_test`` controls how test data are grouped for evaluation.
-
-    - ``[[a], [b]]``  → evaluate a and b **separately**
-    - ``[[a, b]]``    → **merge** the data associated with a and b
-                        and evaluate them together
-
-    This allows flexible control over whether each test set is evaluated
-    individually or jointly.
-
-    ---------------------------------------------------------------------------
+    Test data can be evaluated in user-defined groups: each element of
+    ``keywords_test`` represents one evaluation group, and can contain one or
+    multiple keyword items (e.g., to merge multiple sessions into a single test
+    set before scoring).
 
     Parameters
     ----------
     keywords_train : list
-        List of keyword objects used to load training data.
+        Keyword objects describing how to load the training data. The exact
+        content is user-defined and interpreted by ``callback_load_epochs`` or
+        ``callback_load_ndarray``.
 
     keywords_test : list of list
-        Controls grouping of test data.
-        Each inner list corresponds to one test evaluation group.
+        Keyword objects describing how to load the test data, grouped for
+        evaluation. Each inner list defines one evaluation group.
+        For example, ``[[a], [b]]`` evaluates ``a`` and ``b`` separately, while
+        ``[[a, b]]`` merges ``a`` and ``b`` into a single test set.
 
-    callback_load_epochs : callable, optional
-        Callback function for loading data as MNE ``Epochs`` objects. It must accept:
+    callback_load_epochs : callable | None, optional
+        Data loader returning an :class:`mne.Epochs` object for a given keyword.
+        Must have signature ``callback_load_epochs(keyword, mode)``, where
+        ``mode`` is ``"train"`` or ``"test"``. If provided, Epochs will be
+        converted to arrays via ``callback_convert_epochs_to_ndarray``.
 
-        .. code-block:: python
+    callback_proc_epochs : callable | None, optional
+        Optional preprocessing applied to loaded Epochs (e.g., picking channels,
+        cropping, filtering). Signature is expected to be
+        ``callback_proc_epochs(epochs, mode)`` or ``callback_proc_epochs(epochs)``
+        depending on your implementation used in ``utils.load_data``.
 
-            def callback_load_epochs(keyword, mode):
-                ...
+    callback_convert_epochs_to_ndarray : callable, optional
+        Converter used when loading Epochs. By default,
+        ``utils.convert_epochs_to_ndarray`` is used.
 
-        where
+    callback_load_ndarray : callable | None, optional
+        Data loader returning a tuple ``(X, y)`` for a given keyword. Must have
+        signature ``callback_load_ndarray(keyword, mode)`` where ``mode`` is
+        ``"train"`` or ``"test"``. ``X`` and ``y`` must be array-like.
 
-        - ``keyword`` is one element from ``keywords_train`` or ``keywords_test``
-        - ``mode`` is either ``"train"`` or ``"test"``
+    callback_proc_ndarray : callable | None, optional
+        Optional preprocessing applied to NumPy data (e.g., standardization,
+        feature extraction), as used by ``utils.load_data``.
 
-        and it must return an ``mne.Epochs`` instance.
+    callback_proc_mode : {"per_split", "all"}, optional
+        Strategy for preprocessing across splits, as interpreted by
+        ``utils.load_data``. Typical meanings are:
+        - ``"per_split"``: process train/test independently.
+        - ``"all"``: process jointly (e.g., fit transform on all data).
 
-    callback_load_ndarray : callable, optional
-        Callback function for loading data as NumPy arrays. It must accept:
+    callback_fit : callable | None, optional
+        Optional custom fitting hook. If provided, called as
+        ``callback_fit(model, X_train, y_train)``.
+        If ``None``, this function calls ``model.fit(X_train, y_train)``.
+        Note: if your callback returns a new fitted estimator, ensure it is
+        mutated in-place or manage estimator replacement consistently.
 
-        .. code-block:: python
+    callback_predict : callable | None, optional
+        Optional custom prediction hook. If provided, called as
+        ``callback_predict(model, X)``. If ``None``, uses ``model.predict(X)``.
 
-            def callback_load_ndarray(keyword, mode):
-                ...
+    callback_predict_proba : callable | None, optional
+        Optional custom probability prediction hook. If provided, called as
+        ``callback_predict_proba(model, X)``. If ``None``, uses
+        ``model.predict_proba(X)``. Estimators must support probability outputs.
 
-        and return a tuple ``(X, y)`` where ``X`` and ``y`` are NumPy arrays.
+    scoring : str | callable | list of (str or callable), optional
+        Scoring specification(s) applied to each test group.
+        If a string, it is resolved with :func:`sklearn.metrics.get_scorer`
+        and the underlying ``_score_func`` is used.
+        If a callable, it must have signature ``scoring(y_true, y_pred)`` and
+        return a scalar.
 
-    callback_proc_epochs : callable, optional
-        Function that receives an ``mne.Epochs`` object and returns a processed one
-        (e.g., channel selection, cropping, filtering).
+    scoring_name : str | list of str | None, optional
+        Column name(s) for the returned scores. If ``None``, names are inferred:
+        strings keep their name, callables become ``"callable"`` (and other types
+        become ``"unknown_scoring"``). Must match ``scoring`` length.
 
-    callback_proc_ndarray : callable, optional
-        Preprocessing function for NumPy data.
+    models : estimator | list of estimator, optional
+        One or more estimators implementing at least ``fit`` and ``predict``.
+        If probabilities are required (default behavior), estimators should also
+        implement ``predict_proba`` (or you must provide ``callback_predict_proba``).
 
-    callback_proc_mode : {"per_split", "all"}
-        Defines whether preprocessing is applied independently to each split
-        or jointly across all splits.
+    model_names : list of str | None, optional
+        Display names for ``models`` used in outputs. If ``None``, uses
+        ``model.__class__.__name__`` for each estimator.
 
-    classifiers : list of estimator
-        List of classifier instances implementing ``fit`` and ``predict``
-        (optionally ``predict_proba``). By default, Riemannian classifiers
-        from pyRiemann are used.
+    samples_fname : path-like | None, optional
+        If provided, writes sample-level outputs to this path in Parquet format.
+        The file includes true labels, predicted labels, per-class probabilities,
+        and the model name (plus ``additional_values`` if given).
 
-    classifier_names : list of str
-        Names associated with each classifier (used in the output DataFrame).
-        Must have the same length as ``classifiers``.
-
-    callback_convert_epochs_to_ndarray : callable
-        Converter from MNE Epochs to NumPy arrays, used internally by
-        :func:`utils.load_data`.
-
-    samples_fname : path-like, optional
-        File path for saving sample-level predictions (Parquet format).
-
-    additional_values : dict, optional
-        Extra key–value pairs appended as columns to the output DataFrame.
+    additional_values : dict | None, optional
+        Extra metadata appended as columns to the results DataFrame (and also to
+        the sample-level table if ``samples_fname`` is provided).
 
     Returns
     -------
     df : pandas.DataFrame
-        A DataFrame containing classification results (accuracy per classifier
-        and test group), along with metadata such as train/test keywords,
-        classifier name, and optional description.
+        Summary results with one row per (test group × model). Includes JSON-serialized
+        ``keywords_train`` / ``keywords_test`` strings, the classifier name, and one
+        column per requested scoring metric.
+
+    Notes
+    -----
+    - ``keywords_test`` grouping controls evaluation granularity: each inner list is
+      treated as one test set after loading/merging by ``utils.load_data``.
+    - If you pass a scoring string, this function uses
+      ``sklearn.metrics.get_scorer(scoring)._score_func``. This typically matches
+      the metric function but may ignore scorer-specific configuration (e.g.,
+      sign flipping for losses) because the scorer object itself is not called.
+    - Probability outputs are always attempted; ensure your estimator supports
+      ``predict_proba`` or provide ``callback_predict_proba``.
+
+    Examples
+    --------
+    Minimal usage with ndarray loaders::
+
+        def load_xy(keyword, mode):
+            X = np.load(keyword["X"])
+            y = np.load(keyword["y"])
+            return X, y
+
+        df = conventional(
+            keywords_train=[{"X": "Xtr.npy", "y": "ytr.npy"}],
+            keywords_test=[[{"X": "Xte.npy", "y": "yte.npy"}]],
+            callback_load_ndarray=load_xy,
+            models=[pyriemann.classification.MDM()],
+            scoring=["accuracy"],
+        )
+
+    Group two test keywords into a single evaluation group::
+
+        df = conventional(
+            keywords_train=[{"sub": 1, "ses": 1}],
+            keywords_test=[[{"sub": 1, "ses": 2}, {"sub": 1, "ses": 3}]],
+            callback_load_epochs=load_epochs,
+            callback_proc_epochs=proc_epochs,
+        )
     """
 
     # load data
