@@ -169,7 +169,6 @@ results = rosoku.deeplearning(
     early_stopping=early_stopping,
     enable_normalization=enable_normalization,
     scoring=["accuracy", "f1"],
-    name_classifier="eegnet4.2",
     history_fname=(save_base / "history" / f"cross-subject-deeplearning.parquet"),
     checkpoint_fname=(save_base / "checkpoint" / f"cross-subject-deeplearning.pth"),
     samples_fname=(save_base / "samples" / f"cross-subject-deeplearning.parquet"),
