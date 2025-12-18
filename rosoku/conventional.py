@@ -66,16 +66,16 @@ def conventional(
         func_proc_epochs=None,
         func_proc_ndarray=None,
         func_proc_mode="per_split",
-        func_fit_clf=None,
-        func_predict_clf=None,
-        func_predict_proba_clf=None,
+        func_fit=None,
+        func_predict=None,
+        func_predict_proba=None,
         scoring="accuracy",
         scoring_name=None,
-        classifiers=[
+        models=[
             pyriemann.classification.TSClassifier(),
             pyriemann.classification.MDM(),
         ],
-        classifier_names=["tslr", "mdm"],
+        model_names=None,
         func_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
         samples_fname=None,
         additional_values=None,
@@ -214,6 +214,9 @@ def conventional(
         func_convert_epochs_to_ndarray=func_convert_epochs_to_ndarray,
     )
 
+    if not isinstance(models, list):
+        models = [models]
+
     if not isinstance(scoring, list):
         scoring = [scoring]
 
@@ -244,12 +247,15 @@ def conventional(
             raise ValueError(f"Invalid scoring: {scoring_}")
         scoring[idx] = scoring_
 
+    if model_names is None:
+        model_names = [model.__class__.__name__ for model in models]
+
     # train classifiers
-    for clf in classifiers:
-        if func_fit_clf is None:
-            clf.fit(X_train, y_train)
+    for model in models:
+        if func_fit is None:
+            model.fit(X_train, y_train)
         else:
-            clf = func_fit_clf(clf, X_train, y_train)
+            model = func_fit(model, X_train, y_train)
 
     # classify test data and evaluate results
 
@@ -263,19 +269,19 @@ def conventional(
     df_list = []
     samples_list = []
     for X, y, keywords in zip(X_test, y_test, keywords_test):
-        for clf, name in zip(classifiers, classifier_names):
+        for model, name in zip(models, model_names):
 
             df_results = pd.DataFrame()
 
-            if func_predict_clf is None:
-                preds = clf.predict(X)
+            if func_predict is None:
+                preds = model.predict(X)
             else:
-                preds = func_predict_clf(clf, X)
+                preds = func_predict(model, X)
 
-            if func_predict_proba_clf is None:
-                probas = clf.predict_proba(X)
+            if func_predict_proba is None:
+                probas = model.predict_proba(X)
             else:
-                probas = func_predict_proba_clf(clf, X)
+                probas = func_predict_proba(model, X)
 
             # accuracy = sklearn.metrics.accuracy_score(y, preds)
             scores = []
@@ -294,7 +300,7 @@ def conventional(
             samples["preds"] = preds
             for idx in range(probas.shape[1]):
                 samples[f"probas_{idx}"] = probas[:, idx]
-            samples["classifier"] = [name for _ in range(len(samples))]
+            samples["model"] = [name for _ in range(len(samples))]
 
             samples_list.append(samples)
             df_list.append(df_results)
@@ -302,11 +308,12 @@ def conventional(
     df = pd.concat(df_list, axis=0, ignore_index=True)
 
     if additional_values is not None:
-        for key, value in additional_values.items():
-            df[key] = [value for m in range(df.shape[0])]
+        df = utils.add_values_to_df(df, additional_values)
 
     if samples_fname is not None:
         samples = pd.concat(samples_list, axis=0, ignore_index=True)
+        if additional_values is not None:
+            samples = utils.add_values_to_df(samples, additional_values)
         samples.to_parquet(samples_fname)
 
     return df

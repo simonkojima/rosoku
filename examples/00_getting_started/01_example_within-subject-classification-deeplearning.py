@@ -155,7 +155,6 @@ results = rosoku.deeplearning(
     enable_ddp=enable_ddp,
     early_stopping=early_stopping,
     enable_normalization=enable_normalization,
-    # name_classifier="eegnet4.2",
     history_fname=(save_base / "history" / f"sub-{subject}.parquet"),
     checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}.pth"),
     samples_fname=(save_base / "samples" / f"sub-{subject}.parquet"),
