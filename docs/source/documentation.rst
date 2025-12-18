@@ -41,10 +41,22 @@ rosoku.utils
    :caption: rosoku.utils
    :recursive:
 
-   rosoku.utils.EarlyStopping
    rosoku.utils.get_labels_from_epochs
+   rosoku.utils.EarlyStopping
    rosoku.utils.get_predictions
    rosoku.utils.get_ddp_params
    rosoku.utils.convert_epochs_to_ndarray
+
+Saliency Map
+------------
+
+.. autosummary::
+   :toctree:
+   :caption: Saliency Map
+   :recursive:
+
+   rosoku.attribution.saliency_map
+   rosoku.attribution.saliency_temporal
+   rosoku.attribution.saliency_spatial
 
 
