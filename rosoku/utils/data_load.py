@@ -106,10 +106,10 @@ def apply_callback_proc(callback_proc, callback_proc_mode, train, valid, test):
 
 
 def convert_epochs_to_ndarray(
-        epochs,
-        mode,
-        label_keys={"left_hand": 0, "right_hand": 1},
-        **kwargs,
+    epochs,
+    mode,
+    label_keys={"left_hand": 0, "right_hand": 1},
+    **kwargs,
 ):
     """
     Convert an MNE Epochs object into NumPy arrays (X, y).
@@ -170,16 +170,613 @@ def convert_epochs_to_ndarray(
     return X, y
 
 
+def ndarray_to_tensor(X_train, y_train, X_valid, y_valid, X_test, y_test, device="cpu"):
+    """
+    Convert NumPy arrays to PyTorch tensors and move them to a device.
+
+    This utility function converts training, validation, and test datasets from
+    NumPy arrays to PyTorch tensors with appropriate dtypes, and moves them to
+    the specified device. It supports both single test sets and grouped test
+    sets represented as lists, which is consistent with rosoku's handling of
+    multiple test evaluation groups.
+
+    Parameters
+    ----------
+    X_train : array-like
+        Training data array. Typically has shape
+        ``(n_samples, n_channels, n_times)`` for EEG data.
+
+    y_train : array-like
+        Training labels. Must be convertible to integer class indices.
+
+    X_valid : array-like
+        Validation data array with the same structure as ``X_train``.
+
+    y_valid : array-like
+        Validation labels.
+
+    X_test : array-like or list of array-like
+        Test data array, or a list of test data arrays corresponding to multiple
+        test evaluation groups.
+
+    y_test : array-like or list of array-like
+        Test labels, or a list of label arrays corresponding to ``X_test``.
+
+    device : {"cpu", "cuda"}, optional
+        Device to which the tensors are moved (default: ``"cpu"``).
+
+    Returns
+    -------
+    X_train_tensor : torch.Tensor
+        Training data tensor of type ``torch.float`` on ``device``.
+
+    y_train_tensor : torch.Tensor
+        Training label tensor of type ``torch.int64`` on ``device``.
+
+    X_valid_tensor : torch.Tensor
+        Validation data tensor of type ``torch.float`` on ``device``.
+
+    y_valid_tensor : torch.Tensor
+        Validation label tensor of type ``torch.int64`` on ``device``.
+
+    X_test_tensor : torch.Tensor or list of torch.Tensor
+        Test data tensor(s) of type ``torch.float`` on ``device``.
+        A list is returned if ``X_test`` is a list.
+
+    y_test_tensor : torch.Tensor or list of torch.Tensor
+        Test label tensor(s) of type ``torch.int64`` on ``device``.
+        A list is returned if ``y_test`` is a list.
+
+    Notes
+    -----
+    - All feature arrays are converted to ``torch.float`` and all labels to
+      ``torch.int64``, which is compatible with common PyTorch loss functions
+      such as :class:`torch.nn.CrossEntropyLoss`.
+    - When ``X_test`` and ``y_test`` are lists, the returned test tensors preserve
+      this list structure, enabling grouped test evaluation in downstream
+      pipelines (e.g., in :func:`rosoku.deeplearning`).
+
+    See Also
+    --------
+    rosoku.deeplearning :
+        Deep-learning pipeline that consumes tensors produced by this function.
+
+    Examples
+    --------
+    Convert NumPy arrays to tensors on GPU::
+
+        Xtr_t, ytr_t, Xva_t, yva_t, Xte_t, yte_t = ndarray_to_tensor(
+            X_train, y_train,
+            X_valid, y_valid,
+            X_test, y_test,
+            device="cuda",
+        )
+    """
+    import torch
+
+    X_train_tensor = torch.tensor(X_train, dtype=torch.float).to(device)
+    y_train_tensor = torch.tensor(y_train, dtype=torch.int64).to(device)
+
+    X_valid_tensor = torch.tensor(X_valid, dtype=torch.float).to(device)
+    y_valid_tensor = torch.tensor(y_valid, dtype=torch.int64).to(device)
+
+    if isinstance(X_test, list):
+        X_test_tensor = [torch.tensor(X, dtype=torch.float).to(device) for X in X_test]
+        y_test_tensor = [torch.tensor(y, dtype=torch.int64).to(device) for y in y_test]
+    else:
+        X_test_tensor = torch.tensor(X_test, dtype=torch.float).to(device)
+        y_test_tensor = torch.tensor(y_test, dtype=torch.int64).to(device)
+
+    return (
+        X_train_tensor,
+        y_train_tensor,
+        X_valid_tensor,
+        y_valid_tensor,
+        X_test_tensor,
+        y_test_tensor,
+    )
+
+
+def tensor_to_dataset(
+    X_train_tensor,
+    y_train_tensor,
+    X_valid_tensor,
+    y_valid_tensor,
+    X_test_tensor,
+    y_test_tensor,
+):
+    """
+    Convert PyTorch tensors into TensorDataset objects.
+
+    This utility function wraps training, validation, and test tensors into
+    :class:`torch.utils.data.TensorDataset` objects. It supports both single
+    test datasets and grouped test datasets represented as lists, which is
+    consistent with rosoku's handling of multiple test evaluation groups.
+
+    Parameters
+    ----------
+    X_train_tensor : torch.Tensor
+        Training data tensor.
+
+    y_train_tensor : torch.Tensor
+        Training label tensor.
+
+    X_valid_tensor : torch.Tensor
+        Validation data tensor.
+
+    y_valid_tensor : torch.Tensor
+        Validation label tensor.
+
+    X_test_tensor : torch.Tensor or list of torch.Tensor
+        Test data tensor, or a list of test data tensors corresponding to
+        multiple test evaluation groups.
+
+    y_test_tensor : torch.Tensor or list of torch.Tensor
+        Test label tensor, or a list of label tensors corresponding to
+        ``X_test_tensor``.
+
+    Returns
+    -------
+    dataset_train : torch.utils.data.TensorDataset
+        Dataset containing training data and labels.
+
+    dataset_valid : torch.utils.data.TensorDataset
+        Dataset containing validation data and labels.
+
+    dataset_test : torch.utils.data.TensorDataset or list of torch.utils.data.TensorDataset
+        Test dataset(s). A list is returned if ``X_test_tensor`` is a list,
+        preserving the grouping of test evaluation sets.
+
+    Notes
+    -----
+    - Each returned dataset yields ``(data, label)`` pairs when iterated.
+    - When ``X_test_tensor`` is a list, the list structure is preserved in the
+      returned ``dataset_test`` to enable grouped test evaluation in downstream
+      pipelines (e.g., in :func:`rosoku.deeplearning`).
+
+    See Also
+    --------
+    ndarray_to_tensor :
+        Convert NumPy arrays to PyTorch tensors.
+
+    torch.utils.data.TensorDataset :
+        PyTorch dataset class used to wrap tensors.
+
+    Examples
+    --------
+    Convert tensors to datasets::
+
+        dataset_train, dataset_valid, dataset_test = tensor_to_dataset(
+            X_train_tensor, y_train_tensor,
+            X_valid_tensor, y_valid_tensor,
+            X_test_tensor, y_test_tensor,
+        )
+
+    Use grouped test datasets::
+
+        for ds in dataset_test:
+            loader = DataLoader(ds, batch_size=64)
+            ...
+    """
+    import torch
+
+    dataset_train = torch.utils.data.TensorDataset(X_train_tensor, y_train_tensor)
+    dataset_valid = torch.utils.data.TensorDataset(X_valid_tensor, y_valid_tensor)
+
+    if isinstance(X_test_tensor, list):
+        dataset_test = [
+            torch.utils.data.TensorDataset(X, y)
+            for X, y in zip(X_test_tensor, y_test_tensor)
+        ]
+    else:
+        dataset_test = torch.utils.data.TensorDataset(X_test_tensor, y_test_tensor)
+
+    return dataset_train, dataset_valid, dataset_test
+
+
+def dataset_to_dataloader(
+    dataset_train,
+    dataset_valid,
+    dataset_test,
+    batch_size,
+    enable_DS=False,
+    DS_params=None,
+    generator=None,
+):
+    """
+    Create PyTorch DataLoader objects from datasets.
+
+    This utility builds DataLoaders for training, validation, and test datasets.
+    It supports (i) standard single-process loading and (ii) distributed loading
+    via :class:`torch.utils.data.distributed.DistributedSampler`. It also supports
+    grouped test sets, where ``dataset_test`` may be a list of datasets.
+
+    Parameters
+    ----------
+    dataset_train : torch.utils.data.Dataset
+        Training dataset.
+
+    dataset_valid : torch.utils.data.Dataset
+        Validation dataset.
+
+    dataset_test : torch.utils.data.Dataset or list of torch.utils.data.Dataset
+        Test dataset(s). If a list is provided, a list of DataLoaders is returned
+        for the test split, preserving the grouping.
+
+    batch_size : int
+        Mini-batch size used for all DataLoaders.
+
+    enable_DS : bool, optional
+        If True, use :class:`torch.utils.data.distributed.DistributedSampler`
+        for train/valid/test. When enabled, the returned ``sampler_train`` must
+        be stepped each epoch by calling ``sampler_train.set_epoch(epoch)`` to
+        reshuffle deterministically (default: False).
+
+    DS_params : dict | None, optional
+        Distributed sampler parameters. Required when ``enable_DS=True``.
+        Expected keys are:
+
+        - ``"world_size"`` : int
+        - ``"rank"`` : int
+        - ``"num_workers"`` : int
+
+        These control distributed sampling and DataLoader worker settings.
+
+    generator : None | int | torch.Generator, optional
+        Random generator control for deterministic behavior.
+
+        - If None, no generator is set.
+        - If int, a new :class:`torch.Generator` is created and seeded with
+          ``generator``; worker seeds are derived as ``generator + worker_id``.
+        - If :class:`torch.Generator`, it is used directly; worker seeds are
+          derived as ``g.initial_seed() + worker_id``.
+
+    Returns
+    -------
+    dataloader_train : torch.utils.data.DataLoader
+        DataLoader for the training dataset.
+
+    dataloader_valid : torch.utils.data.DataLoader
+        DataLoader for the validation dataset.
+
+    dataloader_test : torch.utils.data.DataLoader or list of torch.utils.data.DataLoader
+        DataLoader(s) for the test dataset(s). A list is returned if
+        ``dataset_test`` is a list.
+
+    sampler_train : torch.utils.data.distributed.DistributedSampler
+        Returned only when ``enable_DS=True``. The DistributedSampler used for
+        the training dataset.
+
+    Raises
+    ------
+    ValueError
+        If ``generator`` is not ``None``, an ``int``, or a ``torch.Generator``.
+
+    Notes
+    -----
+    - In distributed mode (``enable_DS=True``), ``pin_memory=True`` and
+      ``persistent_workers`` are enabled when ``num_workers > 0``.
+    - If you enable distributed sampling, you typically need to call
+      ``sampler_train.set_epoch(epoch)`` at the start of each training epoch
+      to ensure proper shuffling across epochs.
+    - When ``dataset_test`` is a list, the function returns a list of test
+      DataLoaders to preserve grouped test evaluation.
+    - This function seeds NumPy, Python's ``random``, and PyTorch per worker
+      via ``worker_init_fn`` when ``generator`` is provided.
+
+    Warnings
+    --------
+    When ``enable_DS=True``, this function creates a single ``sampler_test`` and
+    reuses it for all test DataLoaders if ``dataset_test`` is a list. Depending
+    on your distributed evaluation design, you may want per-test-group samplers.
+
+    See Also
+    --------
+    torch.utils.data.DataLoader :
+        PyTorch DataLoader.
+
+    torch.utils.data.distributed.DistributedSampler :
+        Sampler used for distributed training.
+
+    Examples
+    --------
+    Standard (non-distributed) DataLoaders::
+
+        dl_train, dl_valid, dl_test = dataset_to_dataloader(
+            dataset_train, dataset_valid, dataset_test,
+            batch_size=64, enable_DS=False, generator=0
+        )
+
+    Distributed DataLoaders (DDP)::
+
+        dl_train, dl_valid, dl_test, sampler_train = dataset_to_dataloader(
+            dataset_train, dataset_valid, dataset_test,
+            batch_size=64,
+            enable_DS=True,
+            DS_params={"world_size": 4, "rank": 0, "num_workers": 4},
+            generator=0,
+        )
+        for epoch in range(n_epochs):
+            sampler_train.set_epoch(epoch)
+            ...
+    """
+    import torch
+
+    if generator is None:
+        g = None
+        func_worker_init = None
+    elif isinstance(generator, int):
+        g = torch.Generator()
+        g.manual_seed(generator)
+
+        def func_worker_init(worker_id):
+            worker_seed = generator + worker_id
+            np.random.seed(worker_seed)
+            random.seed(worker_seed)
+            torch.manual_seed(worker_seed)
+
+    elif isinstance(generator, torch.Generator):
+        g = generator
+
+        def func_worker_init(worker_id):
+            worker_seed = g.initial_seed() + worker_id
+            np.random.seed(worker_seed)
+            random.seed(worker_seed)
+            torch.manual_seed(worker_seed)
+
+    else:
+        raise ValueError("generator must be an int or torch.Generator")
+
+    if enable_DS:
+        world_size = DS_params["world_size"]
+        num_workers = DS_params["num_workers"]
+        rank = DS_params["rank"]
+
+        persistent_workers = num_workers > 0
+
+        sampler_train = torch.utils.data.distributed.DistributedSampler(
+            dataset_train,
+            num_replicas=world_size,
+            rank=rank,
+            shuffle=True,
+            seed=generator,
+        )
+
+        sampler_valid = torch.utils.data.distributed.DistributedSampler(
+            dataset_valid, num_replicas=world_size, rank=rank, shuffle=False
+        )
+
+        sampler_test = torch.utils.data.distributed.DistributedSampler(
+            dataset_test, num_replicas=world_size, rank=rank, shuffle=False
+        )
+
+        dataloader_train = torch.utils.data.DataLoader(
+            dataset_train,
+            batch_size=batch_size,
+            sampler=sampler_train,
+            num_workers=num_workers,
+            pin_memory=True,
+            persistent_workers=persistent_workers,
+            generator=g,
+            worker_init_fn=func_worker_init,
+        )
+
+        dataloader_valid = torch.utils.data.DataLoader(
+            dataset_valid,
+            batch_size=batch_size,
+            sampler=sampler_valid,
+            num_workers=num_workers,
+            pin_memory=True,
+            persistent_workers=persistent_workers,
+        )
+
+        if isinstance(dataset_test, list):
+            dataloader_test = [
+                torch.utils.data.DataLoader(
+                    dataset,
+                    batch_size=batch_size,
+                    sampler=sampler_test,
+                    num_workers=num_workers,
+                    pin_memory=True,
+                    persistent_workers=persistent_workers,
+                )
+                for dataset in dataset_test
+            ]
+        else:
+            dataloader_test = torch.utils.data.DataLoader(
+                dataset_test,
+                batch_size=batch_size,
+                sampler=sampler_test,
+                num_workers=num_workers,
+                pin_memory=True,
+                persistent_workers=persistent_workers,
+            )
+
+        return dataloader_train, dataloader_valid, dataloader_test, sampler_train
+
+    else:
+
+        dataloader_train = torch.utils.data.DataLoader(
+            dataset_train,
+            batch_size=batch_size,
+            shuffle=True,
+            generator=g,
+            worker_init_fn=func_worker_init,
+        )
+        dataloader_valid = torch.utils.data.DataLoader(
+            dataset_valid, batch_size=batch_size, shuffle=False
+        )
+
+        if isinstance(dataset_test, list):
+            dataloader_test = [
+                torch.utils.data.DataLoader(
+                    dataset, batch_size=batch_size, shuffle=False
+                )
+                for dataset in dataset_test
+            ]
+        else:
+            dataloader_test = torch.utils.data.DataLoader(
+                dataset_test, batch_size=batch_size, shuffle=False
+            )
+
+        return dataloader_train, dataloader_valid, dataloader_test
+
+
+def ndarray_to_dataloader(
+    X_train,
+    y_train,
+    X_valid,
+    y_valid,
+    X_test,
+    y_test,
+    batch_size,
+    device="cpu",
+    enable_DS=False,
+    DS_params=None,
+    generator=None,
+):
+    """
+    Convert NumPy arrays to PyTorch DataLoaders.
+
+    This is a convenience wrapper that converts NumPy arrays to PyTorch tensors,
+    wraps them into :class:`torch.utils.data.TensorDataset` objects, and finally
+    constructs :class:`torch.utils.data.DataLoader` objects for training,
+    validation, and test splits.
+
+    Grouped test evaluation is supported: if ``X_test``/``y_test`` are provided
+    as lists, the returned test DataLoaders preserve the list structure.
+
+    Parameters
+    ----------
+    X_train : array-like
+        Training data array. Typically has shape
+        ``(n_samples, n_channels, n_times)`` for EEG data.
+
+    y_train : array-like
+        Training labels. Must be convertible to integer class indices.
+
+    X_valid : array-like
+        Validation data array with the same structure as ``X_train``.
+
+    y_valid : array-like
+        Validation labels.
+
+    X_test : array-like or list of array-like
+        Test data array, or a list of test data arrays corresponding to multiple
+        test evaluation groups.
+
+    y_test : array-like or list of array-like
+        Test labels, or a list of label arrays corresponding to ``X_test``.
+
+    batch_size : int
+        Mini-batch size used for all DataLoaders.
+
+    device : {"cpu", "cuda"}, optional
+        Device to which the tensors are moved before dataset/DataLoader creation
+        (default: ``"cpu"``).
+
+    enable_DS : bool, optional
+        If True, use :class:`torch.utils.data.distributed.DistributedSampler`
+        for train/valid/test and return ``sampler_train`` as an additional output.
+        When enabled, you must call ``sampler_train.set_epoch(epoch)`` every epoch
+        (default: False).
+
+    DS_params : dict | None, optional
+        Distributed sampler parameters. Required when ``enable_DS=True``.
+        Expected keys are ``"world_size"``, ``"rank"``, and ``"num_workers"``.
+
+    generator : None | int | torch.Generator, optional
+        Random generator control for deterministic behavior, forwarded to
+        :func:`dataset_to_dataloader`.
+
+    Returns
+    -------
+    dataloader_train : torch.utils.data.DataLoader
+        DataLoader for the training dataset.
+
+    dataloader_valid : torch.utils.data.DataLoader
+        DataLoader for the validation dataset.
+
+    dataloader_test : torch.utils.data.DataLoader or list of torch.utils.data.DataLoader
+        DataLoader(s) for the test dataset(s). A list is returned if
+        ``X_test`` is a list.
+
+    sampler_train : torch.utils.data.distributed.DistributedSampler
+        Returned only when ``enable_DS=True``. The DistributedSampler used for
+        the training dataset.
+
+    See Also
+    --------
+    ndarray_to_tensor :
+        Convert NumPy arrays to PyTorch tensors.
+
+    tensor_to_dataset :
+        Wrap tensors into TensorDataset objects.
+
+    dataset_to_dataloader :
+        Construct DataLoaders (optionally with DistributedSampler).
+
+    Examples
+    --------
+    Standard DataLoaders::
+
+        dl_train, dl_valid, dl_test = ndarray_to_dataloader(
+            X_train, y_train, X_valid, y_valid, X_test, y_test,
+            batch_size=64, device="cpu", generator=0
+        )
+
+    Distributed DataLoaders (DDP)::
+
+        dl_train, dl_valid, dl_test, sampler_train = ndarray_to_dataloader(
+            X_train, y_train, X_valid, y_valid, X_test, y_test,
+            batch_size=64,
+            device="cuda",
+            enable_DS=True,
+            DS_params={"world_size": 4, "rank": 0, "num_workers": 4},
+            generator=0,
+        )
+    """
+    (
+        X_train_tensor,
+        y_train_tensor,
+        X_valid_tensor,
+        y_valid_tensor,
+        X_test_tensor,
+        y_test_tensor,
+    ) = ndarray_to_tensor(
+        X_train, y_train, X_valid, y_valid, X_test, y_test, device=device
+    )
+
+    (dataset_train, dataset_valid, dataset_test) = tensor_to_dataset(
+        X_train_tensor,
+        y_train_tensor,
+        X_valid_tensor,
+        y_valid_tensor,
+        X_test_tensor,
+        y_test_tensor,
+    )
+
+    return dataset_to_dataloader(
+        dataset_train,
+        dataset_valid,
+        dataset_test,
+        batch_size=batch_size,
+        enable_DS=enable_DS,
+        DS_params=DS_params,
+        generator=generator,
+    )
+
+
 def load_data(
-        keywords_train,
-        keywords_valid,
-        keywords_test,
-        callback_load_epochs=None,
-        callback_load_ndarray=None,
-        callback_proc_epochs=None,
-        callback_proc_ndarray=None,
-        callback_proc_mode="per_split",
-        callback_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
+    keywords_train,
+    keywords_valid,
+    keywords_test,
+    callback_load_epochs=None,
+    callback_load_ndarray=None,
+    callback_proc_epochs=None,
+    callback_proc_ndarray=None,
+    callback_proc_mode="per_split",
+    callback_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
 ):
     """
     Load and preprocess datasets for rosoku pipelines using keyword specifications.
@@ -333,9 +930,9 @@ def load_data(
             )
     else:
         if (
-                isinstance(keywords_train, list)
-                and isinstance(keywords_valid, list)
-                and isinstance(keywords_test, list)
+            isinstance(keywords_train, list)
+            and isinstance(keywords_valid, list)
+            and isinstance(keywords_test, list)
         ):
             pass
         else:

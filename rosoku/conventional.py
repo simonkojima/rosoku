@@ -1,61 +1,9 @@
-import time
 import json
-
-import numpy as np
-import scipy
-
-import mne
 import pyriemann
-import sklearn
-
 import pandas as pd
-
 from . import utils
 
-
-def callback_proc_epochs(epochs, tmin=0.5, tmax=4.5):
-    epochs = epochs.pick(picks="eeg").crop(tmin=tmin, tmax=tmax)
-    return epochs
-
-
-def load_epochs(files, concat=False):
-    epochs_list = list()
-    for file in files:
-        epochs = mne.read_epochs(file)
-        epochs_list.append(epochs)
-    if concat:
-        return mne.concatenate_epochs(epochs_list)
-    else:
-        return epochs_list
-
-
-def recenter_cov(cov_session, scaling=False):
-    mean_cov_session = pyriemann.utils.mean.mean_covariance(cov_session)
-    n_covs, _, _ = cov_session.shape
-
-    if scaling:
-        d_tilda_sqrt = 0
-        for m in range(n_covs):
-            d_tilda_sqrt += pyriemann.utils.distance.distance(
-                mean_cov_session, cov_session[m, :, :], squared=True
-            )
-        d_tilda = np.sqrt(d_tilda_sqrt)
-
-    mean_cov_session_inv_sqrt = scipy.linalg.fractional_matrix_power(
-        mean_cov_session, -0.5
-    )
-
-    recentered_covs = np.zeros(cov_session.shape)
-    for m in range(n_covs):
-        recentered_covs[m, :, :] = (
-                mean_cov_session_inv_sqrt @ cov_session[m, :, :] @ mean_cov_session_inv_sqrt
-        )
-        if scaling:
-            recentered_covs[m, :, :] = scipy.linalg.fractional_matrix_power(
-                recentered_covs[m, :, :], 1 / d_tilda
-            )
-
-    return recentered_covs
+from .utils.core import _add_values_to_df
 
 
 def conventional(
@@ -291,7 +239,7 @@ def conventional(
         for idx, scoring_ in enumerate(scoring):
             if isinstance(scoring_, str):
                 scoring_name.append(scoring_)
-            elif isinstance(scoring_, callable):
+            elif callable(scoring_):
                 scoring_name.append("callable")
             else:
                 scoring_name.append("unknown_scoring")
@@ -307,7 +255,7 @@ def conventional(
             from sklearn.metrics import get_scorer
 
             scoring_ = get_scorer(scoring_)._score_func
-        elif isinstance(scoring_, callable):
+        elif callable(scoring_):
             # do nothing
             pass
         else:
@@ -326,7 +274,7 @@ def conventional(
 
     # classify test data and evaluate results
 
-    if isinstance(X_test, list) is False:
+    if not isinstance(X_test, list):
         X_test = [X_test]
         y_test = [y_test]
 
@@ -374,12 +322,12 @@ def conventional(
     df = pd.concat(df_list, axis=0, ignore_index=True)
 
     if additional_values is not None:
-        df = utils.add_values_to_df(df, additional_values)
+        df = _add_values_to_df(df, additional_values)
 
     if samples_fname is not None:
         samples = pd.concat(samples_list, axis=0, ignore_index=True)
         if additional_values is not None:
-            samples = utils.add_values_to_df(samples, additional_values)
+            samples = _add_values_to_df(samples, additional_values)
         samples.to_parquet(samples_fname)
 
     return df

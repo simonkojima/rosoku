@@ -13,6 +13,8 @@ from . import utils
 from . import preprocessing
 from . import attribution
 
+from .utils.core import _train_epoch, _add_values_to_df
+
 
 def setup_optimizer(optimizer, optimizer_params, model):
     if optimizer_params is not None:
@@ -83,7 +85,7 @@ def deeplearning_train(
     for epoch in range(n_epochs):
         if enable_ddp:
             sampler_train.set_epoch(epoch)
-        valid_loss = utils.train_epoch(
+        valid_loss = _train_epoch(
             model=model,
             criterion=criterion,
             optimizer=optimizer,
@@ -219,7 +221,7 @@ def main(
         )
     else:
 
-        (dataloader_train, dataloader_valid, _) = utils.nd_to_dataloader(
+        (dataloader_train, dataloader_valid, _) = utils.ndarray_to_dataloader(
             X_train,
             y_train,
             X_valid,
@@ -729,7 +731,7 @@ def deeplearning(
         for idx, scoring_ in enumerate(scoring):
             if isinstance(scoring_, str):
                 scoring_name.append(scoring_)
-            elif isinstance(scoring_, callable):
+            elif collable(scoring_):
                 scoring_name.append("callable")
             else:
                 scoring_name.append("unknown_scoring")
@@ -754,11 +756,10 @@ def deeplearning(
 
     # classify test data
     if checkpoint_fname is not None:
-        # checkpoint = torch.load(f"{checkpoint_fname}")
         checkpoint = torch.load(checkpoint_fname, map_location=torch.device(device))
         model.load_state_dict(checkpoint["model_state_dict"])
 
-    (_, _, dataloader_test) = utils.nd_to_dataloader(
+    (_, _, dataloader_test) = utils.ndarray_to_dataloader(
         X_train,
         y_train,
         X_valid,
@@ -771,7 +772,7 @@ def deeplearning(
         generator=seed,
     )
 
-    if isinstance(dataloader_test, list) is False:
+    if not isinstance(dataloader_test, list):
         dataloader_test = [dataloader_test]
 
     model.eval()
@@ -843,7 +844,7 @@ def deeplearning(
                 samples[f"logits_{idx}"] = logits[:, idx]
             samples["model"] = [model_name for _ in range(len(samples))]
             if additional_values is not None:
-                samples = utils.add_values_to_df(samples, additional_values)
+                samples = _add_values_to_df(samples, additional_values)
 
             if enable_wandb_logging:
                 if (enable_ddp and params["rank"] == 0) or (enable_ddp is False):
@@ -860,7 +861,7 @@ def deeplearning(
     df = pd.concat(df_list, axis=0, ignore_index=True)
     df["model"] = [model_name for _ in range(len(df))]
     if additional_values is not None:
-        df = utils.add_values_to_df(df, additional_values)
+        df = _add_values_to_df(df, additional_values)
 
     if samples_fname is not None:
         samples = pd.concat(samples_list, axis=0, ignore_index=True)

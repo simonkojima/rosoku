@@ -43,9 +43,14 @@ rosoku.utils
 
    rosoku.utils.get_labels_from_epochs
    rosoku.utils.EarlyStopping
-   rosoku.utils.get_predictions
    rosoku.utils.get_ddp_params
+   rosoku.utils.get_predictions
    rosoku.utils.convert_epochs_to_ndarray
+   rosoku.utils.load_data
+   rosoku.utils.ndarray_to_dataloader
+   rosoku.utils.ndarray_to_tensor
+   rosoku.utils.tensor_to_dataset
+   rosoku.utils.dataset_to_dataloader
 
 Saliency Map
 ------------

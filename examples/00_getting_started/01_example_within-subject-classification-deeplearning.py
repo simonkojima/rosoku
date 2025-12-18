@@ -11,16 +11,13 @@ Example: Within-subject classification with deep learning
 # Import Packages
 # ===============
 import functools
-
 from pathlib import Path
-
 import mne
-
-import moabb.datasets
-
 import torch
 import braindecode
 import rosoku
+
+from moabb.datasets import Dreyer2023
 
 
 # %%
@@ -52,11 +49,11 @@ def callback_load_epochs(
     keywords = keywords[1:]
 
     sessions = dataset.get_data(subjects=[subject])
-    raws = sessions[subject]["0"]
+    raws_dict = sessions[subject]["0"]
 
     epochs_list = []
 
-    for name_run, raw in raws.items():
+    for name_run, raw in raws_dict.items():
         if not True in [k in name_run for k in keywords]:
             continue
 
@@ -117,7 +114,7 @@ enable_dp = False
 
 seed = 42
 
-dataset = moabb.datasets.Dreyer2023()
+dataset = Dreyer2023()
 
 save_base = Path("~").expanduser() / "rosoku-log"
 (save_base / "checkpoint").mkdir(parents=True, exist_ok=True)
@@ -171,6 +168,7 @@ results = rosoku.deeplearning(
     saliency_map_fname=(save_base / "saliency" / f"sub-{subject}.msgpack"),
     label_keys=label_keys,
     seed=seed,
+    additional_values={"subject": subject},
 )
 
 # %%

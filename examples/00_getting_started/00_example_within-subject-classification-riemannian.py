@@ -13,13 +13,11 @@ Example: Within-subject classification with riemannian classifier
 import functools
 from pathlib import Path
 import mne
-import moabb.datasets
 import pyriemann
-
 import rosoku
 
+from moabb.datasets import Dreyer2023
 
-# mne.set_log_level("CRITICAL")
 
 # %%
 # Define callback functions
@@ -33,11 +31,11 @@ def callback_load_epochs(
     keywords = keywords[1:]
 
     sessions = dataset.get_data(subjects=[subject])
-    raws = sessions[subject]["0"]
+    raws_dict = sessions[subject]["0"]
 
     epochs_list = []
 
-    for name_run, raw in raws.items():
+    for name_run, raw in raws_dict.items():
         if not True in [k in name_run for k in keywords]:
             continue
 
@@ -85,7 +83,7 @@ def callback_convert_epochs_to_ndarray(
 
 subject = 56
 
-dataset = moabb.datasets.Dreyer2023()
+dataset = Dreyer2023()
 label_keys = {"left_hand": 0, "right_hand": 1}
 
 save_base = Path("~").expanduser() / "rosoku-log"
@@ -108,6 +106,7 @@ results = rosoku.conventional(
     ),
     scoring=["accuracy", "f1"],
     samples_fname=save_base / "samples.parquet",
+    additional_values={"subject": subject},
 )
 
 # %%
