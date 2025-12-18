@@ -20,7 +20,7 @@ def saliency_map(model, dataloader, device, class_index=1):
         mask = target == class_index
         data = data[mask]
 
-        # saliency should be scaled with cnt, istead of len(dataloader.dataset)?
+        # saliency should be scaled with cnt, instead of len(dataloader.dataset)?
         cnt += data.shape[0]
 
         data = data.to(device)

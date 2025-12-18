@@ -161,7 +161,6 @@ def deeplearning_train(
     if history_fname is not None and rank == 0:
         df_save = pd.DataFrame(history)
         df_save.to_parquet(f"{history_fname}.parquet")
-        # df_save.to_html(f"{history_fname}.html")
 
     return model
 
@@ -230,7 +229,6 @@ def main(
     checkpoint_fname = kwargs.get("checkpoint_fname", None)
     history_fname = kwargs.get("history_fname", None)
     early_stopping = kwargs.get("early_stopping", None)
-    # name_classifier = kwargs.get("name_classifier", None)
     seed = kwargs.get("seed", None)
 
     # setup DDP
@@ -323,9 +321,6 @@ def main(
         model = torch.nn.parallel.DistributedDataParallel(
             model, device_ids=[local_rank]
         )
-
-    # if name_classifier is None:
-    #    name_classifier = model.__class__.__name__
 
     # setup optimizer
     optimizer = setup_optimizer(optimizer, optimizer_params, model)
@@ -787,7 +782,6 @@ def deeplearning(
     if model is None:
         model = callback_get_model(X_train, y_train)
 
-    # device = "cuda" if enable_ddp else "cpu"
     model.to(device)
 
     if model_name is None:
@@ -887,27 +881,15 @@ def deeplearning(
             for scoring_ in scoring:
                 scores.append(scoring_(labels, preds))
 
-            """
-            accuracy = sklearn.metrics.accuracy_score(labels, preds)
-            f1 = sklearn.metrics.f1_score(labels, preds)
-            bacc = sklearn.metrics.balanced_accuracy_score(labels, preds)
-            """
-
             df_results = pd.DataFrame()
             df_results["keywords_train"] = [json.dumps(keywords_train)]
             df_results["keywords_valid"] = [json.dumps(keywords_valid)]
             df_results["keywords_test"] = [json.dumps(keywords_test_single)]
-            # df_results["classifier"] = [name_classifier]
 
             wandb_log = {}
             for scoring_name_, score in zip(scoring_name, scores):
                 df_results[scoring_name_] = [score]
                 wandb_log[f"tset/{scoring_name_}"] = score
-            # df_results["accuracy"] = [accuracy]
-            # df_results["labels"] = [labels]
-            # df_results["preds"] = [preds]
-            # df_results["probas"] = [probas]
-            # df_results["logits"] = [logits]
 
             if normalization_fname is not None:
                 normalization_dict = {
@@ -928,7 +910,6 @@ def deeplearning(
             samples["model"] = [model_name for _ in range(len(samples))]
             if additional_values is not None:
                 samples = utils.add_values_to_df(samples, additional_values)
-            # samples["classifier"] = [name_classifier for _ in range(len(samples))]
 
             if enable_wandb_logging:
                 if (enable_ddp and params["rank"] == 0) or (enable_ddp is False):
@@ -938,16 +919,6 @@ def deeplearning(
 
                     wandb_log.update({"predictions": table})
                     wandb.log(wandb_log)
-                    """
-                    wandb.log(
-                        {
-                            "test/accuracy": accuracy,
-                            "test/bacc": bacc,
-                            "test/f1": f1,
-                            "predictions": table,
-                        }
-                    )
-                    """
 
             samples_list.append(samples)
             df_list.append(df_results)

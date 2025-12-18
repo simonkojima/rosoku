@@ -1,16 +1,19 @@
 # 🕯️ Rosoku — A Flexible EEG/BCI Experiment Pipeline Toolkit
 
-**rosoku** is a *callback-based experiment pipeline* for EEG/BCI research.  
-You are free to design **how your data is loaded, processed, and shaped**,  
-while rosoku handles **training, evaluation, logging, and result export**.
+**Rosoku** is a research-oriented Python framework for running reproducible EEG/BCI
+experiments with both conventional machine-learning models and deep-learning
+models.
+It bridges the gap between high-level EEG/BCI frameworks (such as MOABB and Braindecode) and
+low-level machine-learning libraries (such as scikit-learn and PyTorch).
 
-> **You control the data.  
-> rosoku handles everything after.**
+It provides flexible, callback-driven pipelines to load data, preprocess signals,
+train models, evaluate performance, and export results, while explicitly supporting
+EEG-specific experimental structures such as subject/session splits and grouped
+test evaluations.
 
-Working directly with PyTorch or scikit-learn provides flexibility but requires heavy boilerplate.  
-Meanwhile, frameworks like MOABB or Braindecode are convenient, but restrict custom processing.
-
-**rosoku fills the space between them — flexibility without overhead.**
+rosoku is designed for researchers who need to rapidly prototype, compare, and
+analyze multiple experimental configurations in a transparent and reproducible way,
+rather than for generic end-to-end machine-learning workflows.
 
 ---
 

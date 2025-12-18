@@ -536,45 +536,6 @@ def get_predictions(
     return preds_list, labels_list, logits_list, probas_list
 
 
-"""
-def accuracy_score_dataloader_DPP(model, dataloader, criterion=None, device="cpu"):
-    import torch
-
-    total_loss = 0
-    correct = 0
-    total = 0
-    model.eval()
-    with torch.no_grad():
-        for X, y in dataloader:
-            X = X.to(device, non_blocking=True)
-            y = y.to(device, non_blocking=True)
-
-            y_pred = model(X)
-            preds = torch.argmax(y_pred, dim=1)
-            if criterion is not None:
-                loss = criterion(y_pred, y)
-                total_loss += loss.item() * y.size(0)
-            correct += (preds == y).sum().item()
-            total += y.size(0)
-
-    total_loss_tensor = torch.tensor(total_loss, device=device)
-    correct_tensor = torch.tensor(correct, device=device)
-    total_tensor = torch.tensor(total, device=device)
-
-    torch.distributed.all_reduce(total_loss_tensor, op=torch.distributed.ReduceOp.SUM)
-    torch.distributed.all_reduce(correct_tensor, op=torch.distributed.ReduceOp.SUM)
-    torch.distributed.all_reduce(total_tensor, op=torch.distributed.ReduceOp.SUM)
-
-    loss_avg = total_loss_tensor.item() / total_tensor.item()
-    acc = correct_tensor.item() / total_tensor.item()
-
-    if criterion is not None:
-        return acc, loss_avg
-    else:
-        return acc
-"""
-
-
 def evaluation_dataloader(
         model, dataloader, criterion=None, device="cpu", enable_ddp=False
 ):
@@ -644,11 +605,6 @@ def train_epoch(
 ):
     import torch
 
-    # if enable_ddp:
-    #    rank = int(os.environ["RANK"])
-    # else:
-    #    rank = 0
-
     tic = time.time()
 
     # train
@@ -659,7 +615,6 @@ def train_epoch(
 
         y_pred = model(X)
         loss = criterion(y_pred, y)
-        # train_loss += loss.item()
 
         optimizer.zero_grad()
         loss.backward()
@@ -714,7 +669,6 @@ def train_epoch(
             )
             checkpoint["optimizer_state_dict"] = optimizer.state_dict()
             checkpoint["valid_loss"] = valid_loss
-            # torch.save(checkpoint, f"{checkpoint_fname}.pth")
             torch.save(checkpoint, checkpoint_fname)
 
             loss_best["value"] = valid_loss

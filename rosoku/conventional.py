@@ -350,7 +350,6 @@ def conventional(
             else:
                 probas = callback_predict_proba(model, X)
 
-            # accuracy = sklearn.metrics.accuracy_score(y, preds)
             scores = []
             for scoring_ in scoring:
                 scores.append(scoring_(y, preds))
