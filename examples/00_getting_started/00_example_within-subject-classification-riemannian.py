@@ -25,7 +25,7 @@ from moabb.datasets import Dreyer2023
 
 
 def callback_load_epochs(
-        items, split, dataset, l_freq, h_freq, order_filter, tmin, tmax
+    items, split, dataset, l_freq, h_freq, order_filter, tmin, tmax
 ):
     subject = items[0]
     keywords = items[1:]
@@ -66,9 +66,9 @@ def callback_proc_epochs(epochs, split):
 
 
 def callback_convert_epochs_to_ndarray(
-        epochs,
-        split,
-        label_keys,
+    epochs,
+    split,
+    label_keys,
 ):
     X = epochs.get_data()
     X = pyriemann.estimation.Covariances(estimator="lwf").transform(X)

@@ -108,10 +108,10 @@ def apply_callback_proc(callback_proc, callback_proc_mode, train, valid, test):
 
 
 def convert_epochs_to_ndarray(
-        epochs,
-        split,
-        label_keys={"left_hand": 0, "right_hand": 1},
-        **kwargs,
+    epochs,
+    split,
+    label_keys={"left_hand": 0, "right_hand": 1},
+    **kwargs,
 ):
     """
     Convert an MNE Epochs object into NumPy arrays (X, y).
@@ -280,12 +280,12 @@ def ndarray_to_tensor(X_train, y_train, X_valid, y_valid, X_test, y_test, device
 
 
 def tensor_to_dataset(
-        X_train_tensor,
-        y_train_tensor,
-        X_valid_tensor,
-        y_valid_tensor,
-        X_test_tensor,
-        y_test_tensor,
+    X_train_tensor,
+    y_train_tensor,
+    X_valid_tensor,
+    y_valid_tensor,
+    X_test_tensor,
+    y_test_tensor,
 ):
     """
     Convert PyTorch tensors into TensorDataset objects.
@@ -377,18 +377,18 @@ def tensor_to_dataset(
 
 
 def dataset_to_dataloader(
-        dataset_train,
-        dataset_valid,
-        dataset_test,
-        batch_size,
-        num_workers=0,
-        seed=None,
-        generator=None,
+    dataset_train,
+    dataset_valid,
+    dataset_test,
+    batch_size,
+    num_workers=0,
+    seed=None,
+    generator=None,
 ):
     if (num_workers > 0) and (seed is not None or generator is not None):
 
         def func_worker_init(worker_id):
-            worker_seed = torch.initial_seed() % 2 ** 32
+            worker_seed = torch.initial_seed() % 2**32
             np.random.seed(worker_seed)
             random.seed(worker_seed)
             torch.manual_seed(worker_seed)
@@ -432,17 +432,17 @@ def dataset_to_dataloader(
 
 
 def ndarray_to_dataloader(
-        X_train,
-        y_train,
-        X_valid,
-        y_valid,
-        X_test,
-        y_test,
-        batch_size,
-        device="cpu",
-        num_workers=0,
-        seed=None,
-        generator=None,
+    X_train,
+    y_train,
+    X_valid,
+    y_valid,
+    X_test,
+    y_test,
+    batch_size,
+    device="cpu",
+    num_workers=0,
+    seed=None,
+    generator=None,
 ):
     """
     Convert NumPy arrays to PyTorch DataLoaders.
@@ -596,15 +596,15 @@ def ndarray_to_dataloader(
 
 
 def load_data(
-        items_train,
-        items_valid,
-        items_test,
-        callback_load_epochs=None,
-        callback_load_ndarray=None,
-        callback_proc_epochs=None,
-        callback_proc_ndarray=None,
-        callback_proc_mode="per_split",
-        callback_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
+    items_train,
+    items_valid,
+    items_test,
+    callback_load_epochs=None,
+    callback_load_ndarray=None,
+    callback_proc_epochs=None,
+    callback_proc_ndarray=None,
+    callback_proc_mode="per_split",
+    callback_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
 ):
     """
     Load and preprocess datasets for rosoku pipelines using item specifications.
@@ -787,9 +787,9 @@ def load_data(
             raise ValueError("items_train and items_test must be instance of list")
     else:
         if (
-                isinstance(items_train, list)
-                and isinstance(items_valid, list)
-                and isinstance(items_test, list)
+            isinstance(items_train, list)
+            and isinstance(items_valid, list)
+            and isinstance(items_test, list)
         ):
             pass
         else:
