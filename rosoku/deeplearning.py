@@ -129,7 +129,7 @@ def deeplearning_train(
 
     if history_fname is not None and rank == 0:
         df_save = pd.DataFrame(history)
-        df_save.to_parquet(f"{history_fname}.parquet")
+        df_save.to_parquet(history_fname)
 
     return model
 
