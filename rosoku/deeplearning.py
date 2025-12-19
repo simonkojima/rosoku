@@ -237,47 +237,45 @@ def deeplearning(
         additional_values=None,
 ):
     """
-    Run a general-purpose deep-learning pipeline for EEG/BCI experiments.
+    Run a deep-learning EEG/BCI experiment using PyTorch models.
 
-    This function provides an end-to-end workflow to train and evaluate a PyTorch
-    model on EEG/BCI datasets. It supports loading data as MNE Epochs or NumPy
-    arrays via user callbacks, optional preprocessing and normalization, training
-    with a configurable optimizer (and optional LR scheduler), and evaluation on
-    grouped test sets.
+    This function provides an end-to-end pipeline for training and evaluating a
+    PyTorch model on EEG/BCI datasets using rosoku's item-based data abstraction.
+    It supports loading data via user callbacks (MNE Epochs or NumPy arrays),
+    optional preprocessing and normalization, model training, grouped test
+    evaluation, saliency-map computation, and result export.
 
-    Several hooks are provided to customize model creation and prediction extraction
-    (logits/predictions/probabilities) without changing the core pipeline.
-
-    Test data can be evaluated in user-defined groups: each element of ``items_test``
-    represents one evaluation group and can contain one or multiple items (e.g., to
-    merge multiple sessions into a single test set before scoring).
+    Compared to high-level frameworks, this function exposes explicit hooks for
+    model creation, prediction extraction (logits / predictions / probabilities),
+    and reproducibility control, while still handling the full experimental loop.
 
     Parameters
     ----------
     items_train : list
-        Item objects describing how to load the training data. The content is
-        user-defined and interpreted by ``callback_load_epochs`` or
-        ``callback_load_ndarray``.
+        List of items describing the training split. Each item is a user-defined
+        object (often a dict) interpreted only by the data-loading callbacks.
 
-    items_valid : list
-        Item objects describing how to load the validation data.
+    items_valid : list or None
+        List of items describing the validation split. If ``None``, no validation
+        data are used.
 
-    items_test : list of list
-        Item objects describing how to load the test data, grouped for evaluation.
-        Each inner list defines one evaluation group.
+    items_test : list
+        List defining test evaluation groups. Each element can be either:
+
+        - a single item → treated as one test group
+        - a list of items → loaded and merged as one test group
 
     callback_load_epochs : callable | None, optional
-        Loader returning an :class:`mne.Epochs` instance. Must have signature
-        ``callback_load_epochs(item, split)`` where ``split`` is one of
-        ``{"train", "valid", "test"}``.
+        Loader returning an :class:`mne.Epochs` instance.
+        Must have signature ``callback_load_epochs(items, split)`` where ``split`` is
+        one of ``{"train", "valid", "test"}``.
 
     callback_load_ndarray : callable | None, optional
-        Loader returning a tuple ``(X, y)``. Must have signature
-        ``callback_load_ndarray(item, split)`` where ``split`` is one of
-        ``{"train", "valid", "test"}``.
+        Loader returning ``(X, y)`` arrays.
+        Must have signature ``callback_load_ndarray(items, split)``.
 
     criterion : torch.nn.Module, optional
-        Loss function instance used for training (default:
+        Loss function used for training (default:
         :class:`torch.nn.CrossEntropyLoss`).
 
     batch_size : int, optional
@@ -290,215 +288,169 @@ def deeplearning(
         Optimizer class (not an instance), e.g. :class:`torch.optim.AdamW`.
 
     callback_proc_mode : {"per_split", "all"}, optional
-        Strategy for preprocessing across splits, as interpreted by
-        ``utils.load_data``.
-
-        Typical meanings are:
-
-        - ``"per_split"``: process train/valid/test independently.
-        - ``"all"``: process jointly (exact behavior depends on ``utils.load_data``).
+        Strategy controlling how preprocessing callbacks are applied.
 
     callback_proc_epochs : callable | None, optional
-        Optional preprocessing applied to loaded Epochs (e.g., picking channels,
-        cropping, filtering), as used by ``utils.load_data``.
+        Optional preprocessing applied to Epochs objects before conversion to arrays.
 
     callback_proc_ndarray : callable | None, optional
-        Optional preprocessing applied to array data, as used by ``utils.load_data``.
+        Optional preprocessing applied to NumPy arrays via ``apply_callback_proc``.
 
     callback_convert_epochs_to_ndarray : callable, optional
-        Converter used when loading Epochs. By default,
-        ``utils.convert_epochs_to_ndarray``.
+        Converter from Epochs to ``(X, y)`` arrays. Called as
+        ``callback_convert_epochs_to_ndarray(epochs, split)``.
 
     callback_get_logits : callable | None, optional
-        Optional hook to extract logits from the model during inference.
-
-        If provided, it is called as::
-
-            callback_get_logits(model, X)
-
-        If ``None``, logits are obtained by a direct forward pass::
-
-            logits = model(X)
-
-        The returned ``logits`` must be a 2D tensor/array of shape
-        ``(n_samples, n_classes)``.
+        Hook to extract logits during inference.
+        If ``None``, logits are obtained via ``model(X)``.
 
     callback_get_preds : callable | None, optional
-        Optional hook to compute predicted class labels during inference.
-
-        If provided, it is called as::
-
-            callback_get_preds(model, X)
-
-        If ``None``, predicted labels are computed from logits as::
-
-            preds = torch.argmax(logits, dim=1)
-
-        The returned ``preds`` must be a 1D tensor/array of length ``n_samples``.
+        Hook to compute predicted labels.
+        If ``None``, predictions are computed as ``argmax(logits, dim=1)``.
 
     callback_get_probas : callable | None, optional
-        Optional hook to compute class probabilities during inference.
-
-        If provided, it is called as::
-
-            callback_get_probas(model, X)
-
-        If ``None``, probabilities are computed from logits as::
-
-            probas = torch.nn.functional.softmax(logits, dim=1)
-
-        The returned ``probas`` must be a 2D tensor/array of shape
-        ``(n_samples, n_classes)``.
+        Hook to compute class probabilities.
+        If ``None``, probabilities are computed using softmax over logits.
 
     callback_get_model : callable | None, optional
-        Factory function that returns a ``torch.nn.Module`` instance.
-        Used when ``model=None``.
-
-        If provided, it is called as::
-
-            callback_get_model(X_train, y_train)
-
-        where ``X_train`` and ``y_train`` are the training arrays returned by
-        ``utils.load_data``.
-
-        This callback is useful when the model architecture depends on properties
-        of the training data (e.g., number of channels, number of time samples,
-        or number of classes).
+        Factory function returning a ``torch.nn.Module``.
+        Called as ``callback_get_model(X_train, y_train)`` if ``model`` is ``None``.
 
     optimizer_params : dict | None, optional
         Keyword arguments passed to the optimizer constructor.
 
     model : torch.nn.Module | None, optional
-        Pre-instantiated model. If provided, ``callback_get_model`` is ignored.
+        Pre-instantiated model. If ``None``, ``callback_get_model`` must be provided.
 
     scheduler : type | None, optional
-        Learning-rate scheduler class (not an instance). If provided, it is
-        configured inside the training routine.
+        Learning-rate scheduler class.
 
     scheduler_params : dict | None, optional
         Keyword arguments passed to the scheduler constructor.
 
     device : {"cpu", "cuda"}, optional
-        Device used for training and inference when DDP/DP is disabled.
-
-    enable_ddp : bool, optional
-        If True, enable DistributedDataParallel training. Requires ``device="cuda"``.
-        DDP process parameters are obtained via ``utils.get_ddp_params``.
-
-    enable_dp : bool, optional
-        If True, enable DataParallel training. Cannot be True at the same time as
-        ``enable_ddp``. Requires ``device="cuda"``.
+        Device used for training and inference.
 
     num_workers : int, optional
-        Number of DataLoader workers per process/GPU. Effective only when
-        ``enable_ddp=True``.
+        Number of worker processes used by PyTorch DataLoaders.
+
+        **For maximum reproducibility, it is strongly recommended to use
+        ``num_workers=0``.**
+
+        Using multiple workers may introduce non-determinism depending on the
+        dataset, transformations, and system configuration.
 
     scoring : str | callable | list of (str or callable), optional
-        Scoring specification(s) computed on each test group.
-        If a string, it is resolved with :func:`sklearn.metrics.get_scorer` and the
-        underlying ``_score_func`` is used.
-        If a callable, it must have signature ``scoring(y_true, y_pred)`` and return
-        a scalar.
+        Scoring metric(s) computed on each test group.
 
     scoring_name : str | list of str | None, optional
-        Column name(s) for the returned scores. If ``None``, names are inferred:
-        strings keep their name, callables become ``"callable"`` (and other types
-        become ``"unknown_scoring"``). Must match ``scoring`` length.
+        Column names corresponding to ``scoring``.
 
     enable_wandb_logging : bool, optional
-        If True, log metrics and predictions to Weights & Biases. In DDP, logging is
-        performed only on rank 0.
+        If True, log metrics and predictions to Weights & Biases.
 
     wandb_params : dict | None, optional
-        Keyword arguments passed to ``wandb.init``.
+        Parameters forwarded to ``wandb.init``.
 
     checkpoint_fname : path-like | None, optional
-        If provided, loads a checkpoint before test-time inference and restores
-        ``model_state_dict``. Typically ends with ``.pth``.
+        Path to a checkpoint file loaded before test-time inference.
 
     history_fname : path-like | None, optional
-        File path for saving training history, as handled by the training routine.
+        File path for saving training history.
 
     samples_fname : path-like | None, optional
-        If provided, writes sample-level outputs to this path in Parquet format.
-        The file includes true labels, predicted labels, per-class probabilities,
-        per-class logits, and the model name (plus ``additional_values`` if given).
+        If provided, writes sample-level predictions (labels, preds, logits, probas)
+        to a Parquet file.
 
     normalization_fname : path-like | None, optional
-        If provided and ``enable_normalization=True``, saves normalization parameters
-        (mean/std) via msgpack.
+        If provided and ``enable_normalization=True``, saves normalization parameters.
 
     saliency_map_fname : path-like | None, optional
-        If provided, computes saliency maps for each test group and each class and
-        saves them via msgpack.
+        If provided, computes saliency maps for each test group and class and saves
+        them via msgpack.
 
     early_stopping : int | callable | None, optional
-        Early stopping controller or patience parameter, as interpreted by the
-        training routine.
+        Early stopping controller or patience parameter.
 
     model_name : str | None, optional
-        Name recorded in the outputs. If ``None``, defaults to
-        ``model.__class__.__name__``.
+        Model name recorded in outputs. Defaults to ``model.__class__.__name__``.
 
     enable_normalization : bool, optional
-        If True, apply z-score normalization to train/valid/test arrays using
-        ``preprocessing.normalize``. When enabled, normalization parameters can be
-        saved with ``normalization_fname``.
+        If True, apply z-score normalization to train/valid/test arrays.
 
     label_keys : dict | None, optional
-        Mapping from class label strings to integer IDs. Used for saliency map
-        computation. If ``None``, it is inferred from unique values in ``y_test``.
+        Mapping from class labels to integer IDs, used for saliency map computation.
 
     seed : int | None, optional
-        Random seed for NumPy/Python/PyTorch. When provided, deterministic CuDNN
-        settings are enabled.
+        Random seed controlling NumPy, Python, and PyTorch RNGs.
+
+        When provided, the following deterministic settings are enabled:
+
+        - ``torch.backends.cudnn.deterministic = True``
+        - ``torch.backends.cudnn.benchmark = False``
+        - TF32 disabled for matmul and cuDNN
 
     desc : str | None, optional
-        Optional description forwarded to the training routine (e.g., for logging).
+        Optional experiment description.
 
     additional_values : dict | None, optional
-        Extra metadata appended as columns to the output DataFrame (and also to the
-        sample-level table if ``samples_fname`` is provided).
+        Extra metadata appended as columns to output DataFrames.
 
     Returns
     -------
     df : pandas.DataFrame
         Summary results with one row per test group. Includes JSON-serialized
-        ``items_train`` / ``items_valid`` / ``items_test`` strings, one column per
-        requested scoring metric, and a ``"model"`` column.
+        ``items_train`` / ``items_valid`` / ``items_test`` specifications, scoring
+        metrics, and the model name.
 
     Notes
     -----
-    - ``items_test`` grouping controls evaluation granularity: each inner list is
-      treated as one test set after loading/merging by ``utils.load_data``.
-    - If a scoring string is provided, this function uses
-      ``sklearn.metrics.get_scorer(scoring)._score_func`` rather than calling the
-      scorer object; ensure the callable matches your intended behavior.
-    - In DDP mode, W&B logging is performed only on rank 0.
-    - Saliency map computation runs over each test group and each class index.
+    - Grouped test evaluation is controlled entirely by ``items_test``.
+    - For strict reproducibility (recommended for method comparison and papers):
+
+      - set ``seed`` to a fixed integer
+      - use ``num_workers = 0``
+      - avoid non-deterministic preprocessing steps
+
+    - Saliency maps are computed post-training using input gradients averaged over
+      samples of the specified class.
+
+    - Output file formats are determined solely by the filenames provided by the user.
+      rosoku does **not** automatically append file extensions.
+
+      Please ensure that you explicitly specify the desired file extension when
+      providing output paths. The recommended extensions are:
+
+      - ``history_fname``        → ``.parquet``   (pandas DataFrame)
+      - ``checkpoint_fname``     → ``.pth``       (PyTorch checkpoint)
+      - ``samples_fname``        → ``.parquet``   (pandas DataFrame)
+      - ``normalization_fname``  → ``.msgpack``   (msgpack-serialized dict)
+      - ``saliency_map_fname``   → ``.msgpack``   (msgpack-serialized dict)
+
+      If no extension (or an unexpected one) is provided, the file will still be
+      written, but its format may not be correctly inferred by downstream tools.
 
     Examples
     --------
-    Provide a model factory that depends on the input shape::
+    Minimal usage with a model factory::
 
         def get_model(X_train, y_train):
-            n_ch = X_train.shape[1]
-            n_t = X_train.shape[2]
-            n_classes = len(np.unique(y_train))
-            return MyNet(n_ch=n_ch, n_times=n_t, n_classes=n_classes)
+            return MyNet(
+                n_ch=X_train.shape[1],
+                n_times=X_train.shape[2],
+                n_classes=len(np.unique(y_train)),
+            )
 
         df = deeplearning(
-            items_train=[{"sub": 1, "ses": 1}],
-            items_valid=[{"sub": 1, "ses": 2}],
-            items_test=[[{"sub": 1, "ses": 3}]],
+            items_train=[{"sub": 1}],
+            items_valid=None,
+            items_test=[[{"sub": 1, "ses": 2}]],
             callback_load_ndarray=load_xy,
             callback_get_model=get_model,
-            device="cuda",
-            n_epochs=200,
-            scoring=["accuracy", "balanced_accuracy"],
+            seed=42,
+            num_workers=0,
         )
     """
-
     if enable_wandb_logging:
         import wandb
 
@@ -509,14 +461,13 @@ def deeplearning(
         torch.cuda.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
 
-        g = torch.Generator()
-        g.manual_seed(seed)
-
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
-    # load data
+        torch.backends.cuda.matmul.allow_tf32 = False
+        torch.backends.cudnn.allow_tf32 = False
 
+    # load data
     X_train, X_valid, X_test, y_train, y_valid, y_test = utils.load_data(
         items_train=items_train,
         items_valid=items_valid,
@@ -528,20 +479,6 @@ def deeplearning(
         callback_proc_mode=callback_proc_mode,
         callback_convert_epochs_to_ndarray=callback_convert_epochs_to_ndarray,
     )
-
-    """
-    from pathlib import Path
-
-    np.savez(
-        Path("~/rosoku-test/data.npz").expanduser(),
-        X_train=X_train,
-        X_valid=X_valid,
-        X_test=X_test,
-        y_train=y_train,
-        y_valid=y_valid,
-        y_test=y_test,
-    )
-    """
 
     if len(items_test) != len(X_test):
         raise RuntimeError("len(items_test) != len(X_test)")

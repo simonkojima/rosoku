@@ -43,7 +43,6 @@ rosoku.utils
 
    rosoku.utils.get_labels_from_epochs
    rosoku.utils.EarlyStopping
-   rosoku.utils.get_ddp_params
    rosoku.utils.get_predictions
    rosoku.utils.convert_epochs_to_ndarray
    rosoku.utils.load_data

@@ -446,12 +446,13 @@ def ndarray_to_dataloader(
     Convert NumPy arrays to PyTorch DataLoaders.
 
     This is a convenience wrapper that converts NumPy arrays to PyTorch tensors,
-    wraps them into :class:`torch.utils.data.TensorDataset` objects, and finally
-    constructs :class:`torch.utils.data.DataLoader` objects for training,
-    validation, and test splits.
+    wraps them into :class:`torch.utils.data.TensorDataset` objects, and constructs
+    :class:`torch.utils.data.DataLoader` instances for training, validation, and
+    test splits.
 
-    Grouped test evaluation is supported: if ``X_test``/``y_test`` are provided
-    as lists, the returned test DataLoaders preserve the list structure.
+    Grouped test evaluation is supported: if ``X_test`` / ``y_test`` are provided
+    as lists, the returned test DataLoaders preserve the list structure, enabling
+    evaluation of multiple test groups.
 
     Parameters
     ----------
@@ -482,19 +483,25 @@ def ndarray_to_dataloader(
         Device to which the tensors are moved before dataset/DataLoader creation
         (default: ``"cpu"``).
 
-    enable_DS : bool, optional
-        If True, use :class:`torch.utils.data.distributed.DistributedSampler`
-        for train/valid/test and return ``sampler_train`` as an additional output.
-        When enabled, you must call ``sampler_train.set_epoch(epoch)`` every epoch
-        (default: False).
+    num_workers : int, optional
+        Number of worker processes used by each DataLoader (default: 0).
 
-    DS_params : dict | None, optional
-        Distributed sampler parameters. Required when ``enable_DS=True``.
-        Expected keys are ``"world_size"``, ``"rank"``, and ``"num_workers"``.
+        For **maximum reproducibility**, it is recommended to keep
+        ``num_workers=0``, as multi-process data loading can introduce
+        non-determinism depending on the dataset, transformations, and system
+        configuration.
+
+    seed : int or None, optional
+        Random seed used to control deterministic behavior in data loading.
+        This value is forwarded to ``dataset_to_dataloader`` and used to seed
+        PyTorch, NumPy, and Python RNGs where applicable.
 
     generator : None | int | torch.Generator, optional
-        Random generator control for deterministic behavior, forwarded to
-        :func:`dataset_to_dataloader`.
+        Random generator controlling the DataLoader sampling order.
+
+        - If ``None``, no explicit generator is used.
+        - If ``int``, a new :class:`torch.Generator` is created and seeded.
+        - If :class:`torch.Generator`, it is used directly.
 
     Returns
     -------
@@ -505,12 +512,8 @@ def ndarray_to_dataloader(
         DataLoader for the validation dataset.
 
     dataloader_test : torch.utils.data.DataLoader or list of torch.utils.data.DataLoader
-        DataLoader(s) for the test dataset(s). A list is returned if
-        ``X_test`` is a list.
-
-    sampler_train : torch.utils.data.distributed.DistributedSampler
-        Returned only when ``enable_DS=True``. The DistributedSampler used for
-        the training dataset.
+        DataLoader(s) for the test dataset(s). A list is returned if ``X_test`` is
+        a list.
 
     See Also
     --------
@@ -521,26 +524,42 @@ def ndarray_to_dataloader(
         Wrap tensors into TensorDataset objects.
 
     dataset_to_dataloader :
-        Construct DataLoaders (optionally with DistributedSampler).
+        Construct DataLoaders with explicit control over seeding and workers.
+
+    Notes
+    -----
+    - This function is a thin wrapper around
+      ``ndarray_to_tensor → tensor_to_dataset → dataset_to_dataloader``.
+    - For strict reproducibility (e.g., debugging, method comparison, or paper
+      experiments), it is recommended to use:
+
+      - ``num_workers = 0``
+      - a fixed ``seed``
+
+    - Using ``num_workers > 0`` can improve throughput but may introduce subtle
+      non-determinism even when seeds are set.
 
     Examples
     --------
-    Standard DataLoaders::
+    Standard (reproducible) usage::
 
         dl_train, dl_valid, dl_test = ndarray_to_dataloader(
-            X_train, y_train, X_valid, y_valid, X_test, y_test,
-            batch_size=64, device="cpu", generator=0
+            X_train, y_train,
+            X_valid, y_valid,
+            X_test, y_test,
+            batch_size=64,
+            num_workers=0,
+            seed=42,
         )
 
-    Distributed DataLoaders (DDP)::
+    Grouped test evaluation::
 
-        dl_train, dl_valid, dl_test, sampler_train = ndarray_to_dataloader(
-            X_train, y_train, X_valid, y_valid, X_test, y_test,
+        dl_train, dl_valid, dl_test = ndarray_to_dataloader(
+            X_train, y_train,
+            X_valid, y_valid,
+            [X_test_ses1, X_test_ses2],
+            [y_test_ses1, y_test_ses2],
             batch_size=64,
-            device="cuda",
-            enable_DS=True,
-            DS_params={"world_size": 4, "rank": 0, "num_workers": 4},
-            generator=0,
         )
     """
     (
@@ -592,7 +611,7 @@ def load_data(
     :func:`deeplearning` pipelines. It takes user-defined *items* that describe which
     data to load for the train/validation/test splits, calls user-provided loading
     functions (for MNE Epochs or NumPy arrays), optionally applies preprocessing, and
-    returns NumPy arrays suitable for machine-learning models.
+    returns NumPy arrays suitable for downstream models.
 
     In rosoku, an *item* is an arbitrary user-defined object (often a dict) that
     encodes how to locate/load a subset of data (e.g., subject/session/run metadata).
@@ -601,61 +620,66 @@ def load_data(
     Parameters
     ----------
     items_train : list
-        List of items specifying which data belong to the training split. Each item
-        can be any user-defined object (e.g., a dict with subject/session metadata).
+        List of items describing the training split.
 
     items_valid : list or None
-        List of items specifying which data belong to the validation split.
-        If ``None``, no validation set is loaded and ``X_valid``/``y_valid`` are
-        returned as ``None``.
+        List of items describing the validation split. If ``None``, no validation set
+        is loaded and ``X_valid``/``y_valid`` are returned as ``None``.
 
     items_test : list
-        List specifying test data and how they are grouped. Each element can be
-        either:
+        Test split specification with optional grouping. Each element defines **one**
+        test evaluation group and can be either:
 
-        - a single item: treated as one test evaluation group
-        - a list of items: all items are loaded and merged as one evaluation group
+        - a single item (e.g., ``"A29"`` or ``{"sub": 1, "ses": 2}``)
+        - a list of items (e.g., ``["A29", "A3"]``) to be loaded/merged as a single group
 
-        Examples
-        --------
-        - ``items_test = ["A29", "A3"]`` results in two test groups:
-          ``[["A29"], ["A3"]]`` (evaluated separately).
-
-        - ``items_test = [["A29", "A3"]]`` results in one merged test group:
-          ``[["A29", "A3"]]``.
+        Notes
+        -----
+        Internally, any single item in ``items_test`` is wrapped to a list
+        ``[item]`` before calling the loading callback, so the loader always receives
+        a list of items.
 
     callback_load_epochs : callable | None, optional
-        Function used to load data as MNE :class:`mne.Epochs` objects.
-        Must accept ``(items, split)``, where ``items`` is a list of items and
-        ``split`` is one of ``{"train", "valid", "test"}``.
+        Loader returning an :class:`mne.Epochs` instance.
 
-        It must return an :class:`mne.Epochs` instance. For grouped test items,
-        your callback should implement any merging/concatenation logic internally.
+        The callback **must** have the signature::
+
+            callback_load_epochs(items, split)
+
+        where ``items`` is a list of items and ``split`` is one of
+        ``{"train", "valid", "test"}``.
+
+        The callback should implement any merging/concatenation logic needed for
+        grouped items (e.g., using :func:`mne.concatenate_epochs`).
 
         Exactly one of ``callback_load_epochs`` and ``callback_load_ndarray`` must be
         provided.
 
     callback_load_ndarray : callable | None, optional
-        Function used to load data directly as NumPy arrays.
-        Must accept ``(items, split)``, where ``items`` is a list of items and
-        ``split`` is one of ``{"train", "valid", "test"}``, and return a tuple
-        ``(X, y)`` where ``X`` is an array-like feature tensor and ``y`` are labels.
+        Loader returning arrays directly.
+
+        The callback **must** have the signature::
+
+            callback_load_ndarray(items, split)
+
+        and return ``(X, y)``, where ``X`` is an array-like feature tensor and ``y``
+        are the corresponding labels.
 
         Exactly one of ``callback_load_epochs`` and ``callback_load_ndarray`` must be
         provided.
 
     callback_proc_epochs : callable | None, optional
-        Optional preprocessing function applied to Epochs objects *before* conversion
-        to NumPy arrays. It is passed through to ``apply_callback_proc`` and can be
-        used for channel selection, cropping, filtering, artifact rejection, etc.
+        Optional preprocessing applied to Epochs objects *before* conversion to arrays.
+        It is invoked via ``apply_callback_proc``. Typical use cases include channel
+        selection, cropping, filtering, artifact rejection, etc.
 
     callback_proc_ndarray : callable | None, optional
-        Optional preprocessing function applied to NumPy arrays after conversion from
-        Epochs or direct ndarray loading. It is passed through to
-        ``apply_callback_proc``.
+        Optional preprocessing applied to ndarray data after conversion (or direct
+        ndarray loading). It is invoked via ``apply_callback_proc``.
 
-        In this function, ndarray preprocessing is performed on dictionaries of the
-        form ``{"X": X, "y": y}`` for train/valid and for each test group.
+        In this function, ndarray preprocessing is performed on dictionaries of the form
+        ``{"X": X, "y": y}`` for the train/valid splits and as a list of such dicts for
+        the test split (one dict per test group).
 
     callback_proc_mode : {"per_split", "all"}, optional
         Controls how preprocessing callbacks are applied, as interpreted by
@@ -667,7 +691,7 @@ def load_data(
         - ``"all"``: process jointly (exact behavior depends on ``apply_callback_proc``).
 
     callback_convert_epochs_to_ndarray : callable, optional
-        Function used to convert Epochs objects to ``(X, y)`` arrays.
+        Function used to convert Epochs objects to arrays.
         Called as ``callback_convert_epochs_to_ndarray(epochs, split)``.
         By default, uses :func:`convert_epochs_to_ndarray`.
 
@@ -680,8 +704,7 @@ def load_data(
         Validation data array, or ``None`` if ``items_valid`` is ``None``.
 
     X_test : list of numpy.ndarray
-        List of test data arrays, one per test evaluation group defined in
-        ``items_test``.
+        List of test data arrays, one per test evaluation group.
 
     y_train : numpy.ndarray
         Training labels.
@@ -690,42 +713,38 @@ def load_data(
         Validation labels, or ``None`` if ``items_valid`` is ``None``.
 
     y_test : list of numpy.ndarray
-        List of label arrays corresponding to each test group in ``X_test``.
+        List of label arrays, one per test evaluation group.
 
     Raises
     ------
     ValueError
-        If neither or both of ``callback_load_epochs`` and ``callback_load_ndarray``
-        are provided.
+        If neither or both of ``callback_load_epochs`` and ``callback_load_ndarray`` are
+        provided.
     ValueError
-        If ``items_train``/``items_valid``/``items_test`` are not lists as required.
+        If ``items_train`` / ``items_valid`` / ``items_test`` are not lists as required.
 
     Notes
     -----
     - Exactly one of ``callback_load_epochs`` and ``callback_load_ndarray`` must be
       provided.
+
     - When ``callback_load_epochs`` is used, the pipeline is::
 
           callback_load_epochs(items_*, split)
-          -> callback_proc_epochs(...)           (optional, via apply_callback_proc)
-          -> callback_convert_epochs_to_ndarray(epochs, split)
-          -> callback_proc_ndarray(...)          (optional, via apply_callback_proc)
+          -> callback_proc_epochs(...)             (optional, via apply_callback_proc)
+          -> callback_convert_epochs_to_ndarray(..., split)
+          -> callback_proc_ndarray(...)            (optional, via apply_callback_proc)
 
     - When ``callback_load_ndarray`` is used, the pipeline is::
 
           callback_load_ndarray(items_*, split)
-          -> callback_proc_ndarray(...)          (optional, via apply_callback_proc)
-
-    - For test data, each element of ``items_test`` defines one evaluation group.
-      If an element is a single item, it is wrapped as ``[item]`` before being passed
-      to the loading callback.
+          -> callback_proc_ndarray(...)            (optional, via apply_callback_proc)
 
     Examples
     --------
-    Load from ndarrays with item lists::
+    Load from ndarrays (single-item groups)::
 
         def load_xy(items, split):
-            # items is a list; here we assume a single-item group
             item = items[0]
             X = np.load(item["X"])
             y = np.load(item["y"])
@@ -734,16 +753,15 @@ def load_data(
         X_train, X_valid, X_test, y_train, y_valid, y_test = load_data(
             items_train=[{"X": "Xtr.npy", "y": "ytr.npy"}],
             items_valid=None,
-            items_test=[[{"X": "Xte.npy", "y": "yte.npy"}]],
+            items_test=[{"X": "Xte.npy", "y": "yte.npy"}],
             callback_load_ndarray=load_xy,
         )
 
-    Group multiple items into one merged test set::
+    Group multiple items into a single merged test set::
 
         def load_epochs(items, split):
             epochs_list = [mne.read_epochs(it["fname"]) for it in items]
-            epochs = mne.concatenate_epochs(epochs_list)
-            return epochs
+            return mne.concatenate_epochs(epochs_list)
 
         X_train, X_valid, X_test, y_train, y_valid, y_test = load_data(
             items_train=[{"fname": "sub-01_ses-01-epo.fif"}],
