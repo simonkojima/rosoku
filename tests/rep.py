@@ -51,7 +51,7 @@ y_train = data["y_train"]
 y_valid = data["y_valid"]
 y_test = data["y_test"]
 
-device = "gpu"
+device = "cuda"
 
 dataloader_train, dataloader_valid, dataloader_test = (
     rosoku.utils.ndarray_to_dataloader(
