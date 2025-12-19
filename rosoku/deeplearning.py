@@ -232,7 +232,6 @@ def deeplearning(
         enable_normalization=False,
         label_keys=None,
         seed=None,
-        desc=None,
         additional_values=None,
 ):
     """
@@ -389,9 +388,6 @@ def deeplearning(
         - ``torch.backends.cudnn.benchmark = False``
         - TF32 disabled for matmul and cuDNN
 
-    desc : str | None, optional
-        Optional experiment description.
-
     additional_values : dict | None, optional
         Extra metadata appended as columns to output DataFrames.
 
@@ -494,14 +490,12 @@ def deeplearning(
         "callback_get_model": callback_get_model,
         "scheduler": scheduler,
         "scheduler_params": scheduler_params,
-        "callback_proc_epochs": callback_proc_epochs,
         "enable_wandb_logging": enable_wandb_logging,
         "wandb_params": wandb_params,
         "checkpoint_fname": checkpoint_fname,
         "history_fname": history_fname,
         "early_stopping": early_stopping,
         "seed": seed,
-        "desc": desc,
     }
 
     run_experiment(

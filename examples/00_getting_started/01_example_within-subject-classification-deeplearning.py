@@ -103,7 +103,7 @@ resample = 128
 
 lr = 1e-3
 weight_decay = 1e-2
-n_epochs = 100
+n_epochs = 500
 batch_size = 8
 patience = 75
 enable_normalization = True
