@@ -642,6 +642,18 @@ def deeplearning(
         callback_convert_epochs_to_ndarray=callback_convert_epochs_to_ndarray,
     )
 
+    from pathlib import Path
+
+    np.savez(
+        Path("~/rosoku-test/data.npz").expanduser(),
+        X_train=X_train,
+        X_valid=X_valid,
+        X_test=X_test,
+        y_train=y_train,
+        y_valid=y_valid,
+        y_test=y_test,
+    )
+
     if len(items_test) != len(X_test):
         raise RuntimeError("len(items_test) != len(X_test)")
 

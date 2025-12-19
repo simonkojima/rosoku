@@ -512,7 +512,8 @@ def dataset_to_dataloader(
         g.manual_seed(generator)
 
         def func_worker_init(worker_id):
-            worker_seed = generator + worker_id
+            # worker_seed = generator + worker_id
+            worker_seed = torch.initial_seed() % 2 ** 32
             np.random.seed(worker_seed)
             random.seed(worker_seed)
             torch.manual_seed(worker_seed)
@@ -521,7 +522,8 @@ def dataset_to_dataloader(
         g = generator
 
         def func_worker_init(worker_id):
-            worker_seed = g.initial_seed() + worker_id
+            # worker_seed = g.initial_seed() + worker_id
+            worker_seed = torch.initial_seed() % 2 ** 32
             np.random.seed(worker_seed)
             random.seed(worker_seed)
             torch.manual_seed(worker_seed)
