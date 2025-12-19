@@ -1,3 +1,4 @@
+import random
 import numpy as np
 
 
@@ -379,6 +380,7 @@ def dataset_to_dataloader(
         dataset_valid,
         dataset_test,
         batch_size,
+        num_workers=0,
         enable_DS=False,
         DS_params=None,
         generator=None,
@@ -529,7 +531,6 @@ def dataset_to_dataloader(
 
     if enable_DS:
         world_size = DS_params["world_size"]
-        num_workers = DS_params["num_workers"]
         rank = DS_params["rank"]
 
         persistent_workers = num_workers > 0
@@ -602,21 +603,31 @@ def dataset_to_dataloader(
             shuffle=True,
             generator=g,
             worker_init_fn=func_worker_init,
+            num_workers=num_workers,
         )
         dataloader_valid = torch.utils.data.DataLoader(
-            dataset_valid, batch_size=batch_size, shuffle=False
+            dataset_valid,
+            batch_size=batch_size,
+            shuffle=False,
+            num_workers=num_workers,
         )
 
         if isinstance(dataset_test, list):
             dataloader_test = [
                 torch.utils.data.DataLoader(
-                    dataset, batch_size=batch_size, shuffle=False
+                    dataset,
+                    batch_size=batch_size,
+                    shuffle=False,
+                    num_workers=num_workers,
                 )
                 for dataset in dataset_test
             ]
         else:
             dataloader_test = torch.utils.data.DataLoader(
-                dataset_test, batch_size=batch_size, shuffle=False
+                dataset_test,
+                batch_size=batch_size,
+                shuffle=False,
+                num_workers=num_workers,
             )
 
         return dataloader_train, dataloader_valid, dataloader_test
@@ -631,6 +642,7 @@ def ndarray_to_dataloader(
         y_test,
         batch_size,
         device="cpu",
+        num_workers=0,
         enable_DS=False,
         DS_params=None,
         generator=None,
@@ -760,6 +772,7 @@ def ndarray_to_dataloader(
         dataset_train,
         dataset_valid,
         dataset_test,
+        num_workers=num_workers,
         batch_size=batch_size,
         enable_DS=enable_DS,
         DS_params=DS_params,

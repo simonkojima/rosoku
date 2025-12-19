@@ -214,7 +214,6 @@ def main(
             enable_DS=True,
             DS_params={
                 "world_size": world_size,
-                "num_workers": num_workers,
                 "rank": rank,
             },
             generator=seed,

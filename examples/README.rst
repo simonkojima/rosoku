@@ -8,7 +8,7 @@ To run the examples, install the following packages:
 
 .. code-block:: bash
 
-   pip install moabb
+   pip install moabb braindecode
 
 .. toctree::
    :hidden:
