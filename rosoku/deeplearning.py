@@ -462,6 +462,8 @@ def deeplearning(
         torch.backends.cuda.matmul.allow_tf32 = False
         torch.backends.cudnn.allow_tf32 = False
 
+        torch.use_deterministic_algorithms(True)
+
     # load data
     X_train, X_valid, X_test, y_train, y_valid, y_test = utils.load_data(
         items_train=items_train,
