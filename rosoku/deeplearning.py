@@ -230,6 +230,7 @@ def deeplearning(
         early_stopping=None,
         model_name=None,
         enable_normalization=False,
+        use_deterministic_algorithms=False,
         label_keys=None,
         seed=None,
         additional_values=None,
@@ -376,6 +377,22 @@ def deeplearning(
     enable_normalization : bool, optional
         If True, apply z-score normalization to train/valid/test arrays.
 
+    use_deterministic_algorithms : bool, optional
+        If True, enforce PyTorch deterministic algorithms by calling
+        :func:`torch.use_deterministic_algorithms`.
+
+        This option helps maximize reproducibility by preventing the use of known
+        non-deterministic GPU/CPU kernels. When enabled, PyTorch may raise a
+        :class:`RuntimeError` if an operation does not have a deterministic
+        implementation on the current backend/device.
+
+        Notes:
+        - This flag is applied together with ``seed`` (if provided). In practice, for
+          strict reproducibility you typically want both ``seed`` and
+          ``use_deterministic_algorithms=True``.
+        - Enabling deterministic algorithms can reduce performance and may change
+          which kernels are selected.
+
     label_keys : dict | None, optional
         Mapping from class labels to integer IDs, used for saliency map computation.
 
@@ -462,7 +479,8 @@ def deeplearning(
         torch.backends.cuda.matmul.allow_tf32 = False
         torch.backends.cudnn.allow_tf32 = False
 
-        torch.use_deterministic_algorithms(True)
+    if use_deterministic_algorithms:
+        torch.use_deterministic_algorithms(use_deterministic_algorithms)
 
     # load data
     X_train, X_valid, X_test, y_train, y_valid, y_test = utils.load_data(
