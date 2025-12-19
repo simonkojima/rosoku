@@ -69,6 +69,8 @@ dataloader_train, dataloader_valid, dataloader_test = (
 
 model = callback_get_model(X_train, y_train)
 
+model.to(device)
+
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.AdamW(lr=1e-3, params=model.parameters(), weight_decay=1e-2)
 
