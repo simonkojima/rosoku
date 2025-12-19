@@ -108,7 +108,6 @@ batch_size = 8
 patience = 75
 enable_normalization = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
-# device = "cpu"
 
 seed = 42
 

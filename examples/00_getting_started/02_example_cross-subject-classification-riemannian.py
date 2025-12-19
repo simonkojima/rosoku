@@ -12,11 +12,8 @@ Example: Cross-subject classification with riemannian classifier
 # ===============
 import functools
 import numpy as np
-
 import mne
-
-import moabb.datasets
-
+from moabb.datasets import Dreyer2023
 import pyriemann
 import rosoku
 
@@ -25,15 +22,15 @@ import rosoku
 # Define a callback function to load ndarray data
 # ===============================================
 def callback_load_ndarray(
-    items,
-    split,
-    tmin,
-    tmax,
-    l_freq,
-    h_freq,
-    order_filter,
-    label_keys,
-    dataset,
+        items,
+        split,
+        tmin,
+        tmax,
+        l_freq,
+        h_freq,
+        order_filter,
+        label_keys,
+        dataset,
 ):
     X_list = []
     y_list = []
@@ -87,7 +84,7 @@ def callback_load_ndarray(
 # ==================
 
 label_keys = {"left_hand": 0, "right_hand": 1}
-dataset = moabb.datasets.Dreyer2023()
+dataset = Dreyer2023()
 
 results = rosoku.conventional(
     items_train=[1, 2, 3],

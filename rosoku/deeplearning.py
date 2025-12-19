@@ -105,7 +105,6 @@ def deeplearning_train(
     if history_fname is not None:
         df_save = pd.DataFrame(history)
         df_save.to_parquet(history_fname)
-        df_save.to_html(f"{history_fname}.html")
 
     return model
 
