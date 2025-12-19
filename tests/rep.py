@@ -14,9 +14,6 @@ def set_seed(seed):
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
 
-    g = torch.Generator()
-    g.manual_seed(seed)
-
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
@@ -86,5 +83,4 @@ for X, y in dataloader_train:
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-
     print(f"{loss.item()=}")
