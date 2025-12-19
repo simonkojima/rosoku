@@ -98,7 +98,7 @@ def convert_epochs_to_ndarray(
 # Run the Experiment
 # ==================
 
-subject = 56
+subject = 10
 resample = 128
 
 lr = 1e-3
@@ -109,8 +109,6 @@ patience = 75
 enable_normalization = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
 # device = "cpu"
-enable_ddp = False
-enable_dp = False
 
 seed = 42
 
