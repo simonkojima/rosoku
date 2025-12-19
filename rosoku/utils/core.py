@@ -169,12 +169,12 @@ class EarlyStopping:
 
 
 def get_predictions(
-        model,
-        dataloader,
-        device="cpu",
-        callback_get_logits=None,
-        callback_get_probas=None,
-        callback_get_preds=None,
+    model,
+    dataloader,
+    device="cpu",
+    callback_get_logits=None,
+    callback_get_probas=None,
+    callback_get_preds=None,
 ):
     """
     Run inference on a dataloader and return predictions, labels, logits and class probabilities.
@@ -266,7 +266,7 @@ def get_predictions(
 
 
 def evaluation_dataloader(
-        model, dataloader, criterion=None, device="cpu", enable_ddp=False
+    model, dataloader, criterion=None, device="cpu", enable_ddp=False
 ):
     import torch
 
@@ -316,21 +316,21 @@ def evaluation_dataloader(
 
 
 def _train_epoch(
-        model,
-        criterion,
-        optimizer,
-        dataloader_train,
-        dataloader_valid,
-        epoch,
-        device="cpu",
-        loss_best=None,
-        history=None,
-        scheduler=None,
-        checkpoint_fname=None,
-        enable_wandb=True,
-        enable_ddp=False,
-        enable_dp=False,
-        rank=0,
+    model,
+    criterion,
+    optimizer,
+    dataloader_train,
+    dataloader_valid,
+    epoch,
+    device="cpu",
+    loss_best=None,
+    history=None,
+    scheduler=None,
+    checkpoint_fname=None,
+    enable_wandb=True,
+    enable_ddp=False,
+    enable_dp=False,
+    rank=0,
 ):
     import torch
 

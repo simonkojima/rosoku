@@ -14,10 +14,10 @@ def func_get_fnames(subject):
     from pathlib import Path
 
     base_dir = (
-            Path("~/Documents/datasets/dreyer_2023/derivatives")
-            / "epochs"
-            / "l_freq-8.0_h_freq-30.0_resample-128"
-            / subject
+        Path("~/Documents/datasets/dreyer_2023/derivatives")
+        / "epochs"
+        / "l_freq-8.0_h_freq-30.0_resample-128"
+        / subject
     )
 
     fnames_list = list()

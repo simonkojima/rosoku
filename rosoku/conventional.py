@@ -7,27 +7,27 @@ from .utils.core import _add_values_to_df
 
 
 def conventional(
-        items_train,
-        items_test,
-        callback_load_epochs=None,
-        callback_proc_epochs=None,
-        callback_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
-        callback_load_ndarray=None,
-        callback_proc_ndarray=None,
-        callback_proc_mode="per_split",
-        callback_fit=None,
-        callback_predict=None,
-        callback_predict_proba=None,
-        callback_get_models=None,
-        scoring="accuracy",
-        scoring_name=None,
-        models=[
-            pyriemann.classification.TSClassifier(),
-            pyriemann.classification.MDM(),
-        ],
-        model_names=None,
-        samples_fname=None,
-        additional_values=None,
+    items_train,
+    items_test,
+    callback_load_epochs=None,
+    callback_proc_epochs=None,
+    callback_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
+    callback_load_ndarray=None,
+    callback_proc_ndarray=None,
+    callback_proc_mode="per_split",
+    callback_fit=None,
+    callback_predict=None,
+    callback_predict_proba=None,
+    callback_get_models=None,
+    scoring="accuracy",
+    scoring_name=None,
+    models=[
+        pyriemann.classification.TSClassifier(),
+        pyriemann.classification.MDM(),
+    ],
+    model_names=None,
+    samples_fname=None,
+    additional_values=None,
 ):
     """
     Run a conventional (non-deep-learning) classification pipeline.
