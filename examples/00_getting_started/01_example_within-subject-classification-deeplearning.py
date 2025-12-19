@@ -158,7 +158,6 @@ results = rosoku.deeplearning(
     scheduler=scheduler,
     scheduler_params=scheduler_params,
     device=device,
-    enable_ddp=enable_ddp,
     early_stopping=early_stopping,
     enable_normalization=enable_normalization,
     history_fname=(save_base / "history" / f"sub-{subject}.parquet"),

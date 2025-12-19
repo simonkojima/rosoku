@@ -10,91 +10,6 @@ def _add_values_to_df(df, values):
     return df
 
 
-def get_ddp_params():
-    """
-    Retrieve Distributed Data Parallel (DDP) configuration from environment variables.
-
-    This function collects process rank, world size, master address, and master port
-    from environment variables required for PyTorch Distributed Data Parallel (DDP).
-    It supports both standard variables (``RANK``, ``LOCAL_RANK``) and Slurm-based
-    scheduling variables (``SLURM_PROCID``, ``SLURM_LOCALID``) as a fallback.
-
-    Returns
-    -------
-    params : dict
-        Dictionary containing the distributed configuration:
-
-        - ``"world_size"`` : int
-          Total number of processes participating in the job.
-        - ``"master_addr"`` : str
-          Address of the master process.
-        - ``"master_port"`` : str
-          Port used to initialize communication.
-        - ``"rank"`` : int
-          Global process rank.
-        - ``"local_rank"`` : int
-          Local rank within the current node.
-
-    Raises
-    ------
-    RuntimeError
-        If required environment variables cannot be parsed from either
-        PyTorch-style or Slurm-style distributed launch configurations.
-
-    Notes
-    -----
-    - Expected environment variables:
-
-        **Primary (PyTorch standard)**
-        ``WORLD_SIZE, MASTER_ADDR, MASTER_PORT, RANK, LOCAL_RANK``
-
-        **Fallback (Slurm)**
-        ``SLURM_PROCID, SLURM_LOCALID``
-
-    - Intended for use inside DDP initialization routines where distributed
-      parameters must be inferred from the runtime environment.
-
-    Examples
-    --------
-    >>> params = get_ddp_params()
-    >>> params
-    {'world_size': 4, 'master_addr': '10.0.0.1', 'master_port': '12345',
-     'rank': 0, 'local_rank': 0}
-    """
-    import os
-
-    try:
-        world_size = int(os.environ["WORLD_SIZE"])
-        master_addr = os.environ["MASTER_ADDR"]
-        master_port = os.environ["MASTER_PORT"]
-    except:
-        raise RuntimeError(
-            "WORLD_SIZE, MASTER_ADDR, MASTER_PORT was not parsed from os.environ."
-        )
-
-    try:
-        rank = int(os.environ["RANK"])
-        local_rank = int(os.environ["LOCAL_RANK"])
-    except:
-        try:
-            rank = int(os.environ["SLURM_PROCID"])
-            local_rank = int(os.environ["SLURM_LOCALID"])
-        except:
-            raise RuntimeError(
-                "SLURM_PROCID, SLURM_LOCALID or RANK, LOCAL_RANK was not parsed from os.environ."
-            )
-
-    params = {
-        "world_size": world_size,
-        "master_addr": master_addr,
-        "master_port": master_port,
-        "rank": rank,
-        "local_rank": local_rank,
-    }
-
-    return params
-
-
 class EarlyStopping:
     """
     Simple early stopping utility for training loops.
@@ -265,9 +180,7 @@ def get_predictions(
     return preds_list, labels_list, logits_list, probas_list
 
 
-def evaluation_dataloader(
-        model, dataloader, criterion=None, device="cpu", enable_ddp=False
-):
+def evaluation_dataloader(model, dataloader, criterion=None, device="cpu"):
     import torch
 
     total_loss = 0
@@ -287,32 +200,13 @@ def evaluation_dataloader(
             correct += (preds == y).sum().item()
             total += y.size(0)
 
-    if enable_ddp:
-        total_loss_tensor = torch.tensor(total_loss, device=device)
-        correct_tensor = torch.tensor(correct, device=device)
-        total_tensor = torch.tensor(total, device=device)
+    acc = correct / total
 
-        torch.distributed.all_reduce(
-            total_loss_tensor, op=torch.distributed.ReduceOp.SUM
-        )
-        torch.distributed.all_reduce(correct_tensor, op=torch.distributed.ReduceOp.SUM)
-        torch.distributed.all_reduce(total_tensor, op=torch.distributed.ReduceOp.SUM)
-
-        loss_avg = total_loss_tensor.item() / total_tensor.item()
-        acc = correct_tensor.item() / total_tensor.item()
-
-        if criterion is not None:
-            return acc, loss_avg
-        else:
-            return acc
+    if criterion is not None:
+        loss_avg = total_loss / total
+        return acc, loss_avg
     else:
-        acc = correct / total
-
-        if criterion is not None:
-            loss_avg = total_loss / total
-            return acc, loss_avg
-        else:
-            return acc
+        return acc
 
 
 def _train_epoch(
@@ -327,34 +221,15 @@ def _train_epoch(
         history=None,
         scheduler=None,
         checkpoint_fname=None,
-        enable_wandb=True,
-        enable_ddp=False,
-        enable_dp=False,
-        rank=0,
+        enable_wandb=False,
 ):
     import torch
-
-    from pathlib import Path
-
-    save_dir = Path("~/rosoku-test").expanduser()
-    save_dir.mkdir(exist_ok=True)
-    saved = False
 
     tic = time.time()
 
     # train
     model.train()
     for X, y in dataloader_train:
-        if epoch == 0 and not saved:
-            torch.save(X.cpu(), save_dir / "X_first_batch.pt")
-            torch.save(y.cpu(), save_dir / "y_first_batch.pt")
-
-            torch.save(
-                {k: v.detach().cpu() for k, v in model.state_dict().items()},
-                save_dir / "model_init_state.pt",
-            )
-
-            saved = True
         X = X.to(device, non_blocking=True)
         y = y.to(device, non_blocking=True)
 
@@ -373,14 +248,12 @@ def _train_epoch(
             dataloader=dataloader_train,
             criterion=criterion,
             device=device,
-            enable_ddp=enable_ddp,
         )
         valid_acc, valid_loss = evaluation_dataloader(
             model=model,
             dataloader=dataloader_valid,
             criterion=criterion,
             device=device,
-            enable_ddp=enable_ddp,
         )
 
     txt_print = f"epoch {epoch:03}, train_loss: {train_loss:06.4f}, train_acc: {train_acc:.2f}, valid_loss: {valid_loss:06.4f}, valid_acc: {valid_acc:.2f}"
@@ -395,7 +268,7 @@ def _train_epoch(
     txt_print += f", et: {toc - tic:.4f}"
 
     # save history
-    if history is not None and rank == 0:
+    if history is not None:
         history["epoch"].append(epoch)
         history["train_loss"].append(train_loss)
         history["valid_loss"].append(valid_loss)
@@ -403,15 +276,11 @@ def _train_epoch(
         history["valid_acc"].append(valid_acc)
 
     # save model if loss was the lowest
-    if checkpoint_fname is not None and rank == 0:
+    if checkpoint_fname is not None:
         if valid_loss < loss_best["value"]:
             checkpoint = dict()
             checkpoint["epoch"] = epoch
-            checkpoint["model_state_dict"] = (
-                model.module.state_dict()
-                if enable_ddp or enable_dp
-                else model.state_dict()
-            )
+            checkpoint["model_state_dict"] = model.state_dict()
             checkpoint["optimizer_state_dict"] = optimizer.state_dict()
             checkpoint["valid_loss"] = valid_loss
             torch.save(checkpoint, checkpoint_fname)
@@ -421,7 +290,7 @@ def _train_epoch(
             txt_print += ", checkpoint saved"
 
     # send log to wandb
-    if enable_wandb and rank == 0:
+    if enable_wandb:
         import wandb
 
         wandb.log(
@@ -434,7 +303,6 @@ def _train_epoch(
         )
 
     # print log
-    if rank == 0:
-        print(txt_print)
+    print(txt_print)
 
     return valid_loss

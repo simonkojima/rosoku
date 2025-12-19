@@ -1,7 +1,6 @@
 from .core import (
     EarlyStopping,
     get_predictions,
-    get_ddp_params,
 )
 
 from .data_load import (

@@ -55,14 +55,10 @@ def deeplearning_train(
         wandb_params=None,
         checkpoint_fname=None,
         history_fname=None,
-        enable_ddp=False,
-        enable_dp=False,
-        sampler_train=None,
         rank=0,
 ):
     if enable_wandb_logging:
-        if (enable_ddp and rank == 0) or (enable_ddp is False):
-            import wandb
+        import wandb
 
     if early_stopping is not None:
         early_stopping.initialize()
@@ -78,13 +74,10 @@ def deeplearning_train(
     loss_best = {"value": float("inf")}
 
     if enable_wandb_logging:
-        if (enable_ddp and rank == 0) or (enable_ddp is False):
-            wandb.init(**wandb_params)
+        wandb.init(**wandb_params)
 
     tic = time.time()
     for epoch in range(n_epochs):
-        if enable_ddp:
-            sampler_train.set_epoch(epoch)
         valid_loss = _train_epoch(
             model=model,
             criterion=criterion,
@@ -98,45 +91,26 @@ def deeplearning_train(
             history=history,
             checkpoint_fname=checkpoint_fname,
             enable_wandb=enable_wandb_logging,
-            enable_dp=enable_dp,
-            enable_ddp=enable_ddp,
-            rank=rank,
         )
 
         if early_stopping is not None:
-            if enable_ddp is False and early_stopping(valid_loss):
+            if early_stopping(valid_loss):
                 print(f"Early stopping was triggered: epoch #{epoch + 1}")
                 break
-            elif enable_ddp:
-                should_stop = False
-                if rank == 0:
-                    should_stop = early_stopping(valid_loss)
-                should_stop_tensor = torch.tensor(
-                    should_stop, dtype=torch.uint8, device=device
-                )
-                torch.distributed.broadcast(should_stop_tensor, src=0)
-                should_stop = bool(should_stop_tensor.item())
-
-                if should_stop:
-                    if rank == 0:
-                        print(f"Early stopping was triggered: epoch #{epoch + 1}")
-                    break
 
     toc = time.time()
     elapsed_time = toc - tic
-    if rank == 0:
-        print(f"Elapsed Time: {elapsed_time:.2f}s")
+    print(f"Elapsed Time: {elapsed_time:.2f}s")
 
-    if history_fname is not None and rank == 0:
+    if history_fname is not None:
         df_save = pd.DataFrame(history)
         df_save.to_parquet(history_fname)
+        df_save.to_html(f"{history_fname}.html")
 
     return model
 
 
-def main(
-        enable_ddp,
-        enable_dp,
+def run_experiment(
         num_workers,
         device,
         X_train,
@@ -167,72 +141,21 @@ def main(
     early_stopping = kwargs.get("early_stopping", None)
     seed = kwargs.get("seed", None)
 
-    # setup DDP
-    if enable_ddp:
-
-        params = utils.get_ddp_params()
-
-        rank = params["rank"]
-        local_rank = params["local_rank"]
-        world_size = params["world_size"]
-        master_addr = params["master_addr"]
-        master_port = params["master_port"]
-
-        print(f"rank: {rank}, world_size: {world_size}, local_rank: {local_rank}")
-        print(f"MASTER_ADDR: {master_addr}, MASTER_PORT: {master_port}")
-
-        torch.distributed.init_process_group(
-            backend="nccl",
-            init_method=f"tcp://{master_addr}:{master_port}",
-            rank=rank,
-            world_size=world_size,
-        )
-
-        if torch.distributed.is_initialized():
-            print(f"[Rank {rank}] Distributed initialized: OK")
-        else:
-            print(f"[Rank {rank}] Distributed not initialized: NG")
-            raise RuntimeError(f"[Rank {rank}] Distributed not initialized: NG")
-
-        device = torch.device(f"cuda:{local_rank}")
-    else:
-        # non DDP
-        rank = 0
-
     # create dataloader
 
-    if enable_ddp:
-        (dataloader_train, dataloader_valid, _, sampler_train) = utils.nd_to_dataloader(
-            X_train,
-            y_train,
-            X_valid,
-            y_valid,
-            X_test,
-            y_test,
-            device="cpu",
-            batch_size=batch_size,
-            enable_DS=True,
-            DS_params={
-                "world_size": world_size,
-                "rank": rank,
-            },
-            generator=seed,
-        )
-    else:
-
-        (dataloader_train, dataloader_valid, _) = utils.ndarray_to_dataloader(
-            X_train,
-            y_train,
-            X_valid,
-            y_valid,
-            X_test,
-            y_test,
-            device="cpu",
-            batch_size=batch_size,
-            enable_DS=False,
-            generator=seed,
-        )
-        sampler_train = None
+    (dataloader_train, dataloader_valid, _) = utils.ndarray_to_dataloader(
+        X_train,
+        y_train,
+        X_valid,
+        y_valid,
+        X_test,
+        y_test,
+        device="cpu",
+        batch_size=batch_size,
+        num_workers=num_workers,
+        seed=seed,
+        generator=None,
+    )
 
     # setup model
 
@@ -244,19 +167,6 @@ def main(
 
     model.to(device)
 
-    if enable_dp:
-        if torch.cuda.device_count() > 1:
-            model = torch.nn.DataParallel(model)
-        else:
-            raise RuntimeError(
-                "You need to have more than one GPU when enable_dp = True."
-            )
-
-    if enable_ddp:
-        model = torch.nn.parallel.DistributedDataParallel(
-            model, device_ids=[local_rank]
-        )
-
     # setup optimizer
     optimizer = setup_optimizer(optimizer, optimizer_params, model)
 
@@ -267,29 +177,21 @@ def main(
     if isinstance(early_stopping, int):
         early_stopping = utils.EarlyStopping(patience=early_stopping)
 
-    try:
-        model = deeplearning_train(
-            dataloader_train=dataloader_train,
-            dataloader_valid=dataloader_valid,
-            n_epochs=n_epochs,
-            model=model,
-            criterion=criterion,
-            device=device,
-            optimizer=optimizer,
-            scheduler=scheduler,
-            enable_wandb_logging=enable_wandb_logging,
-            wandb_params=wandb_params,
-            checkpoint_fname=checkpoint_fname,
-            history_fname=history_fname,
-            early_stopping=early_stopping,
-            enable_ddp=enable_ddp,
-            enable_dp=enable_dp,
-            sampler_train=sampler_train,
-            rank=rank,
-        )
-    finally:
-        if enable_ddp:
-            torch.distributed.destroy_process_group()
+    model = deeplearning_train(
+        dataloader_train=dataloader_train,
+        dataloader_valid=dataloader_valid,
+        n_epochs=n_epochs,
+        model=model,
+        criterion=criterion,
+        device=device,
+        optimizer=optimizer,
+        scheduler=scheduler,
+        enable_wandb_logging=enable_wandb_logging,
+        wandb_params=wandb_params,
+        checkpoint_fname=checkpoint_fname,
+        history_fname=history_fname,
+        early_stopping=early_stopping,
+    )
 
 
 def deeplearning(
@@ -316,8 +218,6 @@ def deeplearning(
         scheduler=None,
         scheduler_params=None,
         device="cpu",
-        enable_ddp=False,
-        enable_dp=False,
         num_workers=0,
         scoring="accuracy",
         scoring_name=None,
@@ -598,22 +498,9 @@ def deeplearning(
             scoring=["accuracy", "balanced_accuracy"],
         )
     """
-    if enable_ddp:
-        params = utils.get_ddp_params()
 
     if enable_wandb_logging:
-        if (enable_ddp and params["rank"] == 0) or (enable_ddp is False):
-            import wandb
-
-    if enable_ddp and enable_dp:
-        raise ValueError(
-            "enable_ddp and enable_dp cannot be True at the same time. Choose one."
-        )
-
-    if (enable_ddp and device != "cuda") or (enable_dp and device != "cuda"):
-        raise ValueError(
-            "device have to be 'cuda' when enable_ddp = True or enable_dp = True."
-        )
+        import wandb
 
     if seed is not None:
         np.random.seed(seed)
@@ -642,6 +529,7 @@ def deeplearning(
         callback_convert_epochs_to_ndarray=callback_convert_epochs_to_ndarray,
     )
 
+    """
     from pathlib import Path
 
     np.savez(
@@ -653,6 +541,7 @@ def deeplearning(
         y_valid=y_valid,
         y_test=y_test,
     )
+    """
 
     if len(items_test) != len(X_test):
         raise RuntimeError("len(items_test) != len(X_test)")
@@ -679,42 +568,21 @@ def deeplearning(
         "desc": desc,
     }
 
-    if enable_ddp:
-        main(
-            enable_ddp=enable_ddp,
-            enable_dp=enable_dp,
-            num_workers=num_workers,
-            device=None,
-            X_train=X_train,
-            y_train=y_train,
-            X_valid=X_valid,
-            y_valid=y_valid,
-            X_test=X_test,
-            y_test=y_test,
-            criterion=criterion,
-            batch_size=batch_size,
-            n_epochs=n_epochs,
-            optimizer=optimizer,
-            kwargs=kwargs,
-        )
-    else:
-        main(
-            enable_ddp=enable_ddp,
-            enable_dp=enable_dp,
-            num_workers=num_workers,
-            device=device,
-            X_train=X_train,
-            y_train=y_train,
-            X_valid=X_valid,
-            y_valid=y_valid,
-            X_test=X_test,
-            y_test=y_test,
-            criterion=criterion,
-            batch_size=batch_size,
-            n_epochs=n_epochs,
-            optimizer=optimizer,
-            kwargs=kwargs,
-        )
+    run_experiment(
+        num_workers=num_workers,
+        device=device,
+        X_train=X_train,
+        y_train=y_train,
+        X_valid=X_valid,
+        y_valid=y_valid,
+        X_test=X_test,
+        y_test=y_test,
+        criterion=criterion,
+        batch_size=batch_size,
+        n_epochs=n_epochs,
+        optimizer=optimizer,
+        kwargs=kwargs,
+    )
 
     if model is None:
         model = callback_get_model(X_train, y_train)
@@ -769,8 +637,8 @@ def deeplearning(
         y_test,
         device="cpu",
         batch_size=batch_size,
-        enable_DS=False,
-        generator=seed,
+        seed=seed,
+        generator=None,
     )
 
     if not isinstance(dataloader_test, list):
@@ -848,13 +716,12 @@ def deeplearning(
                 samples = _add_values_to_df(samples, additional_values)
 
             if enable_wandb_logging:
-                if (enable_ddp and params["rank"] == 0) or (enable_ddp is False):
-                    table = wandb.Table(columns=["id", "labels", "preds"])
-                    for idx, (label, pred) in enumerate(zip(labels, preds)):
-                        table.add_data(idx, label, pred)
+                table = wandb.Table(columns=["id", "labels", "preds"])
+                for idx, (label, pred) in enumerate(zip(labels, preds)):
+                    table.add_data(idx, label, pred)
 
-                    wandb_log.update({"predictions": table})
-                    wandb.log(wandb_log)
+                wandb_log.update({"predictions": table})
+                wandb.log(wandb_log)
 
             samples_list.append(samples)
             df_list.append(df_results)
@@ -869,12 +736,6 @@ def deeplearning(
         samples.to_parquet(samples_fname)
 
     if enable_wandb_logging:
-
-        if enable_ddp:
-            ddp_params = utils.get_ddp_params()
-            rank = ddp_params["rank"]
-
-        if (enable_ddp and rank == 0) or (enable_ddp is False):
-            wandb.finish()
+        wandb.finish()
 
     return df
