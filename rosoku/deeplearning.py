@@ -486,6 +486,16 @@ def deeplearning(
             preprocessing.normalize(X_train, X_valid, X_test, return_params=True)
         )
 
+    if model is None:
+        if callback_get_model is None:
+            raise ValueError("callback_get_model must be provided if model is None")
+        model = callback_get_model(X_train, y_train)
+
+    model.to(device)
+
+    if model_name is None:
+        model_name = model.__class__.__name__
+
     kwargs = {
         "optimizer_params": optimizer_params,
         "model": model,
@@ -515,14 +525,6 @@ def deeplearning(
         optimizer=optimizer,
         kwargs=kwargs,
     )
-
-    if model is None:
-        model = callback_get_model(X_train, y_train)
-
-    model.to(device)
-
-    if model_name is None:
-        model_name = model.__class__.__name__
 
     if not isinstance(scoring, list):
         scoring = [scoring]

@@ -111,8 +111,6 @@ batch_size = 8
 patience = 75
 enable_normalization = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
-enable_ddp = False
-enable_dp = False
 
 seed = 42
 
@@ -160,7 +158,6 @@ results = rosoku.deeplearning(
     scheduler=scheduler,
     scheduler_params=scheduler_params,
     device=device,
-    enable_ddp=enable_ddp,
     early_stopping=early_stopping,
     enable_normalization=enable_normalization,
     history_fname=(save_base / "history" / f"sub-{subject}.parquet"),

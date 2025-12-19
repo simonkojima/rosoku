@@ -136,8 +136,8 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 label_keys = {"left_hand": 0, "right_hand": 1}
 
 results = rosoku.deeplearning(
-    items_train=[1, 2, 3, 4, 5],
-    items_valid=[6, 7, 8],
+    items_train=[1, 2, 3],
+    items_valid=[4],
     items_test=[21, 56],
     callback_load_ndarray=functools.partial(
         callback_load_ndarray,
