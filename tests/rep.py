@@ -87,8 +87,4 @@ for X, y in dataloader_train:
     loss.backward()
     optimizer.step()
 
-    print(X)
-    print(y_pred)
-    print(loss)
-
-    break
+    print(f"{loss.item()=}")
