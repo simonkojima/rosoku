@@ -345,7 +345,7 @@ def _train_epoch(
     # train
     model.train()
     for X, y in dataloader_train:
-        if not saved:
+        if epoch == 0 and not saved:
             torch.save(X.cpu(), save_dir / "X_first_batch.pt")
             torch.save(y.cpu(), save_dir / "y_first_batch.pt")
 
