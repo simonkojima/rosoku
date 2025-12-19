@@ -642,6 +642,15 @@ def deeplearning(
         callback_convert_epochs_to_ndarray=callback_convert_epochs_to_ndarray,
     )
 
+    if len(items_test) != len(X_test):
+        raise RuntimeError("len(items_test) != len(X_test)")
+
+    # data normalization
+    if enable_normalization:
+        X_train, X_valid, X_test, normalization_mean, normalization_std = (
+            preprocessing.normalize(X_train, X_valid, X_test, return_params=True)
+        )
+
     from pathlib import Path
 
     np.savez(
@@ -653,15 +662,6 @@ def deeplearning(
         y_valid=y_valid,
         y_test=y_test,
     )
-
-    if len(items_test) != len(X_test):
-        raise RuntimeError("len(items_test) != len(X_test)")
-
-    # data normalization
-    if enable_normalization:
-        X_train, X_valid, X_test, normalization_mean, normalization_std = (
-            preprocessing.normalize(X_train, X_valid, X_test, return_params=True)
-        )
 
     kwargs = {
         "optimizer_params": optimizer_params,
