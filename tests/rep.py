@@ -42,6 +42,9 @@ def callback_get_model(X, y):
 
 fname = Path("~/rosoku-test/data.npz").expanduser()
 data = np.load(fname)
+seed = 42
+
+set_seed(seed)
 
 X_train = data["X_train"]
 X_valid = data["X_valid"]
@@ -63,7 +66,7 @@ dataloader_train, dataloader_valid, dataloader_test = (
         y_test,
         8,
         device=device,
-        generator=42,
+        generator=seed,
     )
 )
 
