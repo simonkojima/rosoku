@@ -49,34 +49,33 @@ def conventional(
     (e.g., custom wrappers, non-standard estimators, additional post-processing, or
     alternative probability generation).
 
-    Test data can be evaluated in user-defined groups: each element of
-    ``keywords_test`` represents one evaluation group, and can contain one or
-    multiple keyword items (e.g., to merge multiple sessions into a single test
-    set before scoring).
+    Test data can be evaluated in user-defined groups: each element of ``items_test``
+    represents one evaluation group, and can contain one or multiple items (e.g., to
+    merge multiple sessions into a single test set before scoring).
 
     Parameters
     ----------
-    keywords_train : list
-        Keyword objects describing how to load the training data. The exact
-        content is user-defined and interpreted by ``callback_load_epochs`` or
+    items_train : list
+        Item objects describing how to load the training data. The exact content is
+        user-defined and interpreted by ``callback_load_epochs`` or
         ``callback_load_ndarray``.
 
-    keywords_test : list of list
-        Keyword objects describing how to load the test data, grouped for
-        evaluation. Each inner list defines one evaluation group.
+    items_test : list of list
+        Item objects describing how to load the test data, grouped for evaluation.
+        Each inner list defines one evaluation group.
         For example, ``[[a], [b]]`` evaluates ``a`` and ``b`` separately, while
         ``[[a, b]]`` merges ``a`` and ``b`` into a single test set.
 
     callback_load_epochs : callable | None, optional
-        Data loader returning an :class:`mne.Epochs` object for a given keyword.
-        Must have signature ``callback_load_epochs(keyword, mode)``, where
-        ``mode`` is ``"train"`` or ``"test"``. If provided, Epochs will be
-        converted to arrays via ``callback_convert_epochs_to_ndarray``.
+        Data loader returning an :class:`mne.Epochs` object for a given item.
+        Must have signature ``callback_load_epochs(item, split)``, where ``split``
+        is ``"train"`` or ``"test"``. If provided, Epochs will be converted to
+        arrays via ``callback_convert_epochs_to_ndarray``.
 
     callback_proc_epochs : callable | None, optional
         Optional preprocessing applied to loaded Epochs (e.g., picking channels,
         cropping, filtering). Signature is expected to be
-        ``callback_proc_epochs(epochs, mode)`` or ``callback_proc_epochs(epochs)``
+        ``callback_proc_epochs(epochs, split)`` or ``callback_proc_epochs(epochs)``
         depending on your implementation used in ``utils.load_data``.
 
     callback_convert_epochs_to_ndarray : callable, optional
@@ -84,17 +83,18 @@ def conventional(
         ``utils.convert_epochs_to_ndarray`` is used.
 
     callback_load_ndarray : callable | None, optional
-        Data loader returning a tuple ``(X, y)`` for a given keyword. Must have
-        signature ``callback_load_ndarray(keyword, mode)`` where ``mode`` is
+        Data loader returning a tuple ``(X, y)`` for a given item. Must have
+        signature ``callback_load_ndarray(item, split)`` where ``split`` is
         ``"train"`` or ``"test"``. ``X`` and ``y`` must be array-like.
 
     callback_proc_ndarray : callable | None, optional
-        Optional preprocessing applied to NumPy data (e.g., standardization,
-        feature extraction), as used by ``utils.load_data``.
+        Optional preprocessing applied to NumPy data (e.g., standardization, feature
+        extraction), as used by ``utils.load_data``.
 
     callback_proc_mode : {"per_split", "all"}, optional
         Strategy for preprocessing across splits, as interpreted by
         ``utils.load_data``. Typical meanings are:
+
         - ``"per_split"``: process train/test independently.
         - ``"all"``: process jointly (e.g., fit transform on all data).
 
@@ -102,8 +102,8 @@ def conventional(
         Optional custom fitting hook. If provided, called as
         ``callback_fit(model, X_train, y_train)``.
         If ``None``, this function calls ``model.fit(X_train, y_train)``.
-        Note: if your callback returns a new fitted estimator, ensure it is
-        mutated in-place or manage estimator replacement consistently.
+        Note: if your callback returns a new fitted estimator, ensure it is mutated
+        in-place or manage estimator replacement consistently.
 
     callback_predict : callable | None, optional
         Optional custom prediction hook. If provided, called as
@@ -136,10 +136,10 @@ def conventional(
 
     scoring : str | callable | list of (str or callable), optional
         Scoring specification(s) applied to each test group.
-        If a string, it is resolved with :func:`sklearn.metrics.get_scorer`
-        and the underlying ``_score_func`` is used.
-        If a callable, it must have signature ``scoring(y_true, y_pred)`` and
-        return a scalar.
+        If a string, it is resolved with :func:`sklearn.metrics.get_scorer` and the
+        underlying ``_score_func`` is used.
+        If a callable, it must have signature ``scoring(y_true, y_pred)`` and return
+        a scalar.
 
     scoring_name : str | list of str | None, optional
         Column name(s) for the returned scores. If ``None``, names are inferred:
@@ -161,57 +161,55 @@ def conventional(
         and the model name (plus ``additional_values`` if given).
 
     additional_values : dict | None, optional
-        Extra metadata appended as columns to the results DataFrame (and also to
-        the sample-level table if ``samples_fname`` is provided).
+        Extra metadata appended as columns to the results DataFrame (and also to the
+        sample-level table if ``samples_fname`` is provided).
 
     Returns
     -------
     df : pandas.DataFrame
         Summary results with one row per (test group × model). Includes JSON-serialized
-        ``keywords_train`` / ``keywords_test`` strings, the classifier name, and one
-        column per requested scoring metric.
+        ``items_train`` / ``items_test`` strings, the classifier name, and one column
+        per requested scoring metric.
 
     Notes
     -----
-    - ``keywords_test`` grouping controls evaluation granularity: each inner list is
+    - ``items_test`` grouping controls evaluation granularity: each inner list is
       treated as one test set after loading/merging by ``utils.load_data``.
     - If you pass a scoring string, this function uses
-      ``sklearn.metrics.get_scorer(scoring)._score_func``. This typically matches
-      the metric function but may ignore scorer-specific configuration (e.g.,
-      sign flipping for losses) because the scorer object itself is not called.
+      ``sklearn.metrics.get_scorer(scoring)._score_func``. This typically matches the
+      metric function but may ignore scorer-specific configuration (e.g., sign flipping
+      for losses) because the scorer object itself is not called.
     - Probability outputs are always attempted; ensure your estimator supports
       ``predict_proba`` or provide ``callback_predict_proba``.
-    - ``callback_get_models`` is ignored when ``models`` is explicitly provided.
-      In that case, the estimators passed via ``models`` are used directly.
+    - ``callback_get_models`` is ignored when ``models`` is explicitly provided. In that
+      case, the estimators passed via ``models`` are used directly.
 
     Examples
     --------
     Minimal usage with ndarray loaders::
 
-        def load_xy(keyword, mode):
-            X = np.load(keyword["X"])
-            y = np.load(keyword["y"])
+        def load_xy(item, split):
+            X = np.load(item["X"])
+            y = np.load(item["y"])
             return X, y
 
         df = conventional(
-            keywords_train=[{"X": "Xtr.npy", "y": "ytr.npy"}],
-            keywords_test=[[{"X": "Xte.npy", "y": "yte.npy"}]],
+            items_train=[{"X": "Xtr.npy", "y": "ytr.npy"}],
+            items_test=[[{"X": "Xte.npy", "y": "yte.npy"}]],
             callback_load_ndarray=load_xy,
             models=[pyriemann.classification.MDM()],
             scoring=["accuracy"],
         )
 
-    Group two test keywords into a single evaluation group::
+    Group two test items into a single evaluation group::
 
         df = conventional(
-            keywords_train=[{"sub": 1, "ses": 1}],
-            keywords_test=[[{"sub": 1, "ses": 2}, {"sub": 1, "ses": 3}]],
+            items_train=[{"sub": 1, "ses": 1}],
+            items_test=[[{"sub": 1, "ses": 2}, {"sub": 1, "ses": 3}]],
             callback_load_epochs=load_epochs,
             callback_proc_epochs=proc_epochs,
         )
     """
-
-    # load data
 
     X_train, _, X_test, y_train, _, y_test = utils.load_data(
         items_train=items_train,

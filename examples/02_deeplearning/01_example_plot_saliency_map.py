@@ -1,6 +1,6 @@
 """
-Example: Within-subject classification with deep learning
-=========================================================
+Example: Plot Saliency Map
+==========================
 """
 
 # Authors: Simon Kojima <simon.kojima@inria.fr>
@@ -12,12 +12,15 @@ Example: Within-subject classification with deep learning
 # ===============
 import functools
 from pathlib import Path
+import numpy as np
 import mne
 import torch
 import braindecode
 import rosoku
-
+import msgpack
 from moabb.datasets import Dreyer2023
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 # %%
@@ -175,3 +178,68 @@ results = rosoku.deeplearning(
 # =============
 
 print(results.to_string())
+
+# %%
+# Load Saliency Map Data
+# ======================
+
+with open(save_base / "saliency" / f"sub-{subject}.msgpack", "rb") as f:
+    saliency_map_data = msgpack.load(f, strict_map_key=False)
+
+# %%
+# Plot Spatial Saliency
+# =====================
+
+spatial_saliency_left = rosoku.attribution.saliency_spatial(
+    saliency_map_data[0]["left_hand"]
+)
+spatial_saliency_right = rosoku.attribution.saliency_spatial(
+    saliency_map_data[0]["right_hand"]
+)
+
+# get channel position info
+raw = list(Dreyer2023().get_data(subjects=[subject])[subject]["0"].values())[0]
+ch_names = raw.pick(picks="eeg").ch_names
+montage = mne.channels.make_standard_montage("standard_1005")
+ch_pos = montage.get_positions()["ch_pos"]
+ch_pos = np.array([ch_pos[ch_name][:2] for ch_name in ch_names])
+
+fig, axes = plt.subplots(1, 2, figsize=(8, 5))
+
+axes[0].set_title("Left Hand")
+mne.viz.plot_topomap(
+    spatial_saliency_left,
+    ch_pos,
+    names=None,
+    cmap="seismic",
+    axes=axes[0],
+)
+
+axes[1].set_title("Right Hand")
+mne.viz.plot_topomap(
+    spatial_saliency_left,
+    ch_pos,
+    names=None,
+    cmap="seismic",
+    axes=axes[1],
+)
+
+# %%
+# Plot Temporal Saliency
+# ======================
+
+temporal_saliency_left = rosoku.attribution.saliency_temporal(
+    saliency_map_data[0]["left_hand"]
+)
+temporal_saliency_right = rosoku.attribution.saliency_temporal(
+    saliency_map_data[0]["right_hand"]
+)
+
+fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+
+sns.set()
+sns.lineplot(temporal_saliency_left, ax=axes[0])
+sns.lineplot(temporal_saliency_right, ax=axes[1])
+
+axes[0].set_title("Left Hand")
+axes[1].set_title("Right Hand")

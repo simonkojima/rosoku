@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 
 
@@ -182,6 +183,7 @@ def saliency_temporal(saliency):
         sal = saliency_map(model, dataloader, device="cuda", class_index=0)
         sal_t = saliency_temporal(sal)
     """
+    saliency = np.array(saliency)
     saliency_temporal = saliency.sum(axis=0)
     saliency_temporal = saliency_temporal / saliency_temporal.sum() * 100
 
@@ -243,6 +245,7 @@ def saliency_spatial(saliency):
         sal = saliency_map(model, dataloader, device="cuda", class_index=0)
         sal_s = saliency_spatial(sal)
     """
+    saliency = np.array(saliency)
     saliency_spatial = saliency.sum(axis=1)
     saliency_spatial = saliency_spatial / saliency_spatial.sum() * 100
 

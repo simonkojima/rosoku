@@ -330,7 +330,6 @@ def deeplearning(
         normalization_fname=None,
         saliency_map_fname=False,
         early_stopping=None,
-        # name_classifier=None,
         model_name=None,
         enable_normalization=False,
         label_keys=None,
@@ -345,37 +344,37 @@ def deeplearning(
     model on EEG/BCI datasets. It supports loading data as MNE Epochs or NumPy
     arrays via user callbacks, optional preprocessing and normalization, training
     with a configurable optimizer (and optional LR scheduler), and evaluation on
-    grouped test sets. Several hooks are provided to customize model creation and
-    prediction extraction (logits/predictions/probabilities) without changing the
-    core pipeline.
+    grouped test sets.
 
-    Test data can be evaluated in user-defined groups: each element of
-    ``items_test`` represents one evaluation group, and can contain one or
-    multiple keyword items (e.g., to merge multiple sessions into a single test
-    set before scoring).
+    Several hooks are provided to customize model creation and prediction extraction
+    (logits/predictions/probabilities) without changing the core pipeline.
+
+    Test data can be evaluated in user-defined groups: each element of ``items_test``
+    represents one evaluation group and can contain one or multiple items (e.g., to
+    merge multiple sessions into a single test set before scoring).
 
     Parameters
     ----------
     items_train : list
-        Keyword objects describing how to load the training data. The content is
+        Item objects describing how to load the training data. The content is
         user-defined and interpreted by ``callback_load_epochs`` or
         ``callback_load_ndarray``.
 
     items_valid : list
-        Keyword objects describing how to load the validation data.
+        Item objects describing how to load the validation data.
 
     items_test : list of list
-        Keyword objects describing how to load the test data, grouped for
-        evaluation. Each inner list defines one evaluation group.
+        Item objects describing how to load the test data, grouped for evaluation.
+        Each inner list defines one evaluation group.
 
     callback_load_epochs : callable | None, optional
         Loader returning an :class:`mne.Epochs` instance. Must have signature
-        ``callback_load_epochs(keyword, mode)`` where ``mode`` is one of
+        ``callback_load_epochs(item, split)`` where ``split`` is one of
         ``{"train", "valid", "test"}``.
 
     callback_load_ndarray : callable | None, optional
         Loader returning a tuple ``(X, y)``. Must have signature
-        ``callback_load_ndarray(keyword, mode)`` where ``mode`` is one of
+        ``callback_load_ndarray(item, split)`` where ``split`` is one of
         ``{"train", "valid", "test"}``.
 
     criterion : torch.nn.Module, optional
@@ -395,11 +394,10 @@ def deeplearning(
         Strategy for preprocessing across splits, as interpreted by
         ``utils.load_data``.
 
-        Controls how the preprocessing functions are applied:
+        Typical meanings are:
 
-        - ``"per_split"`` : process train/valid/test splits independently
-        - ``"all"`` : pass all splits at once to the processing function
-          (exact behavior depends on :func:`apply_callback_proc`)
+        - ``"per_split"``: process train/valid/test independently.
+        - ``"all"``: process jointly (exact behavior depends on ``utils.load_data``).
 
     callback_proc_epochs : callable | None, optional
         Optional preprocessing applied to loaded Epochs (e.g., picking channels,
@@ -412,75 +410,67 @@ def deeplearning(
         Converter used when loading Epochs. By default,
         ``utils.convert_epochs_to_ndarray``.
 
-
     callback_get_logits : callable | None, optional
         Optional hook to extract logits from the model during inference.
+
         If provided, it is called as::
 
             callback_get_logits(model, X)
 
-        where ``model`` is a ``torch.nn.Module`` and ``X`` is a batch or array of
-        input samples.
-
-        If ``None``, logits are obtained by a direct forward pass:
-
-        .. code-block:: python
+        If ``None``, logits are obtained by a direct forward pass::
 
             logits = model(X)
 
-        The returned ``logits`` must be a 2D tensor of shape
+        The returned ``logits`` must be a 2D tensor/array of shape
         ``(n_samples, n_classes)``.
 
     callback_get_preds : callable | None, optional
-        Optional hook to compute predicted class labels from logits.
+        Optional hook to compute predicted class labels during inference.
+
         If provided, it is called as::
 
             callback_get_preds(model, X)
 
-        If ``None``, predicted labels are computed from logits as:
-
-        .. code-block:: python
+        If ``None``, predicted labels are computed from logits as::
 
             preds = torch.argmax(logits, dim=1)
 
-        The returned ``preds`` must be a 1D tensor or array of length
-        ``n_samples``.
+        The returned ``preds`` must be a 1D tensor/array of length ``n_samples``.
 
     callback_get_probas : callable | None, optional
-        Optional hook to compute class probabilities from logits.
+        Optional hook to compute class probabilities during inference.
+
         If provided, it is called as::
 
             callback_get_probas(model, X)
 
-        If ``None``, class probabilities are computed using softmax:
-
-        .. code-block:: python
+        If ``None``, probabilities are computed from logits as::
 
             probas = torch.nn.functional.softmax(logits, dim=1)
 
-    The returned ``probas`` must be a 2D tensor or array of shape
-    ``(n_samples, n_classes)``.
-
-    optimizer_params : dict | None, optional
-        Keyword arguments passed to the optimizer constructor.
-
-    model : torch.nn.Module | None, optional
-        Pre-instantiated model. If ``None``, ``callback_get_model`` must be provided.
+        The returned ``probas`` must be a 2D tensor/array of shape
+        ``(n_samples, n_classes)``.
 
     callback_get_model : callable | None, optional
         Factory function that returns a ``torch.nn.Module`` instance.
+        Used when ``model=None``.
+
         If provided, it is called as::
 
             callback_get_model(X_train, y_train)
 
-        where ``X_train`` and ``y_train`` are the training data arrays loaded by
+        where ``X_train`` and ``y_train`` are the training arrays returned by
         ``utils.load_data``.
 
         This callback is useful when the model architecture depends on properties
         of the training data (e.g., number of channels, number of time samples,
         or number of classes).
 
-        If ``model`` is provided explicitly, this callback is ignored.
+    optimizer_params : dict | None, optional
+        Keyword arguments passed to the optimizer constructor.
+
+    model : torch.nn.Module | None, optional
+        Pre-instantiated model. If provided, ``callback_get_model`` is ignored.
 
     scheduler : type | None, optional
         Learning-rate scheduler class (not an instance). If provided, it is
@@ -517,8 +507,8 @@ def deeplearning(
         become ``"unknown_scoring"``). Must match ``scoring`` length.
 
     enable_wandb_logging : bool, optional
-        If True, log metrics and predictions to Weights & Biases. In DDP, logging
-        is performed only on rank 0.
+        If True, log metrics and predictions to Weights & Biases. In DDP, logging is
+        performed only on rank 0.
 
     wandb_params : dict | None, optional
         Keyword arguments passed to ``wandb.init``.
@@ -528,8 +518,7 @@ def deeplearning(
         ``model_state_dict``. Typically ends with ``.pth``.
 
     history_fname : path-like | None, optional
-        File path for saving training history, as handled by the training routine
-        (e.g., ``.parquet``).
+        File path for saving training history, as handled by the training routine.
 
     samples_fname : path-like | None, optional
         If provided, writes sample-level outputs to this path in Parquet format.
@@ -537,12 +526,12 @@ def deeplearning(
         per-class logits, and the model name (plus ``additional_values`` if given).
 
     normalization_fname : path-like | None, optional
-        If provided and ``enable_normalization=True``, saves normalization
-        parameters (mean/std) via msgpack (typically ``.msgpack``).
+        If provided and ``enable_normalization=True``, saves normalization parameters
+        (mean/std) via msgpack.
 
     saliency_map_fname : path-like | None, optional
-        If provided, computes saliency maps for each test group and class and saves
-        them via msgpack.
+        If provided, computes saliency maps for each test group and each class and
+        saves them via msgpack.
 
     early_stopping : int | callable | None, optional
         Early stopping controller or patience parameter, as interpreted by the
@@ -554,8 +543,8 @@ def deeplearning(
 
     enable_normalization : bool, optional
         If True, apply z-score normalization to train/valid/test arrays using
-        ``preprocessing.normalize``. When enabled, normalization parameters can
-        be saved with ``normalization_fname``.
+        ``preprocessing.normalize``. When enabled, normalization parameters can be
+        saved with ``normalization_fname``.
 
     label_keys : dict | None, optional
         Mapping from class label strings to integer IDs. Used for saliency map
@@ -576,8 +565,8 @@ def deeplearning(
     -------
     df : pandas.DataFrame
         Summary results with one row per test group. Includes JSON-serialized
-        ``items_train`` / ``items_valid`` / ``items_test`` strings, one
-        column per requested scoring metric, and a ``"model"`` column.
+        ``items_train`` / ``items_valid`` / ``items_test`` strings, one column per
+        requested scoring metric, and a ``"model"`` column.
 
     Notes
     -----
@@ -586,7 +575,7 @@ def deeplearning(
     - If a scoring string is provided, this function uses
       ``sklearn.metrics.get_scorer(scoring)._score_func`` rather than calling the
       scorer object; ensure the callable matches your intended behavior.
-    - In DDP mode, logging and W&B table creation are performed only on rank 0.
+    - In DDP mode, W&B logging is performed only on rank 0.
     - Saliency map computation runs over each test group and each class index.
 
     Examples
@@ -596,12 +585,13 @@ def deeplearning(
         def get_model(X_train, y_train):
             n_ch = X_train.shape[1]
             n_t = X_train.shape[2]
-            return MyNet(n_ch=n_ch, n_times=n_t, n_classes=len(np.unique(y_train)))
+            n_classes = len(np.unique(y_train))
+            return MyNet(n_ch=n_ch, n_times=n_t, n_classes=n_classes)
 
         df = deeplearning(
-            items_train=[{"sub": 1}],
-            items_valid=[{"sub": 1, "split": "valid"}],
-            items_test=[[{"sub": 1, "split": "test"}]],
+            items_train=[{"sub": 1, "ses": 1}],
+            items_valid=[{"sub": 1, "ses": 2}],
+            items_test=[[{"sub": 1, "ses": 3}]],
             callback_load_ndarray=load_xy,
             callback_get_model=get_model,
             device="cuda",

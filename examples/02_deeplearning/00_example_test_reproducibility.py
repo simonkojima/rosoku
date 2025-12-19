@@ -1,6 +1,6 @@
 """
-Example: Within-subject classification with deep learning
-=========================================================
+Example: Testing Reproducibility of Deeplearning Experiments
+============================================================
 """
 
 # Authors: Simon Kojima <simon.kojima@inria.fr>
@@ -95,6 +95,12 @@ def convert_epochs_to_ndarray(
 
 
 # %%
+# Set a Seed
+# ==========
+
+seed = 42
+
+# %%
 # Run the Experiment
 # ==================
 
@@ -110,8 +116,6 @@ enable_normalization = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
 enable_ddp = False
 enable_dp = False
-
-seed = 42
 
 dataset = Dreyer2023()
 
@@ -131,47 +135,60 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 
 label_keys = {"left_hand": 0, "right_hand": 1}
 
-results = rosoku.deeplearning(
-    items_train=[subject, "R1", "R2"],
-    items_valid=[subject, "R3"],
-    items_test=[[subject, "R4", "R5"]],
-    callback_load_epochs=functools.partial(
-        callback_load_epochs,
-        dataset=dataset,
-        l_freq=8.0,
-        h_freq=30.0,
-        order_filter=4,
-        tmin=dataset.interval[0] + 0.5,
-        tmax=dataset.interval[1],
-    ),
-    callback_proc_epochs=callback_proc_epochs,
-    callback_convert_epochs_to_ndarray=functools.partial(
-        convert_epochs_to_ndarray, label_keys=label_keys
-    ),
-    batch_size=batch_size,
-    n_epochs=n_epochs,
-    criterion=criterion,
-    optimizer=optimizer,
-    optimizer_params=optimizer_params,
-    callback_get_model=callback_get_model,
-    scheduler=scheduler,
-    scheduler_params=scheduler_params,
-    device=device,
-    enable_ddp=enable_ddp,
-    early_stopping=early_stopping,
-    enable_normalization=enable_normalization,
-    history_fname=(save_base / "history" / f"sub-{subject}.parquet"),
-    checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}.pth"),
-    samples_fname=(save_base / "samples" / f"sub-{subject}.parquet"),
-    normalization_fname=(save_base / "normalization" / f"sub-{subject}.msgpack"),
-    saliency_map_fname=(save_base / "saliency" / f"sub-{subject}.msgpack"),
-    label_keys=label_keys,
-    seed=seed,
-    additional_values={"subject": subject},
-)
+results_list = []
+
+for _ in range(2):
+    results = rosoku.deeplearning(
+        items_train=[subject, "R1", "R2"],
+        items_valid=[subject, "R3"],
+        items_test=[[subject, "R4", "R5"]],
+        callback_load_epochs=functools.partial(
+            callback_load_epochs,
+            dataset=dataset,
+            l_freq=8.0,
+            h_freq=30.0,
+            order_filter=4,
+            tmin=dataset.interval[0] + 0.5,
+            tmax=dataset.interval[1],
+        ),
+        callback_proc_epochs=callback_proc_epochs,
+        callback_convert_epochs_to_ndarray=functools.partial(
+            convert_epochs_to_ndarray, label_keys=label_keys
+        ),
+        batch_size=batch_size,
+        n_epochs=n_epochs,
+        criterion=criterion,
+        optimizer=optimizer,
+        optimizer_params=optimizer_params,
+        callback_get_model=callback_get_model,
+        scheduler=scheduler,
+        scheduler_params=scheduler_params,
+        device=device,
+        enable_ddp=enable_ddp,
+        early_stopping=early_stopping,
+        enable_normalization=enable_normalization,
+        history_fname=(save_base / "history" / f"sub-{subject}.parquet"),
+        checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}.pth"),
+        samples_fname=(save_base / "samples" / f"sub-{subject}.parquet"),
+        normalization_fname=(save_base / "normalization" / f"sub-{subject}.msgpack"),
+        saliency_map_fname=(save_base / "saliency" / f"sub-{subject}.msgpack"),
+        label_keys=label_keys,
+        seed=seed,
+        additional_values={"subject": subject},
+    )
+
+    results_list.append(results)
 
 # %%
 # Print Results
 # =============
 
-print(results.to_string())
+for results in results_list:
+    print(results.to_string())
+
+is_identical = (
+        results_list[0]["accuracy"].to_numpy()[0]
+        == results_list[1]["accuracy"].to_numpy()[0]
+)
+
+print(f"is_identical: {is_identical}")

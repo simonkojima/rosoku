@@ -30,15 +30,15 @@ import rosoku
 
 
 def callback_load_ndarray(
-        items,
-        split,
-        tmin,
-        tmax,
-        l_freq,
-        h_freq,
-        order_filter,
-        label_keys,
-        dataset,
+    items,
+    split,
+    tmin,
+    tmax,
+    l_freq,
+    h_freq,
+    order_filter,
+    label_keys,
+    dataset,
 ):
     X_list = []
     y_list = []
@@ -173,7 +173,7 @@ results = rosoku.deeplearning(
     checkpoint_fname=(save_base / "checkpoint" / f"cross-subject-deeplearning.pth"),
     samples_fname=(save_base / "samples" / f"cross-subject-deeplearning.parquet"),
     normalization_fname=(
-            save_base / "normalization" / f"cross-subject-deeplearning.msgpack"
+        save_base / "normalization" / f"cross-subject-deeplearning.msgpack"
     ),
     saliency_map_fname=(save_base / "saliency" / f"cross-subject-deeplearning.msgpack"),
     label_keys=label_keys,
