@@ -770,6 +770,7 @@ def load_data(
                          {"fname": "sub-01_ses-03-epo.fif"}]],
             callback_load_epochs=load_epochs,
         )
+
     """
     if callback_load_epochs is None and callback_load_ndarray is None:
         raise ValueError("Specify callback_load_epochs or callback_load_ndarray")

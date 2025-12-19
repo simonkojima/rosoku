@@ -16,7 +16,6 @@ from .data_load import (
 __all__ = [
     "EarlyStopping",
     "get_predictions",
-    "get_ddp_params",
     "convert_epochs_to_ndarray",
     "get_labels_from_epochs",
     "load_data",

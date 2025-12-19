@@ -98,7 +98,7 @@ def convert_epochs_to_ndarray(
 # Run the Experiment
 # ==================
 
-subject = 10
+subject = 56
 resample = 128
 
 lr = 1e-3
