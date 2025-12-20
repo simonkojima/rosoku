@@ -51,6 +51,7 @@ def deeplearning_train(
     optimizer=None,
     scheduler=None,
     early_stopping=None,
+    callback_early_stopping=None,
     enable_wandb_logging=False,
     wandb_params=None,
     checkpoint_fname=None,
@@ -59,6 +60,11 @@ def deeplearning_train(
 ):
     if enable_wandb_logging:
         import wandb
+
+    if (callback_early_stopping is not None) and (early_stopping is not None):
+        raise ValueError(
+            "Cannot specify both callback_early_stopping and early_stopping"
+        )
 
     if early_stopping is not None:
         early_stopping.initialize()
@@ -78,7 +84,7 @@ def deeplearning_train(
 
     tic = time.time()
     for epoch in range(n_epochs):
-        valid_loss = _train_epoch(
+        train_loss, valid_loss = _train_epoch(
             model=model,
             criterion=criterion,
             optimizer=optimizer,
@@ -96,6 +102,11 @@ def deeplearning_train(
 
         if early_stopping is not None:
             if early_stopping(valid_loss):
+                print(f"Early stopping was triggered: epoch #{epoch + 1}")
+                break
+
+        if callback_early_stopping is not None:
+            if callback_early_stopping(train_loss, valid_loss, epoch + 1):
                 print(f"Early stopping was triggered: epoch #{epoch + 1}")
                 break
 
@@ -132,6 +143,7 @@ def run_experiment(
     optimizer_params = kwargs.get("optimizer_params", None)
     model = kwargs.get("model", None)
     callback_get_model = kwargs.get("callback_get_model", None)
+    callback_early_stopping = kwargs.get("callback_early_stopping", None)
     scheduler = kwargs.get("scheduler", None)
     scheduler_params = kwargs.get("scheduler_params", None)
     min_delta = kwargs.get("min_delta", 0)
@@ -140,6 +152,7 @@ def run_experiment(
     checkpoint_fname = kwargs.get("checkpoint_fname", None)
     history_fname = kwargs.get("history_fname", None)
     early_stopping = kwargs.get("early_stopping", None)
+    dtype = kwargs.get("dtype", torch.float32)
     seed = kwargs.get("seed", None)
 
     # create dataloader
@@ -156,6 +169,7 @@ def run_experiment(
         num_workers=num_workers,
         seed=seed,
         generator=None,
+        dtype=dtype,
     )
 
     # setup model
@@ -176,7 +190,9 @@ def run_experiment(
 
     # setup early stopping
     if isinstance(early_stopping, int):
-        early_stopping = utils.EarlyStopping(patience=early_stopping)
+        early_stopping = utils.EarlyStopping(
+            patience=early_stopping, min_delta=min_delta
+        )
 
     model = deeplearning_train(
         dataloader_train=dataloader_train,
@@ -192,6 +208,7 @@ def run_experiment(
         checkpoint_fname=checkpoint_fname,
         history_fname=history_fname,
         early_stopping=early_stopping,
+        callback_early_stopping=callback_early_stopping,
         min_delta=min_delta,
     )
 
@@ -215,6 +232,7 @@ def deeplearning(
     callback_get_preds=None,
     callback_get_probas=None,
     callback_get_model=None,
+    callback_early_stopping=None,
     optimizer_params=None,
     model=None,
     scheduler=None,
@@ -235,8 +253,10 @@ def deeplearning(
     model_name=None,
     enable_normalization=False,
     use_deterministic_algorithms=False,
+    deterministic_warn_only=False,
     label_keys=None,
     seed=None,
+    dtype=torch.float32,
     additional_values=None,
 ):
     """
@@ -470,6 +490,16 @@ def deeplearning(
     if enable_wandb_logging:
         import wandb
 
+    if (callback_early_stopping is not None) and (early_stopping is not None):
+        raise ValueError(
+            "Cannot specify both callback_early_stopping and early_stopping"
+        )
+
+    if (items_valid is None) and (early_stopping is not None):
+        raise ValueError(
+            "Cannot specify early_stopping without items_valid. Use callback_early_stpping instead"
+        )
+
     if seed is not None:
         np.random.seed(seed)
         random.seed(seed)
@@ -484,7 +514,9 @@ def deeplearning(
         torch.backends.cudnn.allow_tf32 = False
 
     if use_deterministic_algorithms:
-        torch.use_deterministic_algorithms(use_deterministic_algorithms, warn_only=True)
+        torch.use_deterministic_algorithms(
+            use_deterministic_algorithms, warn_only=deterministic_warn_only
+        )
 
     # load data
     X_train, X_valid, X_test, y_train, y_valid, y_test = utils.load_data(
@@ -522,6 +554,7 @@ def deeplearning(
         "optimizer_params": optimizer_params,
         "model": model,
         "callback_get_model": callback_get_model,
+        "callback_early_stopping": callback_early_stopping,
         "scheduler": scheduler,
         "scheduler_params": scheduler_params,
         "min_delta": min_delta,
@@ -530,6 +563,7 @@ def deeplearning(
         "checkpoint_fname": checkpoint_fname,
         "history_fname": history_fname,
         "early_stopping": early_stopping,
+        "dtype": dtype,
         "seed": seed,
     }
 

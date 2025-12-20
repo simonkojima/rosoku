@@ -95,8 +95,8 @@ def convert_epochs_to_ndarray(
 
 
 # %%
-# Run the Experiment
-# ==================
+# Run the Experiment using Early Stopping with Validation data
+# ============================================================
 
 subject = 56
 resample = 128
@@ -104,7 +104,7 @@ resample = 128
 lr = 1e-3
 weight_decay = 1e-2
 n_epochs = 500
-batch_size = 8
+batch_size = 4
 patience = 75
 enable_normalization = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -129,7 +129,7 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 
 label_keys = {"left_hand": 0, "right_hand": 1}
 
-results = rosoku.deeplearning(
+results_1st_step = rosoku.deeplearning(
     items_train=[subject, "R1", "R2"],
     items_valid=[subject, "R3"],
     items_test=[[subject, "R4", "R5"]],
@@ -155,7 +155,7 @@ results = rosoku.deeplearning(
     scheduler=scheduler,
     scheduler_params=scheduler_params,
     device=device,
-    # early_stopping=early_stopping,
+    early_stopping=early_stopping,
     enable_normalization=enable_normalization,
     history_fname=(save_base / "history" / f"sub-{subject}.parquet"),
     checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}.pth"),
@@ -168,7 +168,65 @@ results = rosoku.deeplearning(
 )
 
 # %%
+# Run the Experiment using Early Stopping with callback_early_stopping
+# ====================================================================
+
+data = torch.load(save_base / "checkpoint" / f"sub-{subject}.pth")
+loss_best = data["loss_best"]
+
+lr = 1e-4
+weight_decay = 1e-2
+n_epochs = 500
+batch_size = 4
+seed = 42
+
+
+def callback_early_stopping(loss_train, loss_valid, epoch):
+    return loss_train <= loss_best
+
+
+results_2nd_step = rosoku.deeplearning(
+    items_train=[subject, "R1", "R2", "R3"],
+    items_valid=None,
+    items_test=[[subject, "R4", "R5"]],
+    callback_load_epochs=functools.partial(
+        callback_load_epochs,
+        dataset=dataset,
+        l_freq=8.0,
+        h_freq=30.0,
+        order_filter=4,
+        tmin=dataset.interval[0] + 0.5,
+        tmax=dataset.interval[1],
+    ),
+    callback_proc_epochs=callback_proc_epochs,
+    callback_convert_epochs_to_ndarray=functools.partial(
+        convert_epochs_to_ndarray, label_keys=label_keys
+    ),
+    callback_early_stopping=callback_early_stopping,
+    batch_size=batch_size,
+    n_epochs=n_epochs,
+    criterion=criterion,
+    optimizer=optimizer,
+    optimizer_params=optimizer_params,
+    callback_get_model=callback_get_model,
+    scheduler=scheduler,
+    scheduler_params=scheduler_params,
+    device=device,
+    enable_normalization=enable_normalization,
+    history_fname=(save_base / "history" / f"sub-{subject}_2nd.parquet"),
+    checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}_2nd.pth"),
+    samples_fname=(save_base / "samples" / f"sub-{subject}_2nd.parquet"),
+    normalization_fname=(save_base / "normalization" / f"sub-{subject}_2nd.msgpack"),
+    saliency_map_fname=(save_base / "saliency" / f"sub-{subject}_2nd.msgpack"),
+    label_keys=label_keys,
+    seed=seed,
+    additional_values={"subject": subject},
+)
+
+
+# %%
 # Print Results
 # =============
 
-print(results.to_string())
+print(results_1st_step.to_string())
+print(results_2nd_step.to_string())

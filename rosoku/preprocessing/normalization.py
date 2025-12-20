@@ -65,7 +65,8 @@ def normalize(X_train, X_valid, X_test, return_params=False):
     std = np.expand_dims(std, axis=(1, 2)).transpose((1, 0, 2))
 
     X_train = (X_train - mean) / std
-    X_valid = (X_valid - mean) / std
+    if X_valid is not None:
+        X_valid = (X_valid - mean) / std
 
     X_test_normalized = []
     if isinstance(X_test, list):

@@ -271,17 +271,22 @@ def _train_epoch(
     train_acc = correct / total if total else float("nan")
 
     # ---- valid ----
-    valid_acc, valid_loss = evaluation_dataloader(
-        model=model,
-        dataloader=dataloader_valid,
-        criterion=criterion,
-        device=device,
-    )
+    if dataloader_valid is not None:
+        valid_acc, valid_loss = evaluation_dataloader(
+            model=model,
+            dataloader=dataloader_valid,
+            criterion=criterion,
+            device=device,
+        )
+    else:
+        valid_acc, valid_loss = None, None
 
     txt_print = (
-        f"epoch {epoch:03}, train_loss: {train_loss:06.4f}, train_acc: {train_acc:.2f}, "
-        f"valid_loss: {valid_loss:06.4f}, valid_acc: {valid_acc:.2f}"
+        f"epoch {epoch:03}, train_loss: {train_loss:06.4f}, train_acc: {train_acc:.2f}"
     )
+
+    if dataloader_valid is not None:
+        txt_print += f", valid_loss: {valid_loss:06.4f}, valid_acc: {valid_acc:.2f}"
 
     # ---- scheduler ----
     if scheduler is not None:
@@ -293,16 +298,26 @@ def _train_epoch(
     txt_print += f", et: {toc - tic:.4f}"
 
     # ---- checkpoint ----
+    if dataloader_valid is None:
+        loss_latest = train_loss
+        loss_used = "train"
+    else:
+        loss_latest = valid_loss
+        loss_used = "valid"
+
     if checkpoint_fname is not None and loss_best is not None:
-        if valid_loss < (loss_best["value"] - min_delta):
+        if loss_latest < (loss_best["value"] - min_delta):
             checkpoint = {
                 "epoch": epoch,
                 "model_state_dict": model.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
                 "valid_loss": valid_loss,
+                "train_loss": train_loss,
+                "loss_used": loss_used,
+                "loss_best": loss_latest,
             }
             torch.save(checkpoint, checkpoint_fname)
-            loss_best["value"] = valid_loss
+            loss_best["value"] = loss_latest
             txt_print += ", checkpoint saved"
 
     # ---- history ----
@@ -328,4 +343,4 @@ def _train_epoch(
 
     print(txt_print)
 
-    return valid_loss
+    return train_loss, valid_loss

@@ -172,7 +172,16 @@ def convert_epochs_to_ndarray(
     return X, y
 
 
-def ndarray_to_tensor(X_train, y_train, X_valid, y_valid, X_test, y_test, device="cpu"):
+def ndarray_to_tensor(
+    X_train,
+    y_train,
+    X_valid,
+    y_valid,
+    X_test,
+    y_test,
+    device="cpu",
+    dtype=torch.float32,
+):
     """
     Convert NumPy arrays to PyTorch tensors and move them to a device.
 
@@ -256,17 +265,20 @@ def ndarray_to_tensor(X_train, y_train, X_valid, y_valid, X_test, y_test, device
     """
     import torch
 
-    X_train_tensor = torch.tensor(X_train, dtype=torch.float).to(device)
+    X_train_tensor = torch.tensor(X_train, dtype=dtype).to(device)
     y_train_tensor = torch.tensor(y_train, dtype=torch.int64).to(device)
 
-    X_valid_tensor = torch.tensor(X_valid, dtype=torch.float).to(device)
-    y_valid_tensor = torch.tensor(y_valid, dtype=torch.int64).to(device)
+    if X_valid is not None:
+        X_valid_tensor = torch.tensor(X_valid, dtype=dtype).to(device)
+        y_valid_tensor = torch.tensor(y_valid, dtype=torch.int64).to(device)
+    else:
+        X_valid_tensor = y_valid_tensor = None
 
     if isinstance(X_test, list):
-        X_test_tensor = [torch.tensor(X, dtype=torch.float).to(device) for X in X_test]
+        X_test_tensor = [torch.tensor(X, dtype=dtype).to(device) for X in X_test]
         y_test_tensor = [torch.tensor(y, dtype=torch.int64).to(device) for y in y_test]
     else:
-        X_test_tensor = torch.tensor(X_test, dtype=torch.float).to(device)
+        X_test_tensor = torch.tensor(X_test, dtype=dtype).to(device)
         y_test_tensor = torch.tensor(y_test, dtype=torch.int64).to(device)
 
     return (
@@ -363,7 +375,11 @@ def tensor_to_dataset(
     import torch
 
     dataset_train = torch.utils.data.TensorDataset(X_train_tensor, y_train_tensor)
-    dataset_valid = torch.utils.data.TensorDataset(X_valid_tensor, y_valid_tensor)
+
+    if X_valid_tensor is not None:
+        dataset_valid = torch.utils.data.TensorDataset(X_valid_tensor, y_valid_tensor)
+    else:
+        dataset_valid = None
 
     if isinstance(X_test_tensor, list):
         dataset_test = [
@@ -421,7 +437,10 @@ def dataset_to_dataloader(
             persistent_workers=(num_workers > 0),
         )
 
-    dataloader_valid = make_non_shuffle_dl(dataset_valid)
+    if dataset_valid is not None:
+        dataloader_valid = make_non_shuffle_dl(dataset_valid)
+    else:
+        dataloader_valid = None
 
     if isinstance(dataset_test, list):
         dataloader_test = [make_non_shuffle_dl(dataset) for dataset in dataset_test]
@@ -440,6 +459,7 @@ def ndarray_to_dataloader(
     y_test,
     batch_size,
     device="cpu",
+    dtype=torch.float32,
     num_workers=0,
     seed=None,
     generator=None,
@@ -572,7 +592,14 @@ def ndarray_to_dataloader(
         X_test_tensor,
         y_test_tensor,
     ) = ndarray_to_tensor(
-        X_train, y_train, X_valid, y_valid, X_test, y_test, device=device
+        X_train,
+        y_train,
+        X_valid,
+        y_valid,
+        X_test,
+        y_test,
+        device=device,
+        dtype=dtype,
     )
 
     (dataset_train, dataset_valid, dataset_test) = tensor_to_dataset(
