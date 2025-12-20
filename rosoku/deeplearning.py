@@ -55,6 +55,7 @@ def deeplearning_train(
         wandb_params=None,
         checkpoint_fname=None,
         history_fname=None,
+        min_delta=0,
         rank=0,
 ):
     if enable_wandb_logging:
@@ -83,6 +84,7 @@ def deeplearning_train(
             criterion=criterion,
             optimizer=optimizer,
             scheduler=scheduler,
+            min_delta=min_delta,
             dataloader_train=dataloader_train,
             dataloader_valid=dataloader_valid,
             epoch=epoch,
@@ -133,6 +135,7 @@ def run_experiment(
     callback_get_model = kwargs.get("callback_get_model", None)
     scheduler = kwargs.get("scheduler", None)
     scheduler_params = kwargs.get("scheduler_params", None)
+    min_delta = kwargs.get("min_delta", 0)
     enable_wandb_logging = kwargs.get("enable_wandb_logging", False)
     wandb_params = kwargs.get("wandb_params", None)
     checkpoint_fname = kwargs.get("checkpoint_fname", None)
@@ -190,6 +193,7 @@ def run_experiment(
         checkpoint_fname=checkpoint_fname,
         history_fname=history_fname,
         early_stopping=early_stopping,
+        min_delta=min_delta,
     )
 
 
@@ -216,6 +220,7 @@ def deeplearning(
         model=None,
         scheduler=None,
         scheduler_params=None,
+        min_delta=0,
         device="cpu",
         num_workers=0,
         scoring="accuracy",
@@ -520,6 +525,7 @@ def deeplearning(
         "callback_get_model": callback_get_model,
         "scheduler": scheduler,
         "scheduler_params": scheduler_params,
+        "min_delta": min_delta,
         "enable_wandb_logging": enable_wandb_logging,
         "wandb_params": wandb_params,
         "checkpoint_fname": checkpoint_fname,

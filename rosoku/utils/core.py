@@ -84,12 +84,12 @@ class EarlyStopping:
 
 
 def get_predictions(
-        model,
-        dataloader,
-        device="cpu",
-        callback_get_logits=None,
-        callback_get_probas=None,
-        callback_get_preds=None,
+    model,
+    dataloader,
+    device="cpu",
+    callback_get_logits=None,
+    callback_get_probas=None,
+    callback_get_preds=None,
 ):
     """
     Run inference on a dataloader and return predictions, labels, logits and class probabilities.
@@ -180,94 +180,121 @@ def get_predictions(
     return preds_list, labels_list, logits_list, probas_list
 
 
-def evaluation_dataloader(model, dataloader, criterion=None, device="cpu"):
+def evaluation_dataloader(model, dataloader=None, criterion=None, device="cpu"):
     import torch
 
-    total_loss = 0
+    if dataloader is None:
+        raise ValueError("dataloader must be provided.")
+
+    model.eval()
+    total_loss = 0.0
     correct = 0
     total = 0
-    model.eval()
+
     with torch.no_grad():
-        for X, y in dataloader:
-            X = X.to(device, non_blocking=True)
-            y = y.to(device, non_blocking=True)
+        for Xb, yb in dataloader:
+            Xb = Xb.to(device, non_blocking=True)
+            yb = yb.to(device, non_blocking=True)
 
-            y_pred = model(X)
-            preds = torch.argmax(y_pred, dim=1)
+            logits = model(Xb)
+            preds = torch.argmax(logits, dim=1)
+
             if criterion is not None:
-                loss = criterion(y_pred, y)
-                total_loss += loss.item() * y.size(0)
-            correct += (preds == y).sum().item()
-            total += y.size(0)
+                loss = criterion(logits, yb)
+                total_loss += loss.item() * yb.size(0)
 
-    acc = correct / total
+            correct += (preds == yb).sum().item()
+            total += yb.size(0)
 
-    if criterion is not None:
-        loss_avg = total_loss / total
-        return acc, loss_avg
+    if total == 0:
+        acc = float("nan")
+        loss_avg = float("nan")
     else:
-        return acc
+        acc = correct / total
+        loss_avg = total_loss / total
+
+    return (acc, loss_avg) if criterion is not None else acc
 
 
 def _train_epoch(
-        model,
-        criterion,
-        optimizer,
-        dataloader_train,
-        dataloader_valid,
-        epoch,
-        device="cpu",
-        loss_best=None,
-        history=None,
-        scheduler=None,
-        checkpoint_fname=None,
-        enable_wandb=False,
+    model,
+    criterion,
+    optimizer,
+    dataloader_train,
+    dataloader_valid,
+    epoch,
+    device="cpu",
+    loss_best=None,
+    history=None,
+    scheduler=None,
+    min_delta=0,
+    checkpoint_fname=None,
+    enable_wandb=False,
 ):
+    import time
     import torch
 
     tic = time.time()
 
-    # train
+    # ---- train ----
     model.train()
+    total_loss = 0.0
+    correct = 0
+    total = 0
+
     for X, y in dataloader_train:
         X = X.to(device, non_blocking=True)
         y = y.to(device, non_blocking=True)
 
-        y_pred = model(X)
-        loss = criterion(y_pred, y)
-
-        optimizer.zero_grad()
+        optimizer.zero_grad(set_to_none=True)
+        logits = model(X)
+        loss = criterion(logits, y)
         loss.backward()
         optimizer.step()
 
-    # valid
-    model.eval()
-    with torch.no_grad():
-        train_acc, train_loss = evaluation_dataloader(
-            model=model,
-            dataloader=dataloader_train,
-            criterion=criterion,
-            device=device,
-        )
-        valid_acc, valid_loss = evaluation_dataloader(
-            model=model,
-            dataloader=dataloader_valid,
-            criterion=criterion,
-            device=device,
-        )
+        total_loss += loss.item() * y.size(0)
+        correct += (logits.argmax(dim=1) == y).sum().item()
+        total += y.size(0)
 
-    txt_print = f"epoch {epoch:03}, train_loss: {train_loss:06.4f}, train_acc: {train_acc:.2f}, valid_loss: {valid_loss:06.4f}, valid_acc: {valid_acc:.2f}"
+    train_loss = total_loss / total if total else float("nan")
+    train_acc = correct / total if total else float("nan")
 
+    # ---- valid ----
+    valid_acc, valid_loss = evaluation_dataloader(
+        model=model,
+        dataloader=dataloader_valid,
+        criterion=criterion,
+        device=device,
+    )
+
+    txt_print = (
+        f"epoch {epoch:03}, train_loss: {train_loss:06.4f}, train_acc: {train_acc:.2f}, "
+        f"valid_loss: {valid_loss:06.4f}, valid_acc: {valid_acc:.2f}"
+    )
+
+    # ---- scheduler ----
     if scheduler is not None:
         scheduler.step()
         _lr = scheduler.get_last_lr()[0]
-
         txt_print += f", lr: {_lr:.4e}"
 
     toc = time.time()
     txt_print += f", et: {toc - tic:.4f}"
 
-    # save history
+    # ---- checkpoint ----
+    if checkpoint_fname is not None and loss_best is not None:
+        if valid_loss < (loss_best["value"] - min_delta):
+            checkpoint = {
+                "epoch": epoch,
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "valid_loss": valid_loss,
+            }
+            torch.save(checkpoint, checkpoint_fname)
+            loss_best["value"] = valid_loss
+            txt_print += ", checkpoint saved"
+
+    # ---- history ----
     if history is not None:
         history["epoch"].append(epoch)
         history["train_loss"].append(train_loss)
@@ -275,21 +302,7 @@ def _train_epoch(
         history["train_acc"].append(train_acc)
         history["valid_acc"].append(valid_acc)
 
-    # save model if loss was the lowest
-    if checkpoint_fname is not None:
-        if valid_loss < loss_best["value"]:
-            checkpoint = dict()
-            checkpoint["epoch"] = epoch
-            checkpoint["model_state_dict"] = model.state_dict()
-            checkpoint["optimizer_state_dict"] = optimizer.state_dict()
-            checkpoint["valid_loss"] = valid_loss
-            torch.save(checkpoint, checkpoint_fname)
-
-            loss_best["value"] = valid_loss
-
-            txt_print += ", checkpoint saved"
-
-    # send log to wandb
+    # ---- wandb ----
     if enable_wandb:
         import wandb
 
@@ -302,7 +315,7 @@ def _train_epoch(
             }
         )
 
-    # print log
     print(txt_print)
+    print("hogehoge")
 
     return valid_loss
