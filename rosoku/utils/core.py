@@ -236,6 +236,7 @@ def _train_epoch(
 
     tic = time.time()
 
+    """
     from pathlib import Path
 
     checkpoint = {
@@ -244,6 +245,7 @@ def _train_epoch(
     save_base = Path("~/rosoku-test/model_state").expanduser()
     save_base.mkdir(parents=True, exist_ok=True)
     torch.save(checkpoint, save_base / f"epoch_{epoch:03}.pth")
+    """
 
     # ---- train ----
     model.train()
@@ -254,8 +256,6 @@ def _train_epoch(
     for X, y in dataloader_train:
         X = X.to(device, non_blocking=True)
         y = y.to(device, non_blocking=True)
-
-        print(X[0, 0, 0])
 
         optimizer.zero_grad(set_to_none=True)
         logits = model(X)
@@ -327,6 +327,5 @@ def _train_epoch(
         )
 
     print(txt_print)
-    print("hogehoge")
 
     return valid_loss
