@@ -89,13 +89,111 @@ def get_labels_from_epochs(epochs, label_keys={"left_hand": 0, "right_hand": 1})
 
 
 def apply_callback_proc(callback_proc, callback_proc_mode, train, valid, test):
+    """
+    Apply a preprocessing callback function to dataset splits.
+
+    This function supports two processing modes:
+
+    - ``"per_split"``: The callback function is applied independently to
+      each data split (train / valid / test). The callback receives a
+      single split and its corresponding split name.
+
+    - ``"joint"``: The callback function is applied jointly to multiple
+      splits at once. The callback receives all available splits together
+      and may share state across them (e.g., fitting on training data and
+      applying the transformation to validation and test data).
+
+    Parameters
+    ----------
+    callback_proc : callable
+        Preprocessing callback function.
+
+        - If ``callback_proc_mode="per_split"``, the signature must be::
+
+              callback_proc(data, split)
+
+          where ``split`` is one of ``{"train", "valid", "test"}``.
+
+        - If ``callback_proc_mode="joint"``, the signature must be either::
+
+              callback_proc(train, test)
+              callback_proc(train, valid, test)
+
+          depending on whether validation data are provided.
+
+    callback_proc_mode : {"per_split", "joint"}
+        Mode that specifies how the preprocessing callback is applied.
+
+        - ``"per_split"`` applies the callback independently to each split.
+        - ``"joint"`` applies the callback jointly to multiple splits.
+
+    train : object
+        Training split data.
+
+    valid : object or None
+        Validation split data. If ``None``, validation data are assumed to
+        be unavailable and are skipped.
+
+    test : list
+        Test split data. Each element is processed independently in
+        ``"per_split"`` mode, or passed collectively in ``"joint"`` mode.
+
+    Returns
+    -------
+    train : object
+        Processed training split.
+
+    valid : object or None
+        Processed validation split.
+
+    test : list
+        Processed test split(s).
+
+    Raises
+    ------
+    ValueError
+        If ``callback_proc_mode`` is not one of the supported modes.
+
+    Notes
+    -----
+    The ``"per_split"`` mode is suitable for stateless or split-local
+    preprocessing steps such as filtering, normalization, or feature
+    extraction.
+
+    The ``"joint"`` mode is intended for stateful preprocessing that
+    requires access to multiple splits simultaneously, such as fitting
+    a transformation on training data and applying it consistently to
+    validation and test data.
+
+    Examples
+    --------
+    Apply split-wise preprocessing::
+
+        train, valid, test = apply_callback_proc(
+            callback_proc=my_proc,
+            callback_proc_mode="per_split",
+            train=train,
+            valid=valid,
+            test=test,
+        )
+
+    Apply joint preprocessing (e.g., fit on train, apply to others)::
+
+        train, valid, test = apply_callback_proc(
+            callback_proc=my_proc,
+            callback_proc_mode="joint",
+            train=train,
+            valid=valid,
+            test=test,
+        )
+    """
     match callback_proc_mode:
         case "per_split":
             train = callback_proc(train, "train")
             if valid is not None:
                 valid = callback_proc(valid, "valid")
             test = [callback_proc(obj, "test") for obj in test]
-        case "per_function":
+        case "joint":
             if valid is None:
                 train, test = callback_proc(train, test)
             else:
@@ -108,10 +206,10 @@ def apply_callback_proc(callback_proc, callback_proc_mode, train, valid, test):
 
 
 def convert_epochs_to_ndarray(
-    epochs,
-    split,
-    label_keys={"left_hand": 0, "right_hand": 1},
-    **kwargs,
+        epochs,
+        split,
+        label_keys={"left_hand": 0, "right_hand": 1},
+        **kwargs,
 ):
     """
     Convert an MNE Epochs object into NumPy arrays (X, y).
@@ -173,14 +271,14 @@ def convert_epochs_to_ndarray(
 
 
 def ndarray_to_tensor(
-    X_train,
-    y_train,
-    X_valid,
-    y_valid,
-    X_test,
-    y_test,
-    device="cpu",
-    dtype=torch.float32,
+        X_train,
+        y_train,
+        X_valid,
+        y_valid,
+        X_test,
+        y_test,
+        device="cpu",
+        dtype=torch.float32,
 ):
     """
     Convert NumPy arrays to PyTorch tensors and move them to a device.
@@ -238,6 +336,27 @@ def ndarray_to_tensor(
         Test label tensor(s) of type ``torch.int64`` on ``device``.
         A list is returned if ``y_test`` is a list.
 
+    dtype : torch.dtype, optional
+        Data type used when converting NumPy arrays to PyTorch tensors
+        (default: ``torch.float32``).
+
+        This argument is forwarded to :func:`ndarray_to_tensor` and controls the
+        floating-point precision of the resulting tensors stored in the
+        :class:`torch.utils.data.TensorDataset`.
+
+        Typical choices are:
+
+        - ``torch.float32`` : default and recommended for most training scenarios
+        - ``torch.float64`` : useful for numerical debugging or high-precision analysis
+        - ``torch.float16`` / ``torch.bfloat16`` : may be used for memory reduction,
+          but require careful handling and compatible models/devices
+
+        Note:
+         - ``dtype`` affects only the feature tensors ``X``. Label tensors ``y`` are
+           converted to integer types as required by PyTorch loss functions.
+         - Changing ``dtype`` can affect numerical stability and reproducibility,
+           especially when combined with GPU acceleration.
+
     Notes
     -----
     - All feature arrays are converted to ``torch.float`` and all labels to
@@ -292,12 +411,12 @@ def ndarray_to_tensor(
 
 
 def tensor_to_dataset(
-    X_train_tensor,
-    y_train_tensor,
-    X_valid_tensor,
-    y_valid_tensor,
-    X_test_tensor,
-    y_test_tensor,
+        X_train_tensor,
+        y_train_tensor,
+        X_valid_tensor,
+        y_valid_tensor,
+        X_test_tensor,
+        y_test_tensor,
 ):
     """
     Convert PyTorch tensors into TensorDataset objects.
@@ -393,18 +512,18 @@ def tensor_to_dataset(
 
 
 def dataset_to_dataloader(
-    dataset_train,
-    dataset_valid,
-    dataset_test,
-    batch_size,
-    num_workers=0,
-    seed=None,
-    generator=None,
+        dataset_train,
+        dataset_valid,
+        dataset_test,
+        batch_size,
+        num_workers=0,
+        seed=None,
+        generator=None,
 ):
     if (num_workers > 0) and (seed is not None or generator is not None):
 
         def func_worker_init(worker_id):
-            worker_seed = torch.initial_seed() % 2**32
+            worker_seed = torch.initial_seed() % 2 ** 32
             np.random.seed(worker_seed)
             random.seed(worker_seed)
             torch.manual_seed(worker_seed)
@@ -451,18 +570,18 @@ def dataset_to_dataloader(
 
 
 def ndarray_to_dataloader(
-    X_train,
-    y_train,
-    X_valid,
-    y_valid,
-    X_test,
-    y_test,
-    batch_size,
-    device="cpu",
-    dtype=torch.float32,
-    num_workers=0,
-    seed=None,
-    generator=None,
+        X_train,
+        y_train,
+        X_valid,
+        y_valid,
+        X_test,
+        y_test,
+        batch_size,
+        device="cpu",
+        dtype=torch.float32,
+        num_workers=0,
+        seed=None,
+        generator=None,
 ):
     """
     Convert NumPy arrays to PyTorch DataLoaders.
@@ -504,6 +623,27 @@ def ndarray_to_dataloader(
     device : {"cpu", "cuda"}, optional
         Device to which the tensors are moved before dataset/DataLoader creation
         (default: ``"cpu"``).
+
+    dtype : torch.dtype, optional
+        Data type used when converting NumPy arrays to PyTorch tensors
+        (default: ``torch.float32``).
+
+        This argument is forwarded to :func:`ndarray_to_tensor` and controls the
+        floating-point precision of the resulting tensors stored in the
+        :class:`torch.utils.data.TensorDataset`.
+
+        Typical choices are:
+
+        - ``torch.float32`` : default and recommended for most training scenarios
+        - ``torch.float64`` : useful for numerical debugging or high-precision analysis
+        - ``torch.float16`` / ``torch.bfloat16`` : may be used for memory reduction,
+          but require careful handling and compatible models/devices
+
+        Note:
+         - ``dtype`` affects only the feature tensors ``X``. Label tensors ``y`` are
+           converted to integer types as required by PyTorch loss functions.
+         - Changing ``dtype`` can affect numerical stability and reproducibility,
+           especially when combined with GPU acceleration.
 
     num_workers : int, optional
         Number of worker processes used by each DataLoader (default: 0).
@@ -623,15 +763,15 @@ def ndarray_to_dataloader(
 
 
 def load_data(
-    items_train,
-    items_valid,
-    items_test,
-    callback_load_epochs=None,
-    callback_load_ndarray=None,
-    callback_proc_epochs=None,
-    callback_proc_ndarray=None,
-    callback_proc_mode="per_split",
-    callback_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
+        items_train,
+        items_valid,
+        items_test,
+        callback_load_epochs=None,
+        callback_load_ndarray=None,
+        callback_proc_epochs=None,
+        callback_proc_ndarray=None,
+        callback_proc_mode="per_split",
+        callback_convert_epochs_to_ndarray=convert_epochs_to_ndarray,
 ):
     """
     Load and preprocess datasets for rosoku pipelines using item specifications.
@@ -705,18 +845,47 @@ def load_data(
         Optional preprocessing applied to ndarray data after conversion (or direct
         ndarray loading). It is invoked via ``apply_callback_proc``.
 
-        In this function, ndarray preprocessing is performed on dictionaries of the form
-        ``{"X": X, "y": y}`` for the train/valid splits and as a list of such dicts for
-        the test split (one dict per test group).
-
-    callback_proc_mode : {"per_split", "all"}, optional
+    callback_proc_mode : {"per_split", "joint"}, optional
         Controls how preprocessing callbacks are applied, as interpreted by
         ``apply_callback_proc``.
 
-        Typical meanings are:
+        - ``"per_split"``:
+            The preprocessing callback is applied independently to each data
+            split (train / valid / test).
 
-        - ``"per_split"``: process train/valid/test independently.
-        - ``"all"``: process jointly (exact behavior depends on ``apply_callback_proc``).
+            The callback function must have the signature::
+
+                callback_proc(data, split)
+
+            where ``split`` is one of ``{"train", "valid", "test"}``.
+
+            The callback must return the processed version of ``data``.
+            No information is shared across splits in this mode.
+
+        - ``"joint"``:
+            The preprocessing callback is applied jointly to multiple splits
+            at once, allowing shared state across splits.
+
+            If validation data are not provided (``valid is None``), the callback
+            must have the signature::
+
+                callback_proc(train, test)
+
+            and must return::
+
+                train, test
+
+            If validation data are provided, the callback must have the signature::
+
+                callback_proc(train, valid, test)
+
+            and must return::
+
+                train, valid, test
+
+            This mode is intended for stateful preprocessing steps such as
+            fitting a transformation on training data and applying it
+            consistently to validation and test data.
 
     callback_convert_epochs_to_ndarray : callable, optional
         Function used to convert Epochs objects to arrays.
@@ -814,9 +983,9 @@ def load_data(
             raise ValueError("items_train and items_test must be instance of list")
     else:
         if (
-            isinstance(items_train, list)
-            and isinstance(items_valid, list)
-            and isinstance(items_test, list)
+                isinstance(items_train, list)
+                and isinstance(items_valid, list)
+                and isinstance(items_test, list)
         ):
             pass
         else:

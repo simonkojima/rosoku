@@ -91,12 +91,47 @@ def conventional(
         Optional preprocessing applied to NumPy data (e.g., standardization, feature
         extraction), as used by ``utils.load_data``.
 
-    callback_proc_mode : {"per_split", "all"}, optional
-        Strategy for preprocessing across splits, as interpreted by
-        ``utils.load_data``. Typical meanings are:
+    callback_proc_mode : {"per_split", "joint"}, optional
+        Controls how preprocessing callbacks are applied, as interpreted by
+        ``apply_callback_proc``.
 
-        - ``"per_split"``: process train/test independently.
-        - ``"all"``: process jointly (e.g., fit transform on all data).
+        - ``"per_split"``:
+            The preprocessing callback is applied independently to each data
+            split (train / valid / test).
+
+            The callback function must have the signature::
+
+                callback_proc(data, split)
+
+            where ``split`` is one of ``{"train", "valid", "test"}``.
+
+            The callback must return the processed version of ``data``.
+            No information is shared across splits in this mode.
+
+        - ``"joint"``:
+            The preprocessing callback is applied jointly to multiple splits
+            at once, allowing shared state across splits.
+
+            If validation data are not provided (``valid is None``), the callback
+            must have the signature::
+
+                callback_proc(train, test)
+
+            and must return::
+
+                train, test
+
+            If validation data are provided, the callback must have the signature::
+
+                callback_proc(train, valid, test)
+
+            and must return::
+
+                train, valid, test
+
+            This mode is intended for stateful preprocessing steps such as
+            fitting a transformation on training data and applying it
+            consistently to validation and test data.
 
     callback_fit : callable | None, optional
         Optional custom fitting hook. If provided, called as
@@ -183,32 +218,6 @@ def conventional(
       ``predict_proba`` or provide ``callback_predict_proba``.
     - ``callback_get_models`` is ignored when ``models`` is explicitly provided. In that
       case, the estimators passed via ``models`` are used directly.
-
-    Examples
-    --------
-    Minimal usage with ndarray loaders::
-
-        def load_xy(item, split):
-            X = np.load(item["X"])
-            y = np.load(item["y"])
-            return X, y
-
-        df = conventional(
-            items_train=[{"X": "Xtr.npy", "y": "ytr.npy"}],
-            items_test=[[{"X": "Xte.npy", "y": "yte.npy"}]],
-            callback_load_ndarray=load_xy,
-            models=[pyriemann.classification.MDM()],
-            scoring=["accuracy"],
-        )
-
-    Group two test items into a single evaluation group::
-
-        df = conventional(
-            items_train=[{"sub": 1, "ses": 1}],
-            items_test=[[{"sub": 1, "ses": 2}, {"sub": 1, "ses": 3}]],
-            callback_load_epochs=load_epochs,
-            callback_proc_epochs=proc_epochs,
-        )
     """
 
     X_train, _, X_test, y_train, _, y_test = utils.load_data(
