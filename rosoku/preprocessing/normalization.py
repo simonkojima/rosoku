@@ -1,13 +1,39 @@
 import numpy as np
 
 
-def normalize(X_train, X_valid, X_test, return_params=False):
+def normalize(X_train, X_valid, X_test, return_params=True):
     """
     Z-score normalization across channels for EEG-style tensors.
 
     Normalization parameters (mean, std) are computed only from ``X_train``
     and applied to validation and test data. This ensures no data leakage
     during evaluation.
+
+    The normalization is applied independently to each channel.
+    For a given data :math:`X^c` at channel :math:`c`, the normalization is defined as:
+
+    .. math::
+
+        \\mu =
+        \\frac{1}{N}
+        \\sum_{i=1}^{N} \\frac{1}{T} \\sum_{t=1}^{T} X_{i,t}^c
+
+    .. math::
+
+        \\sigma =
+        \\sqrt{
+            \\frac{1}{N}
+            \\sum_{i=1}^{N} \\frac{1}{T} \\sum_{t=1}^{T}
+            \\left( X_{i,t}^c - \\mu \\right)^2
+        }
+
+    .. math::
+
+        \\hat{X}_{i,t}^c =
+        \\frac{X_{i,t}^c - \\mu}{\\sigma}
+
+    where the same normalization rule is applied independently
+    to each channel :math:`c = 1, \\ldots, C`.
 
     Parameters
     ----------
@@ -22,7 +48,7 @@ def normalize(X_train, X_valid, X_test, return_params=False):
         Test data with shape ``(n_trials, n_channels, n_times)``
         or a list of such arrays (e.g., multiple test groups).
 
-    return_params : bool, default=False
+    return_params : bool, default=True
         If ``True``, also return the computed ``mean`` and ``std`` arrays.
 
     Returns
@@ -49,11 +75,6 @@ def normalize(X_train, X_valid, X_test, return_params=False):
       for broadcasting during normalization.
     - Test sets do **not** influence normalization statistics.
 
-    Examples
-    --------
-    >>> X_train_norm, X_valid_norm, X_test_norm = normalize(X_train, X_valid, X_test)
-    >>> X_train_norm, X_valid_norm, X_test_norm, mean, std = \
-    ...     normalize(X_train, X_valid, X_test, return_params=True)
     """
 
     n_trials, n_channels, n_times = X_train.shape
