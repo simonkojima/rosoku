@@ -8,12 +8,16 @@ Example 04: Cross-subject classification with deep learning
 # License: BSD (3-clause)
 
 # %%
-# Import Packages
-# ===============
-
+# Set Environment Variables for Replicability
+# ===========================================
 import os
 
 os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+
+# %%
+# Import Packages
+# ===============
+
 
 import functools
 import numpy as np
@@ -142,8 +146,8 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 label_keys = {"left_hand": 0, "right_hand": 1}
 
 results = rosoku.deeplearning(
-    items_train=list(range(1, 17)),
-    items_valid=list(range(17, 20)),
+    items_train=[1, 2, 3],
+    items_valid=[4, 5],
     items_test=[21, 56],
     callback_load_ndarray=functools.partial(
         callback_load_ndarray,
