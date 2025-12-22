@@ -42,21 +42,21 @@ def setup_scheduler(scheduler, scheduler_params, optimizer):
 
 
 def deeplearning_train(
-    dataloader_train,
-    dataloader_valid,
-    n_epochs,
-    model,
-    criterion,
-    device,
-    optimizer=None,
-    scheduler=None,
-    early_stopping=None,
-    callback_early_stopping=None,
-    enable_wandb_logging=False,
-    wandb_params=None,
-    checkpoint_fname=None,
-    history_fname=None,
-    min_delta=0,
+        dataloader_train,
+        dataloader_valid,
+        n_epochs,
+        model,
+        criterion,
+        device,
+        optimizer=None,
+        scheduler=None,
+        early_stopping=None,
+        callback_early_stopping=None,
+        enable_wandb_logging=False,
+        wandb_params=None,
+        checkpoint_fname=None,
+        history_fname=None,
+        min_delta=0,
 ):
     if enable_wandb_logging:
         import wandb
@@ -122,19 +122,19 @@ def deeplearning_train(
 
 
 def run_experiment(
-    num_workers,
-    device,
-    X_train,
-    y_train,
-    X_valid,
-    y_valid,
-    X_test,
-    y_test,
-    criterion,
-    batch_size,
-    n_epochs,
-    optimizer,
-    kwargs,
+        num_workers,
+        device,
+        X_train,
+        y_train,
+        X_valid,
+        y_valid,
+        X_test,
+        y_test,
+        criterion,
+        batch_size,
+        n_epochs,
+        optimizer,
+        kwargs,
 ):
     import torch
 
@@ -142,7 +142,6 @@ def run_experiment(
 
     optimizer_params = kwargs.get("optimizer_params", None)
     model = kwargs.get("model", None)
-    callback_get_model = kwargs.get("callback_get_model", None)
     callback_early_stopping = kwargs.get("callback_early_stopping", None)
     scheduler = kwargs.get("scheduler", None)
     scheduler_params = kwargs.get("scheduler_params", None)
@@ -171,16 +170,6 @@ def run_experiment(
         generator=None,
         dtype=dtype,
     )
-
-    # setup model
-
-    if callback_get_model is not None:
-        model = callback_get_model(X_train, y_train)
-
-    if model is None:
-        raise RuntimeError("model is None")
-
-    model.to(device)
 
     # setup optimizer
     optimizer = setup_optimizer(optimizer, optimizer_params, model)
@@ -214,50 +203,50 @@ def run_experiment(
 
 
 def deeplearning(
-    items_train,
-    items_valid,
-    items_test,
-    callback_load_epochs=None,
-    callback_load_ndarray=None,
-    criterion=torch.nn.CrossEntropyLoss(),
-    batch_size=64,
-    n_epochs=500,
-    optimizer=torch.optim.AdamW,
-    *,
-    callback_proc_mode="per_split",
-    callback_proc_epochs=None,
-    callback_proc_ndarray=None,
-    callback_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
-    callback_get_logits=None,
-    callback_get_preds=None,
-    callback_get_probas=None,
-    callback_get_model=None,
-    callback_early_stopping=None,
-    optimizer_params=None,
-    model=None,
-    scheduler=None,
-    scheduler_params=None,
-    min_delta=0,
-    device="cpu",
-    num_workers=0,
-    scoring="accuracy",
-    scoring_name=None,
-    enable_wandb_logging=False,
-    wandb_params=None,
-    checkpoint_fname=None,
-    history_fname=None,
-    samples_fname=None,
-    normalization_fname=None,
-    saliency_map_fname=False,
-    early_stopping=None,
-    model_name=None,
-    enable_normalization=False,
-    use_deterministic_algorithms=False,
-    deterministic_warn_only=False,
-    label_keys=None,
-    seed=None,
-    dtype=torch.float32,
-    additional_values=None,
+        items_train,
+        items_valid,
+        items_test,
+        callback_load_epochs=None,
+        callback_load_ndarray=None,
+        criterion=torch.nn.CrossEntropyLoss(),
+        batch_size=64,
+        n_epochs=500,
+        optimizer=torch.optim.AdamW,
+        *,
+        callback_proc_mode="per_split",
+        callback_proc_epochs=None,
+        callback_proc_ndarray=None,
+        callback_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
+        callback_get_logits=None,
+        callback_get_preds=None,
+        callback_get_probas=None,
+        callback_get_model=None,
+        callback_early_stopping=None,
+        optimizer_params=None,
+        model=None,
+        scheduler=None,
+        scheduler_params=None,
+        min_delta=1e-3,
+        device="cpu",
+        num_workers=0,
+        scoring="accuracy",
+        scoring_name=None,
+        enable_wandb_logging=False,
+        wandb_params=None,
+        checkpoint_fname=None,
+        history_fname=None,
+        samples_fname=None,
+        normalization_fname=None,
+        saliency_map_fname=False,
+        early_stopping=None,
+        model_name=None,
+        enable_normalization=False,
+        use_deterministic_algorithms=False,
+        deterministic_warn_only=False,
+        label_keys=None,
+        seed=None,
+        dtype=torch.float32,
+        additional_values=None,
 ):
     """
     Run a deep-learning EEG/BCI experiment using PyTorch models.
@@ -553,7 +542,6 @@ def deeplearning(
     kwargs = {
         "optimizer_params": optimizer_params,
         "model": model,
-        "callback_get_model": callback_get_model,
         "callback_early_stopping": callback_early_stopping,
         "scheduler": scheduler,
         "scheduler_params": scheduler_params,
@@ -660,7 +648,7 @@ def deeplearning(
     samples_list = []
     with torch.no_grad():
         for idx, (dataloader, items_test_single) in enumerate(
-            zip(dataloader_test, items_test)
+                zip(dataloader_test, items_test)
         ):
 
             preds, labels, logits, probas = utils.get_predictions(

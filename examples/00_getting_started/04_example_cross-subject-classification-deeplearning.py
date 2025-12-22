@@ -10,6 +10,11 @@ Example 04: Cross-subject classification with deep learning
 # %%
 # Import Packages
 # ===============
+
+import os
+
+os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+
 import functools
 import numpy as np
 from pathlib import Path
@@ -160,7 +165,7 @@ results = rosoku.deeplearning(
     scheduler_params=scheduler_params,
     device=device,
     callback_proc_epochs=None,
-    # early_stopping=early_stopping,
+    early_stopping=early_stopping,
     enable_normalization=enable_normalization,
     scoring=["accuracy", "f1"],
     history_fname=(save_base / "history" / f"cross-subject-deeplearning.parquet"),
