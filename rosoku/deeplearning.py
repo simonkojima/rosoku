@@ -606,11 +606,6 @@ def deeplearning(
         scoring[idx] = scoring_
 
     # classify test data
-    from pathlib import Path
-
-    checkpoint_fname = Path(
-        "~/rosoku-log/history/dell/cross-subject-deeplearning.pth"
-    ).expanduser()
     if checkpoint_fname is not None:
         checkpoint = torch.load(checkpoint_fname, map_location=torch.device(device))
         model.load_state_dict(checkpoint["model_state_dict"])

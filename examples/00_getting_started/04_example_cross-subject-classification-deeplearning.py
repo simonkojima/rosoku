@@ -113,7 +113,7 @@ def callback_get_model(X, y):
 # Run the Experiment
 # ==================
 
-lr = 1e-3
+lr = 1e-4
 weight_decay = 1e-2
 n_epochs = 500
 batch_size = 64
