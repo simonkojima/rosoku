@@ -178,6 +178,7 @@ results = rosoku.deeplearning(
     label_keys=label_keys,
     seed=seed,
     additional_values={"example_key": "example_value"},
+    use_deterministic_algorithms=True,
 )
 
 # %%
