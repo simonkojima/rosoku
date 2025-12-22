@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rosoku"
+description = "A flexible callback-based toolkit for EEG/BCI experiments that lets you define data loading and preprocessing freely, while rosoku handles training, evaluation, and result logging for conventional and deep-learning models."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+dynamic = ["version"]
+
+authors = [
+    { name = "Simon Kojima, Alex Pepi" },
+]
+
+dependencies = [
+    "numpy",
+    "scipy",
+    "pandas",
+    "mne",
+    "pyriemann",
+    "scikit-learn",
+    "torch",
+    "msgpack",
+    "pyarrow",
+]
+###### Optional Dependencies ######
+# moabb
+# braindecode
+# wandb
+
+[tool.setuptools.dynamic]
+version = { attr = "rosoku.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["rosoku*"]
