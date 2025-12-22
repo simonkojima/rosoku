@@ -1,6 +1,34 @@
 """
-Example 03: Cross-subject classification with riemannian classifier
-================================================================
+Example 03: Cross-subject classification with Riemannian classifier
+===================================================================
+
+This example demonstrates **cross-subject motor imagery classification**
+using a **Riemannian geometry-based pipeline** with ``rosoku``.
+
+We use the **Dreyer2023** dataset and train a classifier on data pooled from
+multiple subjects, then evaluate it on **unseen subjects**. In contrast to
+within-subject decoding, cross-subject classification is more challenging
+because EEG distributions vary substantially across users.
+
+Key aspects illustrated in this example include:
+
+- Loading and preprocessing EEG data from **multiple subjects** (MNE-based)
+- Feature extraction using **SPD covariance matrices** (pyRiemann)
+- Optional transfer-learning step via **Riemannian alignment**
+  (domain adaptation across subjects)
+- A callback that returns NumPy arrays directly (``callback_load_ndarray``),
+  which is convenient for cross-subject pipelines
+
+The pipeline consists of the following steps:
+
+1. Load raw EEG recordings for each subject and apply band-pass filtering
+2. Epoch the data and compute covariance matrices per trial
+3. (Optional) Apply Riemannian alignment to reduce inter-subject distribution shifts
+4. Concatenate trials across training subjects and fit a Riemannian classifier
+5. Evaluate the trained model on held-out subjects
+
+This example is intended as a simple, interpretable template for building
+cross-subject Riemannian decoding pipelines with ``rosoku``.
 """
 
 # Authors: Simon Kojima <simon.kojima@inria.fr>
@@ -87,7 +115,7 @@ label_keys = {"left_hand": 0, "right_hand": 1}
 dataset = Dreyer2023()
 
 results = rosoku.conventional(
-    items_train=[1, 2, 3],
+    items_train=list(range(1, 21)),
     items_test=[21, 56],
     callback_load_ndarray=functools.partial(
         callback_load_ndarray,

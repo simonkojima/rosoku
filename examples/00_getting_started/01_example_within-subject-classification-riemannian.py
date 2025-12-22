@@ -1,6 +1,35 @@
 """
-Example 01: Within-subject classification with riemannian classifier
-=================================================================
+Example 01: Within-subject classification with Riemannian classifier
+====================================================================
+
+This example demonstrates a **within-subject motor imagery classification**
+pipeline using a **Riemannian geometry-based classifier** with ``rosoku``.
+
+We use the **Dreyer2023** dataset and evaluate classification performance on a
+single subject, where training and test sets are defined by different recording
+runs of the same subject.
+
+The example highlights a *classical EEG decoding pipeline* and serves as a
+baseline reference for comparison with deep-learning-based approaches.
+
+Key aspects illustrated in this example include:
+
+- Callback-based loading and preprocessing of raw EEG data using MNE
+- Conversion of epoched EEG signals into **SPD covariance matrices**
+- Use of a Riemannian classifier implemented via **pyRiemann**
+- Simple and transparent experimental design with minimal hyperparameters
+
+The pipeline consists of the following steps:
+
+1. Load and band-pass filter raw EEG recordings
+2. Epoch the continuous data and extract EEG channels
+3. Estimate covariance matrices from epoched signals
+4. Train and evaluate a Riemannian classifier on subject-specific runs
+5. Collect performance metrics and per-trial predictions
+
+This example is intentionally kept minimal and interpretable, and can be used
+as a starting point or a baseline for more advanced EEG decoding pipelines
+implemented with ``rosoku``.
 """
 
 # Authors: Simon Kojima <simon.kojima@inria.fr>
@@ -90,7 +119,7 @@ save_base = Path("~").expanduser() / "rosoku-log"
 
 results = rosoku.conventional(
     items_train=[subject, "R1", "R2"],
-    items_test=[[subject, "R3", "R4", "R5"]],
+    items_test=[[subject, "R3", "R4", "R5", "R6"]],
     callback_load_epochs=functools.partial(
         callback_load_epochs,
         dataset=dataset,

@@ -56,18 +56,10 @@ def saliency_map(model, dataloader, device, class_index=0):
       for the target class.
     - For each batch, gradients are summed over samples in the batch and then
       accumulated across batches.
-    - The final saliency map is normalized by the number of samples belonging
-      to the target class (``cnt``), yielding an average per-sample saliency.
     - This implementation assumes that at least one sample of the target class
       is present in each batch where gradients are computed. If a batch contains
       no samples of ``class_index``, the behavior depends on the model and may
       result in runtime errors.
-
-    Warnings
-    --------
-    This function implements a basic input-gradient saliency method. It does not
-    apply smoothing or more advanced attribution techniques such as Integrated
-    Gradients or SmoothGrad.
 
     See Also
     --------
@@ -168,13 +160,6 @@ def saliency_temporal(saliency):
     - This normalization allows the temporal profile to be interpreted as the
       relative contribution (in percent) of each time point to the overall
       saliency.
-    - If the input saliency map contains only zeros, the normalization step
-      will result in division by zero.
-
-    See Also
-    --------
-    saliency_map :
-        Compute channel–time saliency maps from a trained deep-learning model.
 
     Examples
     --------
@@ -226,17 +211,6 @@ def saliency_spatial(saliency):
     - This normalization allows the spatial profile to be interpreted as the
       relative contribution (in percent) of each channel to the overall
       saliency.
-    - If the input saliency map contains only zeros, the normalization step
-      will result in division by zero.
-
-    See Also
-    --------
-    saliency_map :
-        Compute channel–time saliency maps from a trained deep-learning model.
-
-    saliency_temporal :
-        Compute a normalized temporal saliency profile by collapsing saliency
-        across channels.
 
     Examples
     --------

@@ -7,8 +7,7 @@ models.
 
 It bridges the gap between **high-level EEG/BCI frameworks** (such as MOABB and
 Braindecode) and **low-level machine-learning libraries** (such as scikit-learn
-and PyTorch), by providing structured yet flexible experiment pipelines without
-hiding critical implementation details.
+and PyTorch), by providing structured yet flexible experiment pipelines.
 
 Rosoku emphasizes **clarity, explicit control, and reproducibility** over maximum
 automation or throughput, making it particularly suitable for research-oriented
@@ -46,7 +45,6 @@ At the same time, Rosoku does **not** impose:
 
 - a specific dataset format
 - a fixed preprocessing pipeline
-- opaque training abstractions
 
 ----
 
@@ -56,7 +54,7 @@ Two Complementary Pipelines
 Rosoku provides two high-level APIs with a shared design philosophy:
 
 ``conventional()``
-    Classical machine-learning pipelines based on scikit-learn–style estimators
+    Classical machine-learning pipelines based on scikit-learn style estimators
     (e.g., Riemannian classifiers, CSP + LDA, SVM).
 
 ``deeplearning()``
@@ -65,23 +63,6 @@ Rosoku provides two high-level APIs with a shared design philosophy:
 
 Both pipelines rely on the same concepts:
 **items**, **callbacks**, and **explicit evaluation groups**.
-
-----
-
-Reproducibility First
----------------------
-
-Reproducibility is a first-class concern in Rosoku.
-
-- random seeds are handled explicitly
-- data loading and preprocessing behavior is transparent
-- no implicit parallelism or distributed training is hidden inside the framework
-
-For **maximum reproducibility**, Rosoku recommends running with::
-
-    num_workers = 0
-
-especially when debugging experiments or preparing results for publication.
 
 ----
 
@@ -94,11 +75,6 @@ Rosoku is designed for researchers who:
 - want transparent and inspectable pipelines
 - compare multiple preprocessing or modeling choices
 - prioritize reproducibility over convenience
-
-If you prefer a fully automated, end-to-end workflow, MOABB or Braindecode may be
-a better fit.  
-If you want a clear and explicit bridge between experimental design and
-implementation, Rosoku is built for you.
 
 ----
 

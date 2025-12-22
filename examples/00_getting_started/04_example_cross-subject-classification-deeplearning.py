@@ -1,6 +1,36 @@
 """
 Example 04: Cross-subject classification with deep learning
-========================================================
+===========================================================
+
+This example demonstrates **cross-subject motor imagery classification**
+using a deep learning model with ``rosoku``.
+
+We use the **Dreyer2023** dataset and train an **EEGNet** model on data pooled
+from multiple subjects, then evaluate it on **unseen subjects**. Compared to
+within-subject decoding, cross-subject classification is more challenging due to
+large inter-subject variability in EEG distributions.
+
+Key aspects illustrated in this example include:
+
+- Loading and preprocessing EEG data from **multiple subjects** using MNE
+- Optional transfer-learning step via **Euclidean alignment**
+  (domain adaptation across subjects)
+- Defining a PyTorch model through a callback (``callback_get_model``) using
+  **braindecode** (EEGNet)
+- Reproducible training via deterministic settings, early stopping, checkpointing,
+  and logging (history, per-trial predictions, normalization parameters, saliency)
+
+The pipeline consists of the following steps:
+
+1. Load raw EEG recordings for each subject and apply band-pass filtering
+2. Epoch the data and (optionally) apply Euclidean alignment to reduce
+   inter-subject distribution shifts
+3. Concatenate trials across training subjects and train EEGNet
+4. Validate on held-out subjects and use early stopping/checkpointing
+5. Evaluate the final model on unseen test subjects and visualize training curves
+
+This example is intended as a practical template for building reproducible
+cross-subject deep-learning pipelines for EEG decoding with ``rosoku``.
 """
 
 # Authors: Simon Kojima <simon.kojima@inria.fr>
@@ -10,6 +40,15 @@ Example 04: Cross-subject classification with deep learning
 # %%
 # Set Environment Variables for Replicability
 # ===========================================
+# NOTE:
+# This environment variable MUST be set **before importing torch**.
+# It enforces deterministic behavior in CUDA CuBLAS operations
+# when `torch.use_deterministic_algorithms(True)` is enabled.
+#
+# See:
+# https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility
+#
+# If this variable is set after importing torch, it will have no effect.
 import os
 
 os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
@@ -17,7 +56,6 @@ os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 # %%
 # Import Packages
 # ===============
-
 
 import functools
 import numpy as np
@@ -146,8 +184,8 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 label_keys = {"left_hand": 0, "right_hand": 1}
 
 results = rosoku.deeplearning(
-    items_train=[1, 2, 3],
-    items_valid=[4, 5],
+    items_train=list(range(1, 17)),
+    items_valid=list(range(17, 21)),
     items_test=[21, 56],
     callback_load_ndarray=functools.partial(
         callback_load_ndarray,

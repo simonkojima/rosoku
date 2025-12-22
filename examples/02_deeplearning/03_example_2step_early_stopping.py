@@ -1,11 +1,61 @@
 """
 Example 03: 2-step Early Stopping
 =================================
+
+This example demonstrates a **two-step training strategy using early stopping**
+with ``rosoku`` for deep-learning-based EEG classification.
+
+The main idea of this example is to **decouple model selection and final training**
+by performing training in two stages:
+
+1. **Step 1 (model selection)**:
+   A validation set is used together with standard early stopping to determine
+   the optimal stopping point (i.e., the epoch with the lowest validation loss).
+   The best model checkpoint and its corresponding loss value are saved.
+
+2. **Step 2 (final training)**:
+   The model is retrained using a larger training set (including the former
+   validation data), while early stopping is controlled by a custom
+   ``callback_early_stopping`` function. Training is stopped once the training
+   loss reaches the best loss obtained in Step 1.
+
+This approach is useful when:
+
+- A validation set is required for **early stopping or hyperparameter tuning**
+- The final model should be trained on **as much data as possible**
+- One wants to avoid data leakage while still benefiting from early stopping
+
+Key aspects illustrated in this example include:
+
+- Standard early stopping based on validation loss
+- Custom early stopping via ``callback_early_stopping``
+- Reuse of the best loss value stored in a checkpoint
+- Flexible control over training logic without modifying the training loop
+
+This example focuses on the *training strategy* rather than performance, and
+serves as a practical template for advanced early-stopping workflows in
+``rosoku``.
 """
 
 # Authors: Simon Kojima <simon.kojima@inria.fr>
 #
 # License: BSD (3-clause)
+
+# %%
+# Set Environment Variables for Replicability
+# ===========================================
+# NOTE:
+# This environment variable MUST be set **before importing torch**.
+# It enforces deterministic behavior in CUDA CuBLAS operations
+# when `torch.use_deterministic_algorithms(True)` is enabled.
+#
+# See:
+# https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility
+#
+# If this variable is set after importing torch, it will have no effect.
+import os
+
+os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 
 # %%
 # Import Packages
@@ -98,15 +148,14 @@ def convert_epochs_to_ndarray(
 # Run the Experiment using Early Stopping with Validation data
 # ============================================================
 
-subject = 56
+subject = 10
 resample = 128
 
-lr = 1e-3
+lr = 5e-4
 weight_decay = 1e-2
 n_epochs = 500
-batch_size = 4
+batch_size = 8
 patience = 75
-enable_normalization = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 seed = 42
@@ -130,9 +179,9 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 label_keys = {"left_hand": 0, "right_hand": 1}
 
 results_1st_step = rosoku.deeplearning(
-    items_train=[subject, "R1", "R2"],
-    items_valid=[subject, "R3"],
-    items_test=[[subject, "R4", "R5"]],
+    items_train=[subject, "R1", "R2", "R3"],
+    items_valid=[subject, "R4"],
+    items_test=[[subject, "R5", "R6"]],
     callback_load_epochs=functools.partial(
         callback_load_epochs,
         dataset=dataset,
@@ -156,7 +205,6 @@ results_1st_step = rosoku.deeplearning(
     scheduler_params=scheduler_params,
     device=device,
     early_stopping=early_stopping,
-    enable_normalization=enable_normalization,
     history_fname=(save_base / "history" / f"sub-{subject}.parquet"),
     checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}.pth"),
     samples_fname=(save_base / "samples" / f"sub-{subject}.parquet"),
@@ -165,6 +213,8 @@ results_1st_step = rosoku.deeplearning(
     label_keys=label_keys,
     seed=seed,
     additional_values={"subject": subject},
+    use_deterministic_algorithms=True,
+    min_delta=0,
 )
 
 # %%
@@ -174,21 +224,30 @@ results_1st_step = rosoku.deeplearning(
 data = torch.load(save_base / "checkpoint" / f"sub-{subject}.pth")
 loss_best = data["loss_best"]
 
-lr = 1e-4
+lr = 5e-4
 weight_decay = 1e-2
 n_epochs = 500
-batch_size = 4
+batch_size = 8
 seed = 42
 
+criterion = torch.nn.CrossEntropyLoss()
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR
+scheduler_params = {"T_max": n_epochs, "eta_min": 1e-6}
+optimizer = torch.optim.AdamW
+optimizer_params = {"lr": lr, "weight_decay": weight_decay}
+early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 
-def callback_early_stopping(loss_train, loss_valid, epoch):
-    return loss_train <= loss_best
+
+def callback_early_stopping(state):
+    # Stop training once the training loss reaches the best
+    # validation loss obtained in the first step
+    return state["train_loss"] <= loss_best
 
 
 results_2nd_step = rosoku.deeplearning(
-    items_train=[subject, "R1", "R2", "R3"],
+    items_train=[subject, "R1", "R2", "R3", "R4"],
     items_valid=None,
-    items_test=[[subject, "R4", "R5"]],
+    items_test=[[subject, "R5", "R6"]],
     callback_load_epochs=functools.partial(
         callback_load_epochs,
         dataset=dataset,
@@ -212,7 +271,6 @@ results_2nd_step = rosoku.deeplearning(
     scheduler=scheduler,
     scheduler_params=scheduler_params,
     device=device,
-    enable_normalization=enable_normalization,
     history_fname=(save_base / "history" / f"sub-{subject}_2nd.parquet"),
     checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}_2nd.pth"),
     samples_fname=(save_base / "samples" / f"sub-{subject}_2nd.parquet"),
@@ -221,6 +279,8 @@ results_2nd_step = rosoku.deeplearning(
     label_keys=label_keys,
     seed=seed,
     additional_values={"subject": subject},
+    use_deterministic_algorithms=True,
+    min_delta=0,
 )
 
 # %%

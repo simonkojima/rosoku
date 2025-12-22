@@ -60,19 +60,12 @@ def euclidean_alignment(X, online=False, enable_tqdm=True):
         EA-transformed data with the same shape as the input
         ``(n_trials, n_channels, n_times)``.
 
-    Notes
-    -----
-    - Offline EA corresponds to:
-        ``X' = A @ X`` where A is derived from the mean covariance of all trials.
-    - Online EA recomputes the alignment incrementally, which is useful when
-      adapting from scratch to a new session or subject in real-time BCI.
-
     References
     ----------
     H. He and D. Wu, "Transfer Learning for Brain–Computer Interfaces:
     A Euclidean Space Data Alignment Approach," IEEE Transactions on
     Biomedical Engineering, vol. 67, no. 2, pp. 399–410, 2020.
-    doi: 10.1109/TBME.2019.2913914
+    DOI: `10.1109/TBME.2019.2913914 <https://doi.org/10.1109/TBME.2019.2913914>`_
 
     """
 
@@ -124,21 +117,16 @@ def riemannian_alignment(covariances, scaling=False, online=False, enable_tqdm=T
     on the Riemannian manifold. Riemannian Alignment reduces inter-session and
     inter-subject variability and is widely used in Riemannian-based BCI decoding.
 
-    Notes on the implemented steps
-    -------------------------------
     RPA consists of three conceptual steps:
-
         1. **Re-centering** (unsupervised)
-        2. **Rotation** (supervised)
-        3. **Re-scaling** (unsupervised)
+        2. **Re-scaling** (unsupervised)
+        3. **Rotation** (supervised)
 
     This implementation includes:
+        - **Re-centering**
+        - **Optional re-scaling**
 
-        - ✔ Re-centering
-        - ✔ Optional re-scaling
-        - ✘ **Rotation (not implemented)**
-
-    The rotation step is **supervised**, because it requires class-wise means
+    The rotation step is supervised, because it requires class-wise means
     and alignment across classes. It cannot be applied in an unsupervised way;
     therefore it is intentionally omitted here. For full RPA, refer to the
     original publication.
@@ -178,7 +166,7 @@ def riemannian_alignment(covariances, scaling=False, online=False, enable_tqdm=T
     P. L. C. Rodrigues, C. Jutten and M. Congedo,
     "Riemannian Procrustes Analysis: Transfer Learning for Brain–Computer Interfaces,"
     IEEE Transactions on Biomedical Engineering, vol. 66, no. 8, pp. 2390–2401, 2019.
-    doi: 10.1109/TBME.2018.2889705
+    DOI: `10.1109/TBME.2018.2889705 <https://doi.org/10.1109/TBME.2018.2889705>`_
     """
     if online is False:
         return _riemannian_alignment(covariances=covariances, scaling=scaling)

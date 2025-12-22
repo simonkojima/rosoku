@@ -1,11 +1,45 @@
 """
 Example 02: Within-subject classification with deep learning
 ============================================================
+
+This example shows how to perform **within-subject motor imagery classification**
+using a deep learning model with ``rosoku``.
+
+Using the Dreyer2023 dataset, an **EEGNet** model is trained and evaluated on
+different runs of the same subject. The example highlights ``rosoku``'s
+callback-based design for data loading and preprocessing, as well as its
+integration with PyTorch-based deep learning workflows.
+
+Key features demonstrated in this example include:
+
+- Custom callbacks for epoch loading and data conversion
+- Reproducible training with deterministic CUDA settings
+- Early stopping, checkpointing, and training history logging
+- Visualization of learning curves after training
+
+This script can serve as a starting point for building reproducible
+deep-learning pipelines for EEG analysis.
 """
 
 # Authors: Simon Kojima <simon.kojima@inria.fr>
 #
 # License: BSD (3-clause)
+
+# %%
+# Set Environment Variables for Replicability
+# ===========================================
+# NOTE:
+# This environment variable MUST be set **before importing torch**.
+# It enforces deterministic behavior in CUDA CuBLAS operations
+# when `torch.use_deterministic_algorithms(True)` is enabled.
+#
+# See:
+# https://docs.nvidia.com/cuda/cublas/index.html#results-reproducibility
+#
+# If this variable is set after importing torch, it will have no effect.
+import os
+
+os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 
 # %%
 # Import Packages
@@ -98,15 +132,14 @@ def convert_epochs_to_ndarray(
 # Run the Experiment
 # ==================
 
-subject = 56
+subject = 10
 resample = 128
 
-lr = 1e-3
+lr = 5e-4
 weight_decay = 1e-2
 n_epochs = 500
 batch_size = 8
 patience = 75
-enable_normalization = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 seed = 42
@@ -130,9 +163,9 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 label_keys = {"left_hand": 0, "right_hand": 1}
 
 results = rosoku.deeplearning(
-    items_train=[subject, "R1", "R2"],
-    items_valid=[subject, "R3"],
-    items_test=[[subject, "R4", "R5"]],
+    items_train=[subject, "R1", "R2", "R3"],
+    items_valid=[subject, "R4"],
+    items_test=[[subject, "R5", "R6"]],
     callback_load_epochs=functools.partial(
         callback_load_epochs,
         dataset=dataset,
@@ -156,7 +189,6 @@ results = rosoku.deeplearning(
     scheduler_params=scheduler_params,
     device=device,
     early_stopping=early_stopping,
-    enable_normalization=enable_normalization,
     history_fname=(save_base / "history" / f"sub-{subject}.parquet"),
     checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}.pth"),
     samples_fname=(save_base / "samples" / f"sub-{subject}.parquet"),
@@ -165,6 +197,8 @@ results = rosoku.deeplearning(
     label_keys=label_keys,
     seed=seed,
     additional_values={"subject": subject},
+    use_deterministic_algorithms=True,
+    min_delta=0,
 )
 
 # %%
