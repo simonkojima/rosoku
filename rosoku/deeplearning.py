@@ -229,7 +229,7 @@ def deeplearning(
         model=None,
         scheduler=None,
         scheduler_params=None,
-        min_delta=1e-3,
+        min_delta=1e-4,
         device="cpu",
         num_workers=0,
         scoring="accuracy",

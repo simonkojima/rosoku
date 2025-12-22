@@ -92,7 +92,7 @@ def callback_load_ndarray(
 
 def callback_get_model(X, y):
     _, n_chans, n_times = X.shape
-    F1 = 4
+    F1 = 8
     D = 2
     F2 = F1 * D
 
@@ -103,7 +103,7 @@ def callback_get_model(X, y):
         F1=F1,
         D=D,
         F2=F2,
-        drop_prob=0.25,
+        drop_prob=0.5,
     )
 
     return model
@@ -142,8 +142,8 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 label_keys = {"left_hand": 0, "right_hand": 1}
 
 results = rosoku.deeplearning(
-    items_train=[1, 2, 3],
-    items_valid=[4],
+    items_train=list(range(1, 17)),
+    items_valid=list(range(17, 20)),
     items_test=[21, 56],
     callback_load_ndarray=functools.partial(
         callback_load_ndarray,
