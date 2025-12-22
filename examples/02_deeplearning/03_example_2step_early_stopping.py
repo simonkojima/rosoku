@@ -1,6 +1,6 @@
 """
-Example: Plot Saliency Map
-==========================
+Example 03: 2-step Early Stopping
+=================================
 """
 
 # Authors: Simon Kojima <simon.kojima@inria.fr>
@@ -12,15 +12,12 @@ Example: Plot Saliency Map
 # ===============
 import functools
 from pathlib import Path
-import numpy as np
 import mne
 import torch
 import braindecode
 import rosoku
-import msgpack
+
 from moabb.datasets import Dreyer2023
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 
 # %%
@@ -46,7 +43,7 @@ def callback_get_model(X, y):
 
 
 def callback_load_epochs(
-    items, split, dataset, l_freq, h_freq, order_filter, tmin, tmax
+        items, split, dataset, l_freq, h_freq, order_filter, tmin, tmax
 ):
     subject = items[0]
     items = items[1:]
@@ -87,9 +84,9 @@ def callback_proc_epochs(epochs, split):
 
 
 def convert_epochs_to_ndarray(
-    epochs,
-    split,
-    label_keys,
+        epochs,
+        split,
+        label_keys,
 ):
     X = epochs.get_data()
     y = rosoku.utils.get_labels_from_epochs(epochs, label_keys)
@@ -98,16 +95,16 @@ def convert_epochs_to_ndarray(
 
 
 # %%
-# Run the Experiment
-# ==================
+# Run the Experiment using Early Stopping with Validation data
+# ============================================================
 
 subject = 56
 resample = 128
 
 lr = 1e-3
 weight_decay = 1e-2
-n_epochs = 100
-batch_size = 8
+n_epochs = 500
+batch_size = 4
 patience = 75
 enable_normalization = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -132,7 +129,7 @@ early_stopping = rosoku.utils.EarlyStopping(patience=patience)
 
 label_keys = {"left_hand": 0, "right_hand": 1}
 
-results = rosoku.deeplearning(
+results_1st_step = rosoku.deeplearning(
     items_train=[subject, "R1", "R2"],
     items_valid=[subject, "R3"],
     items_test=[[subject, "R4", "R5"]],
@@ -171,72 +168,64 @@ results = rosoku.deeplearning(
 )
 
 # %%
+# Run the Experiment using Early Stopping with callback_early_stopping
+# ====================================================================
+
+data = torch.load(save_base / "checkpoint" / f"sub-{subject}.pth")
+loss_best = data["loss_best"]
+
+lr = 1e-4
+weight_decay = 1e-2
+n_epochs = 500
+batch_size = 4
+seed = 42
+
+
+def callback_early_stopping(loss_train, loss_valid, epoch):
+    return loss_train <= loss_best
+
+
+results_2nd_step = rosoku.deeplearning(
+    items_train=[subject, "R1", "R2", "R3"],
+    items_valid=None,
+    items_test=[[subject, "R4", "R5"]],
+    callback_load_epochs=functools.partial(
+        callback_load_epochs,
+        dataset=dataset,
+        l_freq=8.0,
+        h_freq=30.0,
+        order_filter=4,
+        tmin=dataset.interval[0] + 0.5,
+        tmax=dataset.interval[1],
+    ),
+    callback_proc_epochs=callback_proc_epochs,
+    callback_convert_epochs_to_ndarray=functools.partial(
+        convert_epochs_to_ndarray, label_keys=label_keys
+    ),
+    callback_early_stopping=callback_early_stopping,
+    batch_size=batch_size,
+    n_epochs=n_epochs,
+    criterion=criterion,
+    optimizer=optimizer,
+    optimizer_params=optimizer_params,
+    callback_get_model=callback_get_model,
+    scheduler=scheduler,
+    scheduler_params=scheduler_params,
+    device=device,
+    enable_normalization=enable_normalization,
+    history_fname=(save_base / "history" / f"sub-{subject}_2nd.parquet"),
+    checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}_2nd.pth"),
+    samples_fname=(save_base / "samples" / f"sub-{subject}_2nd.parquet"),
+    normalization_fname=(save_base / "normalization" / f"sub-{subject}_2nd.msgpack"),
+    saliency_map_fname=(save_base / "saliency" / f"sub-{subject}_2nd.msgpack"),
+    label_keys=label_keys,
+    seed=seed,
+    additional_values={"subject": subject},
+)
+
+# %%
 # Print Results
 # =============
 
-print(results.to_string())
-
-# %%
-# Load Saliency Map Data
-# ======================
-
-with open(save_base / "saliency" / f"sub-{subject}.msgpack", "rb") as f:
-    saliency_map_data = msgpack.load(f, strict_map_key=False)
-
-# %%
-# Plot Spatial Saliency
-# =====================
-
-spatial_saliency_left = rosoku.attribution.saliency_spatial(
-    saliency_map_data[0]["left_hand"]
-)
-spatial_saliency_right = rosoku.attribution.saliency_spatial(
-    saliency_map_data[0]["right_hand"]
-)
-
-# get channel position info
-raw = list(Dreyer2023().get_data(subjects=[subject])[subject]["0"].values())[0]
-ch_names = raw.pick(picks="eeg").ch_names
-montage = mne.channels.make_standard_montage("standard_1005")
-ch_pos = montage.get_positions()["ch_pos"]
-ch_pos = np.array([ch_pos[ch_name][:2] for ch_name in ch_names])
-
-fig, axes = plt.subplots(1, 2, figsize=(8, 5))
-
-axes[0].set_title("Left Hand")
-mne.viz.plot_topomap(
-    spatial_saliency_left,
-    ch_pos,
-    names=None,
-    cmap="seismic",
-    axes=axes[0],
-)
-
-axes[1].set_title("Right Hand")
-mne.viz.plot_topomap(
-    spatial_saliency_left,
-    ch_pos,
-    names=None,
-    cmap="seismic",
-    axes=axes[1],
-)
-
-# %%
-# Plot Temporal Saliency
-# ======================
-
-temporal_saliency_left = rosoku.attribution.saliency_temporal(
-    saliency_map_data[0]["left_hand"]
-)
-temporal_saliency_right = rosoku.attribution.saliency_temporal(
-    saliency_map_data[0]["right_hand"]
-)
-
-fig, axes = plt.subplots(1, 2, figsize=(10, 5))
-
-sns.set()
-sns.lineplot(temporal_saliency_left, ax=axes[0])
-sns.lineplot(temporal_saliency_right, ax=axes[1])
-
-axes[0].set_title("Left Hand")
-axes[1].set_title("Right Hand")
+print(results_1st_step.to_string())
+print(results_2nd_step.to_string())

@@ -1,5 +1,5 @@
 """
-Example: Cross-subject classification with deep learning
+Example 04: Cross-subject classification with deep learning
 ========================================================
 """
 
@@ -14,6 +14,7 @@ import functools
 import numpy as np
 from pathlib import Path
 import mne
+import pandas as pd
 from moabb.datasets import Dreyer2023
 import torch
 import braindecode
@@ -26,15 +27,15 @@ import rosoku
 
 
 def callback_load_ndarray(
-    items,
-    split,
-    tmin,
-    tmax,
-    l_freq,
-    h_freq,
-    order_filter,
-    label_keys,
-    dataset,
+        items,
+        split,
+        tmin,
+        tmax,
+        l_freq,
+        h_freq,
+        order_filter,
+        label_keys,
+        dataset,
 ):
     X_list = []
     y_list = []
@@ -159,14 +160,14 @@ results = rosoku.deeplearning(
     scheduler_params=scheduler_params,
     device=device,
     callback_proc_epochs=None,
-    early_stopping=early_stopping,
+    # early_stopping=early_stopping,
     enable_normalization=enable_normalization,
     scoring=["accuracy", "f1"],
     history_fname=(save_base / "history" / f"cross-subject-deeplearning.parquet"),
     checkpoint_fname=(save_base / "checkpoint" / f"cross-subject-deeplearning.pth"),
     samples_fname=(save_base / "samples" / f"cross-subject-deeplearning.parquet"),
     normalization_fname=(
-        save_base / "normalization" / f"cross-subject-deeplearning.msgpack"
+            save_base / "normalization" / f"cross-subject-deeplearning.msgpack"
     ),
     saliency_map_fname=(save_base / "saliency" / f"cross-subject-deeplearning.msgpack"),
     label_keys=label_keys,
@@ -175,7 +176,10 @@ results = rosoku.deeplearning(
 )
 
 # %%
-# Print Results
-# =============
+# Show Results
+# ============
 
 print(results.to_string())
+
+history = pd.read_parquet(save_base / "history" / f"cross-subject-deeplearning.parquet")
+rosoku.viz.plot_history(history)

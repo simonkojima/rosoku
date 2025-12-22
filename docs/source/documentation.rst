@@ -63,4 +63,12 @@ Saliency Map
    rosoku.attribution.saliency_temporal
    rosoku.attribution.saliency_spatial
 
+Visualization
+-------------
 
+.. autosummary::
+   :toctree:
+   :caption: Visualization
+   :recursive:
+
+   rosoku.viz.plot_history

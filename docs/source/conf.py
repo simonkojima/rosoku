@@ -68,10 +68,13 @@ html_context = {
     "version_match": release,
 }
 
+from sphinx_gallery.sorting import FileNameSortKey
+
 sphinx_gallery_conf = {
     "examples_dirs": "../../examples",
     "gallery_dirs": "auto_examples",
     "filename_pattern": r"example_",
+    "within_subsection_order": FileNameSortKey,
 }
 
 source_suffix = {

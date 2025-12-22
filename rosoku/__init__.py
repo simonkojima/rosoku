@@ -4,6 +4,7 @@ from . import attribution
 from . import preprocessing
 from . import tl
 from . import utils
+from . import viz
 
 from .conventional import conventional
 from .deeplearning import deeplearning

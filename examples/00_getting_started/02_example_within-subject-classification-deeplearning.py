@@ -1,5 +1,5 @@
 """
-Example 01: Within-subject classification with deep learning
+Example 02: Within-subject classification with deep learning
 ============================================================
 """
 
@@ -16,7 +16,7 @@ import mne
 import torch
 import braindecode
 import rosoku
-
+import pandas as pd
 from moabb.datasets import Dreyer2023
 
 
@@ -43,7 +43,7 @@ def callback_get_model(X, y):
 
 
 def callback_load_epochs(
-    items, split, dataset, l_freq, h_freq, order_filter, tmin, tmax
+        items, split, dataset, l_freq, h_freq, order_filter, tmin, tmax
 ):
     subject = items[0]
     items = items[1:]
@@ -84,9 +84,9 @@ def callback_proc_epochs(epochs, split):
 
 
 def convert_epochs_to_ndarray(
-    epochs,
-    split,
-    label_keys,
+        epochs,
+        split,
+        label_keys,
 ):
     X = epochs.get_data()
     y = rosoku.utils.get_labels_from_epochs(epochs, label_keys)
@@ -155,7 +155,7 @@ results = rosoku.deeplearning(
     scheduler=scheduler,
     scheduler_params=scheduler_params,
     device=device,
-    # early_stopping=early_stopping,
+    early_stopping=early_stopping,
     enable_normalization=enable_normalization,
     history_fname=(save_base / "history" / f"sub-{subject}.parquet"),
     checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}.pth"),
@@ -168,7 +168,10 @@ results = rosoku.deeplearning(
 )
 
 # %%
-# Print Results
-# =============
+# Show Results
+# ============
 
 print(results.to_string())
+
+history = pd.read_parquet(save_base / "history" / f"sub-{subject}.parquet")
+rosoku.viz.plot_history(history)
