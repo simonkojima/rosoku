@@ -160,7 +160,6 @@ weight_decay = 1e-2
 n_epochs = 500
 batch_size = 64
 patience = 75
-enable_normalization = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 seed = 42
@@ -208,7 +207,6 @@ results = rosoku.deeplearning(
     device=device,
     callback_proc_epochs=None,
     early_stopping=early_stopping,
-    enable_normalization=enable_normalization,
     scoring=["accuracy", "f1"],
     history_fname=(save_base / "history" / f"cross-subject-deeplearning.parquet"),
     checkpoint_fname=(save_base / "checkpoint" / f"cross-subject-deeplearning.pth"),

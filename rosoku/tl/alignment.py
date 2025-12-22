@@ -74,7 +74,7 @@ def euclidean_alignment(X, online=False, enable_tqdm=True):
     else:
         new_X = []
         for n in tqdm.tqdm(range(X.shape[0]), disable=not enable_tqdm):
-            new_X.append(_euclidean_alignment(X[0: (n + 1), :, :])[-1, :, :])
+            new_X.append(_euclidean_alignment(X[0 : (n + 1), :, :])[-1, :, :])
         return np.stack(new_X, axis=0)
 
 
@@ -97,7 +97,7 @@ def _riemannian_alignment(covariances, scaling=False):
     aligned_covs = np.zeros(covariances.shape)
     for m in range(n_covs):
         aligned_covs[m, :, :] = (
-                mean_cov_inv_sqrt @ covariances[m, :, :] @ mean_cov_inv_sqrt
+            mean_cov_inv_sqrt @ covariances[m, :, :] @ mean_cov_inv_sqrt
         )
         if scaling:
             aligned_covs[m, :, :] = scipy.linalg.fractional_matrix_power(
@@ -178,7 +178,7 @@ def riemannian_alignment(covariances, scaling=False, online=False, enable_tqdm=T
             else:
                 _scaling = scaling
             new_covariances.append(
-                _riemannian_alignment(covariances[0: (n + 1), :, :], scaling=_scaling)[
+                _riemannian_alignment(covariances[0 : (n + 1), :, :], scaling=_scaling)[
                     -1, :, :
                 ]
             )

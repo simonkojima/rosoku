@@ -50,15 +50,15 @@ import rosoku
 # Define a callback function to load ndarray data
 # ===============================================
 def callback_load_ndarray(
-        items,
-        split,
-        tmin,
-        tmax,
-        l_freq,
-        h_freq,
-        order_filter,
-        label_keys,
-        dataset,
+    items,
+    split,
+    tmin,
+    tmax,
+    l_freq,
+    h_freq,
+    order_filter,
+    label_keys,
+    dataset,
 ):
     X_list = []
     y_list = []

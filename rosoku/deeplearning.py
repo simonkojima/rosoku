@@ -43,21 +43,21 @@ def setup_scheduler(scheduler, scheduler_params, optimizer):
 
 
 def deeplearning_train(
-        dataloader_train,
-        dataloader_valid,
-        n_epochs,
-        model,
-        criterion,
-        device,
-        optimizer=None,
-        scheduler=None,
-        early_stopping=None,
-        callback_early_stopping=None,
-        enable_wandb_logging=False,
-        wandb_params=None,
-        checkpoint_fname=None,
-        history_fname=None,
-        min_delta=0,
+    dataloader_train,
+    dataloader_valid,
+    n_epochs,
+    model,
+    criterion,
+    device,
+    optimizer=None,
+    scheduler=None,
+    early_stopping=None,
+    callback_early_stopping=None,
+    enable_wandb_logging=False,
+    wandb_params=None,
+    checkpoint_fname=None,
+    history_fname=None,
+    min_delta=0,
 ):
     if enable_wandb_logging:
         import wandb
@@ -108,7 +108,7 @@ def deeplearning_train(
 
         if callback_early_stopping is not None:
             if callback_early_stopping(
-                    {"train_loss": train_loss, "valid_loss": valid_loss, "epoch": epoch + 1}
+                {"train_loss": train_loss, "valid_loss": valid_loss, "epoch": epoch + 1}
             ):
                 print(f"Early stopping was triggered: epoch #{epoch + 1}")
                 break
@@ -125,19 +125,19 @@ def deeplearning_train(
 
 
 def run_experiment(
-        num_workers,
-        device,
-        X_train,
-        y_train,
-        X_valid,
-        y_valid,
-        X_test,
-        y_test,
-        criterion,
-        batch_size,
-        n_epochs,
-        optimizer,
-        kwargs,
+    num_workers,
+    device,
+    X_train,
+    y_train,
+    X_valid,
+    y_valid,
+    X_test,
+    y_test,
+    criterion,
+    batch_size,
+    n_epochs,
+    optimizer,
+    kwargs,
 ):
     import torch
 
@@ -209,50 +209,50 @@ def run_experiment(
 
 
 def deeplearning(
-        items_train,
-        items_valid,
-        items_test,
-        callback_load_epochs=None,
-        callback_load_ndarray=None,
-        criterion=torch.nn.CrossEntropyLoss(),
-        batch_size=64,
-        n_epochs=500,
-        optimizer=torch.optim.AdamW,
-        *,
-        callback_proc_mode="per_split",
-        callback_proc_epochs=None,
-        callback_proc_ndarray=None,
-        callback_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
-        callback_get_logits=None,
-        callback_get_preds=None,
-        callback_get_probas=None,
-        callback_get_model=None,
-        callback_early_stopping=None,
-        callback_normalization=rosoku.preprocessing.normalize,
-        optimizer_params=None,
-        model=None,
-        scheduler=None,
-        scheduler_params=None,
-        min_delta=0,
-        device="cpu",
-        num_workers=0,
-        scoring="accuracy",
-        scoring_name=None,
-        enable_wandb_logging=False,
-        wandb_params=None,
-        checkpoint_fname=None,
-        history_fname=None,
-        samples_fname=None,
-        normalization_fname=None,
-        saliency_map_fname=False,
-        early_stopping=None,
-        model_name=None,
-        use_deterministic_algorithms=False,
-        deterministic_warn_only=False,
-        label_keys=None,
-        seed=None,
-        dtype=torch.float32,
-        additional_values=None,
+    items_train,
+    items_valid,
+    items_test,
+    callback_load_epochs=None,
+    callback_load_ndarray=None,
+    criterion=torch.nn.CrossEntropyLoss(),
+    batch_size=64,
+    n_epochs=500,
+    optimizer=torch.optim.AdamW,
+    *,
+    callback_proc_mode="per_split",
+    callback_proc_epochs=None,
+    callback_proc_ndarray=None,
+    callback_convert_epochs_to_ndarray=utils.convert_epochs_to_ndarray,
+    callback_get_logits=None,
+    callback_get_preds=None,
+    callback_get_probas=None,
+    callback_get_model=None,
+    callback_early_stopping=None,
+    callback_normalization=rosoku.preprocessing.normalize,
+    optimizer_params=None,
+    model=None,
+    scheduler=None,
+    scheduler_params=None,
+    min_delta=0,
+    device="cpu",
+    num_workers=0,
+    scoring="accuracy",
+    scoring_name=None,
+    enable_wandb_logging=False,
+    wandb_params=None,
+    checkpoint_fname=None,
+    history_fname=None,
+    samples_fname=None,
+    normalization_fname=None,
+    saliency_map_fname=False,
+    early_stopping=None,
+    model_name=None,
+    use_deterministic_algorithms=False,
+    deterministic_warn_only=False,
+    label_keys=None,
+    seed=None,
+    dtype=torch.float32,
+    additional_values=None,
 ):
     """
     Run a deep-learning EEG/BCI experiment using PyTorch models.
@@ -882,7 +882,7 @@ def deeplearning(
     samples_list = []
     with torch.no_grad():
         for idx, (dataloader, items_test_single) in enumerate(
-                zip(dataloader_test, items_test)
+            zip(dataloader_test, items_test)
         ):
 
             preds, labels, logits, probas = utils.get_predictions(

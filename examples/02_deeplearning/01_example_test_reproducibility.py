@@ -1,6 +1,6 @@
 """
 Example 01: Testing Reproducibility of Deeplearning Experiments
-============================================================
+===============================================================
 """
 
 # Authors: Simon Kojima <simon.kojima@inria.fr>
@@ -112,7 +112,6 @@ weight_decay = 1e-2
 n_epochs = 100
 batch_size = 8
 patience = 75
-enable_normalization = True
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 dataset = Dreyer2023()
@@ -163,7 +162,6 @@ for _ in range(2):
         scheduler_params=scheduler_params,
         device=device,
         early_stopping=early_stopping,
-        enable_normalization=enable_normalization,
         history_fname=(save_base / "history" / f"sub-{subject}.parquet"),
         checkpoint_fname=(save_base / "checkpoint" / f"sub-{subject}.pth"),
         samples_fname=(save_base / "samples" / f"sub-{subject}.parquet"),

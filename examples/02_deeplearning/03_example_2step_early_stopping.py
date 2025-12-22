@@ -2,38 +2,45 @@
 Example 03: 2-step Early Stopping
 =================================
 
-This example demonstrates a **two-step training strategy using early stopping**
+This example demonstrates a two-step training strategy using early stopping
 with ``rosoku`` for deep-learning-based EEG classification.
 
-The main idea of this example is to **decouple model selection and final training**
-by performing training in two stages:
+The purpose of this example is to illustrate a practical way to estimate a
+reasonable loss target and then use it to control the final training process,
+while keeping the training loop unchanged.
 
-1. **Step 1 (model selection)**:
-   A validation set is used together with standard early stopping to determine
-   the optimal stopping point (i.e., the epoch with the lowest validation loss).
-   The best model checkpoint and its corresponding loss value are saved.
+The training is split into two stages:
+
+1. **Step 1 (loss calibration / warm-up)**:
+   A validation set is temporarily introduced and standard early stopping is
+   applied.
+   The goal of this step is to obtain a **rough estimate of an achievable loss
+   value** and a stable training regime.
+   The best loss value and corresponding checkpoint are stored.
 
 2. **Step 2 (final training)**:
-   The model is retrained using a larger training set (including the former
-   validation data), while early stopping is controlled by a custom
-   ``callback_early_stopping`` function. Training is stopped once the training
-   loss reaches the best loss obtained in Step 1.
+   The model is retrained using a larger training set that also includes the
+   former validation data.
+   Early stopping is now controlled by a custom ``callback_early_stopping``
+   function, which stops training once the training loss reaches the best loss
+   observed in Step 1.
 
-This approach is useful when:
+This strategy is useful when:
 
-- A validation set is required for **early stopping or hyperparameter tuning**
-- The final model should be trained on **as much data as possible**
-- One wants to avoid data leakage while still benefiting from early stopping
+- Early stopping is needed, but a permanent validation split is undesirable
+- One wants to **maximize the amount of data used for final training**
+- A loss-based stopping criterion should be **derived empirically**
+  rather than hand-tuned
 
 Key aspects illustrated in this example include:
 
-- Standard early stopping based on validation loss
+- Using validation loss only for **loss calibration**
 - Custom early stopping via ``callback_early_stopping``
-- Reuse of the best loss value stored in a checkpoint
-- Flexible control over training logic without modifying the training loop
+- Reusing a loss threshold stored in a checkpoint
+- Implementing advanced stopping logic without modifying the training loop
 
-This example focuses on the *training strategy* rather than performance, and
-serves as a practical template for advanced early-stopping workflows in
+This example focuses on the *training strategy* rather than absolute performance,
+and serves as a practical template for flexible early-stopping workflows in
 ``rosoku``.
 """
 
