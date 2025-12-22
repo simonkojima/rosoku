@@ -103,7 +103,7 @@ def callback_get_model(X, y):
         F1=F1,
         D=D,
         F2=F2,
-        drop_prob=0.5,
+        drop_prob=0.25,
     )
 
     return model
@@ -113,7 +113,7 @@ def callback_get_model(X, y):
 # Run the Experiment
 # ==================
 
-lr = 1e-4
+lr = 1e-3
 weight_decay = 1e-2
 n_epochs = 500
 batch_size = 64
