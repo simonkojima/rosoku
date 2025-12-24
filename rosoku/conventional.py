@@ -203,7 +203,7 @@ def conventional(
     -------
     df : pandas.DataFrame
         Summary results with one row per (test group × model). Includes JSON-serialized
-        ``items_train`` / ``items_test`` strings, the classifier name, and one column
+        ``items_train`` / ``items_test`` strings, the model name, and one column
         per requested scoring metric.
 
     Notes
@@ -311,7 +311,7 @@ def conventional(
 
             df_results["items_train"] = [json.dumps(items_train)]
             df_results["items_test"] = [json.dumps(item)]
-            df_results["classifier"] = [name]
+            df_results["model"] = [name]
 
             for scoring_name_, score in zip(scoring_name, scores):
                 df_results[scoring_name_] = [score]
