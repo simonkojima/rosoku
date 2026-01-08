@@ -77,7 +77,7 @@ def get_labels_from_epochs(epochs, label_keys={"left_hand": 0, "right_hand": 1})
                 if key in marker.split("/"):
                     y.append(val)
             else:
-                if key == marker:
+                if f"marker:{key}" == marker:
                     y.append(val)
 
     if len(epochs) != len(y):
