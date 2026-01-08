@@ -14,10 +14,7 @@ def markers_from_events(events, event_id):
 
     markers = list()
     for val in np.array(events)[:, 2]:
-        if "marker:" in str(event_id_swap[val]):
-            markers.append(str(event_id_swap[val]))
-        else:
-            markers.append("marker:%s" % str(event_id_swap[val]))
+        markers.append(str(event_id_swap[val]))
 
     return samples, markers
 
@@ -77,7 +74,7 @@ def get_labels_from_epochs(epochs, label_keys={"left_hand": 0, "right_hand": 1})
                 if key in marker.split("/"):
                     y.append(val)
             else:
-                if f"marker:{key}" == marker:
+                if key == marker:
                     y.append(val)
 
     if len(epochs) != len(y):
