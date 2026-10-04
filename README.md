@@ -115,3 +115,90 @@ It is designed for researchers who:
 If you prefer maximum automation, MOABB or Braindecode may be a better fit.  
 If you want a clear, inspectable bridge between theory and implementation,
 Rosoku is built for you.
+
+## Stage-based PyTorch core
+
+The core API is `Experiment -> Stage -> Step`. `Step` defines forward and a
+scalar loss; `Experiment` owns device movement, backward, optimizer updates,
+and train/eval mode. Batches are supplied by the caller, so the same API works
+with a custom EEG Set Transformer or a pretrained foundation model.
+
+```python
+import torch
+from torch import nn
+from rosoku import Experiment, Stage, SupervisedStep
+
+step = SupervisedStep(nn.BCEWithLogitsLoss())
+experiment = Experiment(
+    model=model,  # your nn.Module
+    stages=[Stage(
+        name="training",
+        epochs=300,
+        train_step=step,
+        optimizer=lambda params: torch.optim.AdamW(params, lr=3e-4),
+        validate_every=1,
+    )],
+    device="cuda",  # defaults to CPU
+)
+state = experiment.fit(train_loader, valid_loader)
+```
+
+For linear probing followed by fine tuning, replace `stages` with:
+
+```python
+stages = [
+    Stage(
+        name="linear_probe", epochs=50, train_step=step,
+        trainable=["classifier"],
+        optimizer=lambda params: torch.optim.AdamW(params, lr=1e-3),
+        validate_every=1,
+    ),
+    Stage(
+        name="fine_tune", epochs=100, train_step=step,
+        trainable="all",
+        optimizer=lambda params: torch.optim.AdamW(params, lr=1e-4),
+        scheduler=lambda optimizer: torch.optim.lr_scheduler.StepLR(
+            optimizer, step_size=30, gamma=0.1,
+        ),
+        validate_every=5,
+    ),
+]
+```
+
+`trainable` accepts `"all"`, a submodule name, a sequence of submodule names,
+or a callable such as `lambda model: model.classifier.parameters()`.
+Each stage freezes unselected parameters, clears gradients, and creates a new
+optimizer and scheduler. Parameter freezing does not freeze BatchNorm buffers
+or disable Dropout; a callback can set the backbone to `eval()` in
+`on_train_epoch_start` when fixed feature extraction is required.
+
+`validate_every=None` disables validation (then `fit(train_loader)` works),
+`1` validates each epoch, and `N` validates after every N completed epochs
+within each stage. Enabled validation requires `valid_loader`.
+`valid_step` optionally overrides `train_step` during validation.
+Loaders must support fresh iteration each epoch.
+
+Subclass `Callback` and override the events you need: experiment/stage/epoch
+start and end, generic batch start and end, train/valid epoch and batch start
+and end, `on_after_forward`, `on_after_loss`, `on_after_backward`, and
+`on_before_optimizer_step` / `on_after_optimizer_step`. Callbacks receive the
+same mutable `State` in registration order. Validation and its phase callbacks
+run under `torch.no_grad()`; backward and optimizer events are train-only.
+Epoch-end events run after training and any scheduled validation, before the
+scheduler update. `State.should_stop=True` stops the current stage and allows
+the next stage to run.
+
+`State.epoch`, `stage_index`, and `step` are zero-based; `global_epoch` and
+`global_step` count completed epochs and training batches. `metrics` and `logs`
+are reset each epoch. `train/loss` and `valid/loss` are means of batch scalar
+losses; custom sample-weighted metrics can be implemented in callbacks.
+`state.log(name, value)` detaches tensors for logging.
+Schedulers run once per epoch; `ReduceLROnPlateau` receives the current
+validation loss, or training loss on epochs without validation.
+Each `fit()` starts with a fresh State while retaining the model's weights.
+
+Run the CPU tests with a Python environment containing PyTorch:
+
+```sh
+python -m unittest discover -s tests -v
+```
