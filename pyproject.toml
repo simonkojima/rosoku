@@ -30,6 +30,9 @@ dependencies = [
 # braindecode
 # wandb
 
+[project.optional-dependencies]
+docs = ["sphinx>=8,<9", "pydata-sphinx-theme>=0.16,<0.18"]
+
 [tool.setuptools.dynamic]
 version = { attr = "rosoku.__version__" }
 

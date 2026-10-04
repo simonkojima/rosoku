@@ -10,6 +10,44 @@ from .state import State
 from .step import Step
 
 class Experiment:
+    """Run a model through an ordered sequence of training stages.
+
+    Parameters
+    ----------
+    model : torch.nn.Module
+        Model whose parameters and mode are managed by the experiment. It is moved
+        to ``device`` during construction.
+    stages : sequence of Stage
+        Nonempty sequence executed in order. Every stage creates a fresh optimizer
+        and, when configured, a fresh scheduler.
+    callbacks : sequence of Callback, optional
+        Observers and control hooks, invoked in registration order.
+    device : str or torch.device, default "cpu"
+        Device for the model and tensor leaves in tuple, list, or dictionary batches.
+
+    Attributes
+    ----------
+    state : State
+        Mutable state shared with steps and callbacks. Replaced at each ``fit``.
+    model : torch.nn.Module
+        The same model object supplied by the caller.
+    stages : list of Stage
+        Stage configurations in execution order.
+    callbacks : list of Callback
+        Registered callback instances.
+    device : torch.device
+        Resolved training device.
+
+    Notes
+    -----
+    The engine controls train/eval mode, gradients, backward, and optimizer updates.
+    Steps define the forward computation and a scalar loss. Data splitting,
+    preprocessing, seeding, metrics, checkpointing, and test evaluation are left to
+    caller code or callbacks; no random seed is set implicitly.
+
+    See Also
+    --------
+    Stage, Step, SupervisedStep, State, Callback"""
     def __init__(self, model: nn.Module, stages: Sequence[Stage],
                  callbacks: Sequence[Callback] | None = None,
                  device: str | torch.device = "cpu"):
@@ -37,13 +75,51 @@ class Experiment:
         return value
 
     def fit(self, train_loader: Iterable, valid_loader: Iterable | None = None) -> State:
-        """Run all stages with fresh state and optimizers on each invocation.
+        """Run all stages using the supplied batch iterables.
 
-        Loaders must be re-iterable across epochs. Validation requires a loader
-        whenever any stage enables it. Schedulers step once after epoch_end;
-        ReduceLROnPlateau uses the current valid/loss (or train/loss when disabled).
-        Phase losses are means of batch scalar losses, not sample-weighted means.
-        """
+        Parameters
+        ----------
+        train_loader : iterable
+            Training batches. Must support fresh iteration for every epoch; a PyTorch
+            ``DataLoader`` or a list of batches is suitable.
+        valid_loader : iterable, optional
+            Validation batches. Required whenever any stage enables validation,
+            even if its interval exceeds that stage's epoch count.
+
+        Returns
+        -------
+        State
+            Final mutable state, also available as ``experiment.state``.
+
+        Raises
+        ------
+        ValueError
+            If enabled validation has no loader, a phase yields no batches, a selector
+            is invalid or empty, or a step does not return a scalar tensor loss.
+
+        Notes
+        -----
+        Each call creates fresh state, optimizers, and schedulers while retaining model
+        weights and callback instances. Stateful callbacks should reset their own
+        counters in ``on_experiment_start`` or ``on_stage_start``.
+
+        Validation runs under ``model.eval()`` and ``torch.no_grad()``. Training runs
+        under ``model.train()`` and enabled gradients. The final model mode is that of
+        the last executed phase; the engine does not restore its initial mode.
+
+        Epoch losses in ``metrics`` and ``logs`` are unweighted means of batch scalar
+        losses, not sample-weighted means. Both dictionaries are cleared at the start
+        of each stage and epoch; skipped validation produces no stale valid loss.
+
+        Schedulers advance once after ``on_epoch_end``. ``ReduceLROnPlateau`` receives
+        this epoch's validation loss when present, otherwise its training loss.
+        ``global_epoch`` increments after the scheduler; ``global_step`` increments
+        after batch-end callbacks for training batches only.
+
+        ``state.should_stop`` stops the current stage. A stop request in a batch-start
+        hook prevents that batch's computation; a request in a later computation hook
+        allows the current batch to finish. The flag is reset for the next stage.
+        Exceptions propagate to the caller; end hooks are not guaranteed on failure."""
         if valid_loader is None and any(s.validate_every is not None for s in self.stages):
             raise ValueError("valid_loader is required when validation is enabled")
         self.state = State(model=self.model)

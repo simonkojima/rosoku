@@ -4,12 +4,35 @@ from torch import nn
 from .types import TrainableSelector
 
 def configure_trainable_parameters(model: nn.Module, selector: TrainableSelector) -> list[nn.Parameter]:
-    """Select all parameters, named submodules, or a callable iterable.
+    """Resolve a stage selector and update parameter trainability.
 
-    Validate before modifying the model, deduplicate shared parameters, and clear
-    stale gradients when switching stages. This freezes parameters, not buffers;
-    use a stage/train-epoch callback to put frozen BatchNorm modules in eval mode.
-    """
+    Parameters
+    ----------
+    model : torch.nn.Module
+        Model whose parameters are selected.
+    selector : TrainableSelector
+        ``"all"``, a named submodule, a sequence of named submodules, or a callable
+        returning an iterable of parameters belonging to this model.
+
+    Returns
+    -------
+    list of torch.nn.Parameter
+        Selected parameters, deduplicated in selection order.
+
+    Raises
+    ------
+    ValueError
+        If a submodule is unknown, the selection is empty, or the callable returns
+        a foreign parameter or an object that is not a parameter.
+    TypeError
+        If the selector has an unsupported type.
+
+    Notes
+    -----
+    Validation occurs before model flags are changed. All model parameters have
+    stale gradients cleared; only selected parameters have ``requires_grad=True``.
+    Buffers and module train/eval mode are unaffected. This helper is available
+    from ``rosoku.parameters`` and is not re-exported from the package root."""
     all_params = list(model.parameters())
     if isinstance(selector, str) and selector == "all":
         selected = all_params

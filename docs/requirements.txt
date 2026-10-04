@@ -1,14 +1,2 @@
-sphinx
-sphinx-gallery
-numpydoc
-mne
-matplotlib
-furo
-torch
-pyriemann
-tag-mne
-pandas
-pydata-sphinx-theme
-sphinx-multiversion
-braindecode
-git+https://github.com/NeuroTechX/moabb.git#egg=moabb
+sphinx>=8,<9
+pydata-sphinx-theme>=0.16,<0.18
