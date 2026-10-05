@@ -196,15 +196,17 @@ cython_debug/
 # wandb
 wandb/
 
-# docs
+# docs: retain hand-maintained sources, ignore historical generated stubs.
 docs/build/
+docs/source/*
 !docs/source/_static/
 !docs/source/conf.py
 !docs/source/documentation.rst
 !docs/source/install.rst
 !docs/source/index.rst
-docs/source
-
+!docs/source/usage.rst
+!docs/source/examples.rst
+!docs/source/migration.rst
 
 # misc
 .idea/

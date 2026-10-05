@@ -1,74 +1,58 @@
-Documentation
-=============
+API reference
+=================
 
-rosoku
-------
-.. autosummary::
-   :toctree:
-   :caption: rosoku modules
-   :recursive:
+All main classes and factory/selector aliases are importable from ``rosoku``.
+``rosoku.core`` offers the same convenience imports. This page is built from
+source docstrings, so its descriptions follow the implemented behavior.
 
-   rosoku.conventional
-   rosoku.deeplearning
+Experiment
+--------------
 
-rosoku.preprocessing
---------------------
+.. autoclass:: rosoku.Experiment
+   :members: fit
 
-.. autosummary::
-   :toctree:
-   :caption: rosoku.preprocessing
-   :recursive:
-
-   rosoku.preprocessing.normalize
-
-rosoku.tl
+Stage
 ---------
 
-.. autosummary::
-   :toctree:
-   :caption: rosoku.tl
-   :recursive:
+.. autoclass:: rosoku.Stage
+   :members: should_validate, validation_step
 
-   rosoku.tl.euclidean_alignment
-   rosoku.tl.riemannian_alignment
+Step
+--------
 
+.. autoclass:: rosoku.Step
+   :members: forward, compute_loss
 
-rosoku.utils
+.. autoclass:: rosoku.SupervisedStep
+   :members: forward, compute_loss
+
+State
+---------
+
+.. autoclass:: rosoku.State
+   :members: log
+
+Callback
 ------------
 
-.. autosummary::
-   :toctree:
-   :caption: rosoku.utils
-   :recursive:
+.. autoclass:: rosoku.Callback
+   :members:
 
-   rosoku.utils.get_labels_from_epochs
-   rosoku.utils.EarlyStopping
-   rosoku.utils.get_predictions
-   rosoku.utils.convert_epochs_to_ndarray
-   rosoku.utils.load_data
-   rosoku.utils.ndarray_to_dataloader
-   rosoku.utils.ndarray_to_tensor
-   rosoku.utils.tensor_to_dataset
-   rosoku.utils.dataset_to_dataloader
+Factory and selector types
+------------------------------
 
-Saliency Map
-------------
+.. autodata:: rosoku.types.OptimizerFactory
+   :annotation: = Callable[[Iterable[nn.Parameter]], Optimizer]
 
-.. autosummary::
-   :toctree:
-   :caption: Saliency Map
-   :recursive:
+.. autodata:: rosoku.types.SchedulerFactory
+   :annotation: = Callable[[Optimizer], Any]
 
-   rosoku.attribution.saliency_map
-   rosoku.attribution.saliency_temporal
-   rosoku.attribution.saliency_spatial
+.. autodata:: rosoku.types.TrainableSelector
+   :annotation: = str | Sequence[str] | Callable[[nn.Module], Iterable[nn.Parameter]]
 
-Visualization
--------------
+Internal parameter helper
+-----------------------------
 
-.. autosummary::
-   :toctree:
-   :caption: Visualization
-   :recursive:
+Available from ``rosoku.parameters``, not from the package root:
 
-   rosoku.viz.plot_history
+.. autofunction:: rosoku.parameters.configure_trainable_parameters

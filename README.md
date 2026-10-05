@@ -1,117 +1,60 @@
-# 🕯️ Rosoku — A Flexible EEG/BCI Experiment Pipeline Toolkit
+# Rosoku — PyTorch experiment core
 
-**Rosoku** is a research-oriented Python framework for running **reproducible EEG/BCI
-experiments** with both conventional machine-learning models and deep-learning
-models.
+Rosoku structures model training as **Experiment → Stage → Step**. Define your
+data, preprocessing, model, and loss; rosoku handles train/validation loops,
+parameter selection, device movement, optimizer updates, and callback events.
 
-It bridges the gap between **high-level EEG/BCI frameworks** (such as MOABB and
-Braindecode) and **low-level machine-learning libraries** (such as scikit-learn
-and PyTorch), by providing structured yet flexible experiment pipelines without
-hiding critical details.
+The current version is `0.0.7`. This checkout exposes the Stage-based training
+core; older `conventional()` and `deeplearning()` pipelines are no longer
+exported. Historical examples are in `examples/legacy/`.
 
-Rosoku emphasizes **clarity, reproducibility, and experimental control** over
-maximum automation or throughput.
+```python
+import torch
+from torch import nn
+from rosoku import Experiment, Stage, SupervisedStep
 
----
+model = nn.Linear(6, 2)
+experiment = Experiment(model, stages=[Stage(
+    name="training", epochs=10,
+    train_step=SupervisedStep(nn.CrossEntropyLoss()),
+    optimizer=lambda params: torch.optim.AdamW(params, lr=3e-4),
+    validate_every=1,
+)], device="cpu")
+state = experiment.fit(train_loader, valid_loader)  # supply your DataLoaders
+```
 
-## 🔥 Core Philosophy
+`validate_every=None` disables validation; `1` runs it every epoch; `N` runs it
+after each N completed epochs within a stage. Stage-specific selectors accept
+`"all"`, submodule names, or a callable returning model parameters. Every stage
+creates a new optimizer/scheduler, so linear probing → fine tuning uses the same
+API as ordinary one-stage training.
 
-Rosoku is designed around a simple idea:
+Public imports: `Experiment`, `Stage`, `Step`, `SupervisedStep`, `State`,
+`Callback`, `OptimizerFactory`, `SchedulerFactory`, and `TrainableSelector`.
 
-> **You define what the data are and how they should be processed.  
-> Rosoku defines how experiments are run, evaluated, and recorded.**
+## Install and examples
 
-Rather than enforcing a fixed dataset or model API, Rosoku relies on
-**explicit, callback-driven interfaces** that make each experimental choice
-visible and reproducible.
+```bash
+python -m pip install -e .
+python examples/01_supervised.py
+python examples/02_linear_probe_fine_tune.py
+python examples/03_eeg_positions.py
+python -m unittest discover -s tests -v
+```
 
-This makes Rosoku particularly suitable for:
-- method development
-- ablation studies
-- cross-subject / cross-session analysis
-- careful comparison of pipelines in research papers
+Examples use synthetic data on CPU, without dataset downloads. The third shows
+EEG plus positions through a custom Step and sample-weighted metrics.
 
----
+## Documentation
 
-## 🧠 What Rosoku Does (and What You Control)
+Sphinx generates API pages from the source docstrings. Guides cover callback
+order, stage-local stopping, validation intervals, freeze/unfreeze, BatchNorm
+mode, metrics, and scheduler behavior. Build into the separate docs repository:
 
-| Task                               | Rosoku handles                          | You define                                  |
-|------------------------------------|-----------------------------------------|----------------------------------------------|
-| Dataset orchestration              | train/valid/test grouping               | what an *item* means                         |
-| Data loading                       | unified pipeline                        | how to load (MNE, NumPy, custom)             |
-| Preprocessing                      | execution & split handling              | any signal processing you write              |
-| Training loop                      | fitting, scheduling, checkpointing      | sklearn estimator / PyTorch model             |
-| Evaluation                         | scoring, grouping, aggregation          | metrics, saliency, logging                   |
-| Result export                      | parquet / msgpack / pth                 | downstream analysis or plotting              |
+```bash
+python -m pip install -e '.[docs]'
+python -m sphinx -W --keep-going -b html docs/source ~/git/rosoku-docs/latest
+```
 
-Rosoku **does not**:
-- impose a dataset format
-- hide training logic behind opaque abstractions
-- silently modify randomness or preprocessing behavior
-
----
-
-## 🔧 Two Complementary Pipelines
-
-| API              | Purpose                                | Typical models                             |
-|------------------|----------------------------------------|--------------------------------------------|
-| `conventional()` | classical ML classification             | MDM / TSClassifier / CSP / SVM / LDA        |
-| `deeplearning()` | deep learning with PyTorch              | EEGNet / Braindecode / custom CNN/RNN       |
-
-Both pipelines follow the same design:
-
-1. You define **items** describing which data belong to each split
-2. You provide **callbacks** to load and preprocess data
-3. Rosoku runs training, evaluation, and result aggregation
-
-This shared structure makes it easy to compare classical and deep-learning
-approaches within the same experimental setup.
-
----
-
-## 🧪 Reproducibility First
-
-Rosoku is designed with **reproducibility as a first-class concern**:
-
-- deterministic training is supported via explicit seeding
-- data loading behavior is transparent
-- no implicit parallelism is used
-
-> **For maximum reproducibility, Rosoku recommends running with**
-> ```python
-> num_workers = 0
-> ```
-> especially when publishing or debugging experiments.
-
----
-
-## 🚀 Quick Start
-
-Full runnable examples are available under `examples/`.
-
-Recommended first files:
-
-- `examples/example_within-subject-classification-riemannian.py`
-- `examples/example_within-subject-classification-deeplearning.py`
-
-These examples demonstrate:
-- item-based dataset definition
-- grouped test evaluation
-- conventional vs deep-learning pipelines
-- reproducible experiment execution
-
----
-
-## ✨ Who Is Rosoku For?
-
-Rosoku is **not** a black-box AutoML tool.
-
-It is designed for researchers who:
-- want to **understand and control** every step of their pipeline
-- need **transparent experiments** for publications
-- work across **multiple datasets, subjects, or sessions**
-- value **explicitness over convenience**
-
-If you prefer maximum automation, MOABB or Braindecode may be a better fit.  
-If you want a clear, inspectable bridge between theory and implementation,
-Rosoku is built for you.
+Open `~/git/rosoku-docs/latest/index.html`. Previous version folders are retained.
+A local build can instead target `docs/build/html`.
